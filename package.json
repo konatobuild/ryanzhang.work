@@ -1,0 +1,19 @@
+{
+  "name": "ryanzhang-work",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Monorepo for ryanzhang.work — portfolio main site plus incremental demo apps",
+  "scripts": {
+    "dev": "pnpm --filter portfolio dev",
+    "build": "pnpm --filter portfolio build",
+    "start": "pnpm --filter portfolio start",
+    "lint": "pnpm --filter portfolio lint",
+    "dev:portfolio": "pnpm --filter portfolio dev",
+    "build:portfolio": "pnpm --filter portfolio build"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@9.15.0"
+}
