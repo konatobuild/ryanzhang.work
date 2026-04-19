@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-canvas: #ffffff;
+  --color-canvas: #ededed;
   --color-ink: #0a0a0a;
   --color-klein: #002fa7;
   --color-klein-ink: #001e6b;
   --color-muted: #8e8e8e;
-  --color-hairline: rgba(0, 0, 0, 0.08);
+  --color-hairline: rgba(0, 0, 0, 0.14);
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
@@ -54,8 +54,8 @@
   button:focus-visible,
   input:focus-visible,
   [tabindex]:focus-visible {
-    outline: 2px solid var(--color-klein);
-    outline-offset: 3px;
+    outline: 1.5px solid var(--color-klein);
+    outline-offset: 2px;
     border-radius: 2px;
   }
 }
