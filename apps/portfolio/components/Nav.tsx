@@ -13,13 +13,13 @@ export function Nav() {
           {/* Left: leave empty for now (could host a small dot mark later) */}
           <div aria-hidden="true" />
 
-          {/* Center: archival meta */}
+          {/* Center: site identity */}
           <p
             className="justify-self-center font-mono text-[11px] tracking-[0.18em] uppercase text-[color:var(--color-ink)] whitespace-nowrap"
           >
-            ARCHIVAL <span className="text-[color:var(--color-muted)]">/</span>{" "}
-            VOL.01 <span className="text-[color:var(--color-muted)]">/</span>{" "}
-            RZ.OS
+            RZ <span className="text-[color:var(--color-muted)]">·</span>{" "}
+            Portfolio <span className="text-[color:var(--color-muted)]">·</span>{" "}
+            2026
           </p>
 
           {/* Right: status + hamburger */}
@@ -32,7 +32,7 @@ export function Nav() {
                 aria-hidden="true"
                 className="inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--color-klein)]"
               />
-              Available
+              Opening Q2 2026
             </span>
 
             <button
