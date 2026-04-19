@@ -27,8 +27,9 @@ export default function Home() {
             SEQ_001 · DESIGN_ENGINEER · INDEXED_2026
           </div>
 
-          {/* Desktop: narrow fixed-width vertical rail on far left */}
-          <div className="hidden md:flex shrink-0 w-[72px] md:pl-10 md:pr-4 items-end">
+          {/* Desktop: narrow vertical rail in the left gutter (0–40px).
+              Image starts at 40px to align with heading's pl-10. */}
+          <div className="hidden md:flex shrink-0 w-10 items-end justify-center">
             <div
               className="font-mono text-[11px] tracking-[0.22em] uppercase text-[color:var(--color-muted)] whitespace-nowrap"
               style={{
@@ -40,8 +41,9 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Image — edge-to-edge on the right on desktop */}
-          <div className="flex-1 min-w-0 min-h-0 px-6 md:px-0">
+          {/* Image — aligned with heading: pl comes from the rail's width,
+              pr-10 matches the heading's right margin. */}
+          <div className="flex-1 min-w-0 min-h-0 px-6 md:pr-10 md:pl-0">
             <figure className="relative w-full h-full min-h-[320px] overflow-hidden bg-[#d9d9d9]">
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">

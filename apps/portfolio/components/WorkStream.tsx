@@ -17,37 +17,80 @@ function WorkItem({ entry, index }: { entry: CaseEntry; index: number }) {
   const num = String(index + 1).padStart(2, "0");
   const categoryLabel = CATEGORY_LABELS[entry.category];
 
+  // Dark visual — intentionally empty. Placeholders stay pure black;
+  // live cases render the cover image edge-to-edge without overlays.
   const visual = (
-    <div
-      className={[
-        "relative w-full overflow-hidden",
-        "h-[60vh] min-h-[380px] md:h-[72vh]",
-        isLive ? "bg-[#0a0a0a]" : "bg-[#0a0a0a]",
-      ].join(" ")}
-    >
-      {isLive && entry.coverImage ? (
-        <Image
-          src={entry.coverImage}
-          alt={entry.title}
-          fill
-          sizes="100vw"
-          className="object-cover"
-        />
-      ) : (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center">
-            <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-white/40">
-              Shipping Q2 2026
-            </p>
-            <p className="mt-4 text-[44px] md:text-[72px] font-semibold tracking-[-0.03em] leading-[1.02] text-white/85">
-              {entry.title}
-            </p>
-            <p className="mt-3 font-mono text-[11px] tracking-[0.18em] uppercase text-white/40">
-              {entry.scenario}
-            </p>
-          </div>
-        </div>
-      )}
+    <div className="px-6 md:px-10">
+      <div className="relative w-full overflow-hidden h-[70vh] min-h-[420px] md:h-[80vh] bg-[#0a0a0a]">
+        {isLive && entry.coverImage && (
+          <Image
+            src={entry.coverImage}
+            alt={entry.title}
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+        )}
+      </div>
+    </div>
+  );
+
+  // Top meta — single line: WORK NN on the left, status on the right.
+  const topMeta = (
+    <div className="grid grid-cols-2 items-center gap-4 px-6 md:px-10 py-4 md:py-5">
+      <span className="justify-self-start font-mono text-[11px] tracking-[0.18em] uppercase text-[color:var(--color-muted)]">
+        Work {num}
+      </span>
+      <span className="justify-self-end">
+        {isLive ? (
+          <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] uppercase text-[color:var(--color-ink)]">
+            <span
+              aria-hidden="true"
+              className="inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--color-klein)]"
+            />
+            Live
+          </span>
+        ) : (
+          <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-[color:var(--color-muted)]">
+            ◌ Shipping soon
+          </span>
+        )}
+      </span>
+    </div>
+  );
+
+  // Bottom meta — single line: title on left, category · scenario · CTA on right.
+  const bottomMetaInner = (
+    <>
+      <h2
+        className={[
+          "text-[18px] md:text-[22px] font-semibold tracking-[-0.02em] leading-[1.2]",
+          isLive
+            ? "text-[color:var(--color-ink)] group-hover:text-[color:var(--color-klein)] transition-colors"
+            : "text-[color:var(--color-ink)]/70",
+        ].join(" ")}
+      >
+        {entry.title}
+      </h2>
+      <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-[color:var(--color-muted)] whitespace-nowrap flex-shrink-0">
+        {categoryLabel}
+        <span className="mx-2 text-[color:var(--color-hairline)]">·</span>
+        {entry.scenario}
+        {isLive && (
+          <>
+            <span className="mx-2 text-[color:var(--color-hairline)]">·</span>
+            <span className="text-[color:var(--color-ink)] group-hover:text-[color:var(--color-klein)] transition-colors">
+              View →
+            </span>
+          </>
+        )}
+      </span>
+    </>
+  );
+
+  const bottomMeta = (
+    <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 md:gap-8 px-6 md:px-10 py-4 md:py-5">
+      {bottomMetaInner}
     </div>
   );
 
@@ -56,73 +99,21 @@ function WorkItem({ entry, index }: { entry: CaseEntry; index: number }) {
       aria-label={`Work ${num} · ${entry.title}`}
       className="border-b border-[color:var(--color-hairline)]"
     >
-      {/* Meta row */}
-      <div className="grid grid-cols-12 gap-6 md:gap-8 px-6 md:px-10 py-5 md:py-6">
-        <div className="col-span-6 md:col-span-6 inline-flex items-center gap-4">
-          <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-[color:var(--color-muted)]">
-            Work {num}
-          </span>
-          <span className="h-3 w-px bg-[color:var(--color-hairline)]" />
-          <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-[color:var(--color-ink)]">
-            {categoryLabel}
-          </span>
-        </div>
-        <div className="col-span-6 md:col-span-6 justify-self-end inline-flex items-center gap-2">
-          {isLive ? (
-            <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] uppercase text-[color:var(--color-ink)]">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--color-klein)]" />
-              Live
-            </span>
-          ) : (
-            <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-[color:var(--color-muted)]">
-              ◌ Shipping soon
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Visual */}
       {href && isLive ? (
         <Link
           href={href}
           aria-label={`${entry.title} — view case study`}
           className="group block"
         >
+          {topMeta}
           {visual}
-          <div className="grid grid-cols-12 gap-6 md:gap-8 px-6 md:px-10 py-6 md:py-8">
-            <div className="col-span-12 md:col-span-8">
-              <h2 className="text-[28px] md:text-[40px] font-semibold tracking-[-0.02em] leading-[1.08] group-hover:text-[color:var(--color-klein)] transition-colors">
-                {entry.title}
-              </h2>
-              <p className="mt-2 text-[15px] text-[color:var(--color-muted)]">
-                {entry.scenario}
-              </p>
-            </div>
-            <div className="col-span-12 md:col-span-4 flex items-end justify-end">
-              <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] uppercase text-[color:var(--color-ink)] group-hover:text-[color:var(--color-klein)] transition-colors">
-                View case study →
-              </span>
-            </div>
-          </div>
+          {bottomMeta}
         </Link>
       ) : (
         <>
+          {topMeta}
           {visual}
-          <div className="grid grid-cols-12 gap-6 md:gap-8 px-6 md:px-10 py-6 md:py-8">
-            <div className="col-span-12 md:col-span-8">
-              <h2 className="text-[28px] md:text-[40px] font-semibold tracking-[-0.02em] leading-[1.08] text-[color:var(--color-ink)]/70">
-                {entry.title}
-              </h2>
-              <p className="mt-2 text-[15px] text-[color:var(--color-muted)]">
-                {entry.scenario}
-              </p>
-            </div>
-            <div className="col-span-12 md:col-span-4 flex items-end justify-end">
-              <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-[color:var(--color-muted)]">
-                Placeholder
-              </span>
-            </div>
-          </div>
+          {bottomMeta}
         </>
       )}
     </article>
@@ -145,7 +136,8 @@ export function WorkStream() {
         <div className="grid grid-cols-12 gap-6 md:gap-8 px-6 md:px-10 py-5 md:py-6 items-center">
           <div className="col-span-12 md:col-span-4">
             <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-[color:var(--color-muted)]">
-              Selected <span className="text-[color:var(--color-ink)]">/ 2026</span>
+              Selected{" "}
+              <span className="text-[color:var(--color-ink)]">/ 2026</span>
             </p>
           </div>
           <div className="col-span-12 md:col-span-8 justify-self-start md:justify-self-end">
