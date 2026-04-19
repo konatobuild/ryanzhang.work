@@ -139,8 +139,9 @@ export function WorkStream() {
 
   return (
     <section aria-label="Selected work">
-      {/* Filter header */}
-      <div className="border-b border-[color:var(--color-hairline)] bg-[color:var(--color-canvas)] sticky top-14 z-20 backdrop-blur-md">
+      {/* Filter header — sticks to top-0 once Screen 1 (and its static Nav)
+          have been scrolled away. No seat reserved for Nav. */}
+      <div className="border-b border-[color:var(--color-hairline)] bg-[color:var(--color-canvas)] sticky top-0 z-30">
         <div className="grid grid-cols-12 gap-6 md:gap-8 px-6 md:px-10 py-5 md:py-6 items-center">
           <div className="col-span-12 md:col-span-4">
             <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-[color:var(--color-muted)]">

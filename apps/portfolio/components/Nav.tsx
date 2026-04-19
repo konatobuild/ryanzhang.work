@@ -8,7 +8,7 @@ export function Nav() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-[color:var(--color-canvas)]/90 backdrop-blur-md border-b border-[color:var(--color-hairline)]">
+      <header className="relative z-10 bg-[color:var(--color-canvas)] border-b border-[color:var(--color-hairline)]">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center px-6 md:px-10 h-14">
           {/* Left: leave empty for now (could host a small dot mark later) */}
           <div aria-hidden="true" />
