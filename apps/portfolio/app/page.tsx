@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { WorkStream } from "@/components/WorkStream";
 
 export default function Home() {
@@ -44,17 +45,16 @@ export default function Home() {
           {/* Image — aligned with heading: pl comes from the rail's width,
               pr-10 matches the heading's right margin. */}
           <div className="flex-1 min-w-0 min-h-0 px-6 md:pr-10 md:pl-0">
-            <figure className="relative w-full h-full min-h-[320px] overflow-hidden bg-[#d9d9d9]">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                  <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-[color:var(--color-ink)]/50">
-                    Portrait · placeholder
-                  </p>
-                  <p className="mt-4 font-mono text-[48px] md:text-[72px] tracking-[0.04em] text-[color:var(--color-ink)]/70">
-                    RZ
-                  </p>
-                </div>
-              </div>
+            <figure className="relative w-full h-full min-h-[320px] overflow-hidden bg-[#eaeaea]">
+              <Image
+                src="/ryan-portrait.jpg"
+                alt="Ryan Zhang"
+                fill
+                sizes="(min-width: 768px) 95vw, 100vw"
+                quality={100}
+                priority
+                className="object-cover object-center"
+              />
             </figure>
           </div>
         </div>
