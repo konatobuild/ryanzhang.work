@@ -7,12 +7,12 @@ import {
   PFHomeScreen,
   PFInsightsScreen,
   type PulseScreen,
-} from "@/components/PulseScreens";
+} from "@/components/StrideScreens";
 
 const DEVICE_WIDTH = 390;
 const DEVICE_HEIGHT = 844;
 
-export default function PulseFitnessPrototype() {
+export default function StridePrototype() {
   const [screen, setScreen] = useState<PulseScreen>("welcome");
 
   // Scale the device down on narrow viewports so it fits edge-to-edge on phones.
@@ -21,7 +21,7 @@ export default function PulseFitnessPrototype() {
     const measure = () => {
       const margin = 32;
       const availW = window.innerWidth - margin;
-      const availH = window.innerHeight - 120;
+      const availH = window.innerHeight - 140;
       const s = Math.min(1, availW / DEVICE_WIDTH, availH / DEVICE_HEIGHT);
       setScale(s);
     };
@@ -40,33 +40,58 @@ export default function PulseFitnessPrototype() {
     <main
       style={{
         minHeight: "100vh",
-        background: "#f0eee9",
+        background: "#0A0A0A",
         backgroundImage:
-          "url(\"data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M120 0H0v120' fill='none' stroke='rgba(0,0,0,0.06)' stroke-width='1'/%3E%3C/svg%3E\")",
-        backgroundSize: "120px 120px",
+          "radial-gradient(800px 400px at 100% 0%, rgba(212,255,58,0.05), transparent 60%), radial-gradient(700px 350px at 0% 100%, rgba(255,91,46,0.04), transparent 65%), linear-gradient(180deg, #0A0A0A 0%, #050505 100%)",
         padding: "60px 20px 80px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         fontFamily:
           '-apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif',
-        color: "rgba(40,30,20,0.85)",
+        color: "#FAFAFA",
       }}
     >
-      <header style={{ textAlign: "center", marginBottom: 40, maxWidth: 560 }}>
+      <header style={{ textAlign: "center", marginBottom: 36, maxWidth: 560 }}>
         <div
           style={{
-            fontSize: 28,
-            fontWeight: 600,
-            letterSpacing: -0.4,
-            marginBottom: 6,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 10,
+            marginBottom: 10,
           }}
         >
-          Pulse Fitness
+          <svg width="28" height="26" viewBox="0 0 24 22" fill="none">
+            <path
+              d="M2 18 L14 4 L14 10 L22 10"
+              stroke="#D4FF3A"
+              strokeWidth="3.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M18 6 L22 10 L18 14"
+              stroke="#D4FF3A"
+              strokeWidth="3.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span
+            style={{
+              fontSize: 28,
+              fontWeight: 800,
+              letterSpacing: 3,
+              fontStyle: "italic",
+              color: "#FAFAFA",
+            }}
+          >
+            STRIDE
+          </span>
         </div>
-        <div style={{ fontSize: 15, color: "rgba(60,50,40,0.6)" }}>
-          Consumer fitness-tracker prototype · tap the tab bar to switch
-          screens, or use “Start Training” to begin.
+        <div style={{ fontSize: 14, color: "rgba(250,250,250,0.55)" }}>
+          Sport-forward fitness tracker prototype · tap the tab bar to switch
+          screens, or hit “Start training” to begin.
         </div>
       </header>
 
@@ -104,11 +129,11 @@ export default function PulseFitnessPrototype() {
         style={{
           marginTop: 36,
           display: "flex",
-          gap: 8,
+          gap: 6,
           padding: 4,
           borderRadius: 999,
-          background: "rgba(255,255,255,0.6)",
-          border: "1px solid rgba(0,0,0,0.06)",
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.1)",
         }}
       >
         {(["welcome", "home", "insights"] as const).map((s) => {
@@ -122,12 +147,13 @@ export default function PulseFitnessPrototype() {
                 borderRadius: 999,
                 border: "none",
                 cursor: "pointer",
-                background: active ? "#1A1230" : "transparent",
-                color: active ? "#fff" : "rgba(40,30,20,0.7)",
-                fontSize: 13,
-                fontWeight: 500,
+                background: active ? "#D4FF3A" : "transparent",
+                color: active ? "#0A0A0A" : "rgba(250,250,250,0.7)",
+                fontSize: 12,
+                fontWeight: 700,
                 fontFamily: "inherit",
-                textTransform: "capitalize",
+                textTransform: "uppercase",
+                letterSpacing: 1,
               }}
             >
               {s}
