@@ -120,6 +120,13 @@ export const cases: CaseEntry[] = [
     category: "mobile",
     status: "placeholder",
   },
+  {
+    slug: "freelancer-app",
+    title: "Freelancer marketplace, pocket-sized",
+    scenario: "Two-sided marketplace — mobile",
+    category: "mobile",
+    status: "placeholder",
+  },
 ];
 
 export function getCaseHref(entry: CaseEntry): string | null {
