@@ -113,6 +113,13 @@ export const cases: CaseEntry[] = [
     category: "web-app",
     status: "placeholder",
   },
+  {
+    slug: "finance-app",
+    title: "Personal finance planner",
+    scenario: "Consumer fintech / goal planning",
+    category: "mobile",
+    status: "placeholder",
+  },
 ];
 
 export function getCaseHref(entry: CaseEntry): string | null {

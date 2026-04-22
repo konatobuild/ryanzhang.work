@@ -1,6 +1,6 @@
 # ryanzhang.work — demo roadmap
 
-Human-readable kanban for the 9-demo portfolio series. The machine-readable
+Human-readable kanban for the demo portfolio series. The machine-readable
 source of truth is [`apps/portfolio/lib/cases.ts`](./apps/portfolio/lib/cases.ts);
 this file adds *where each demo is in the pipeline* without reading code.
 
@@ -16,6 +16,7 @@ this file adds *where each demo is in the pipeline* without reading code.
 | 8 | `consumer-app`         | Pulse Fitness     | mobile  | wip     | `demo/consumer-app`   | — |
 | 9 | `mobile-web`           | Fresh             | mobile  | wip     | `demo/mobile-web`     | — |
 | 10 | `saas-dashboard`      | Pilotdesk         | web-app | wip     | `demo/saas-dashboard` | — |
+| 11 | `finance-app`         | FinPilot          | mobile  | wip     | `demo/finance-app`    | — |
 
 ## Stages
 
