@@ -23,6 +23,13 @@
       "autoPort": true
     },
     {
+      "name": "demo-saas-dashboard",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "demo-saas-dashboard", "dev"],
+      "port": 3003,
+      "autoPort": true
+    },
+    {
       "name": "demo-consumer-app",
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["--filter", "demo-consumer-app", "dev"],

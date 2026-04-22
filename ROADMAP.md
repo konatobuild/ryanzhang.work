@@ -15,6 +15,7 @@ this file adds *where each demo is in the pipeline* without reading code.
 | 7 | `analytics-tool`       | —                 | web-app | idea    | —                     | — |
 | 8 | `consumer-app`         | Pulse Fitness     | mobile  | wip     | `demo/consumer-app`   | — |
 | 9 | `mobile-web`           | —                 | mobile  | idea    | —                     | — |
+| 10 | `saas-dashboard`      | Pilotdesk         | web-app | wip     | `demo/saas-dashboard` | — |
 
 ## Stages
 

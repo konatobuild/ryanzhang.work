@@ -106,6 +106,13 @@ export const cases: CaseEntry[] = [
     category: "mobile",
     status: "placeholder",
   },
+  {
+    slug: "saas-dashboard",
+    title: "Accounts workspace for a CS team",
+    scenario: "Customer success / accounts",
+    category: "web-app",
+    status: "placeholder",
+  },
 ];
 
 export function getCaseHref(entry: CaseEntry): string | null {
