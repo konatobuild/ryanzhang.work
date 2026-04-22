@@ -415,7 +415,7 @@ export function FreelancerScreen({ app, id }: { app: AppAPI; id?: string }) {
           right: 0,
           padding: "14px 20px 32px",
           background:
-            "linear-gradient(180deg, rgba(242,237,228,0) 0%, var(--bg-0) 35%)",
+            "linear-gradient(180deg, rgba(255,255,255,0) 0%, var(--bg-0) 35%)",
           zIndex: 25,
           display: "flex",
           gap: 10,

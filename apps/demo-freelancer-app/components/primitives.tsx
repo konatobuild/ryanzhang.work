@@ -268,7 +268,7 @@ export const BottomNav = ({ current, onGo, unread = 0 }: BottomNavProps) => {
         right: 0,
         padding: "12px 14px 30px",
         background:
-          "linear-gradient(180deg, rgba(242,237,228,0) 0%, var(--bg-0) 40%)",
+          "linear-gradient(180deg, rgba(255,255,255,0) 0%, var(--bg-0) 40%)",
         zIndex: 30,
       }}
     >

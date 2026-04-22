@@ -180,15 +180,17 @@ export function SearchScreen({ app }: { app: AppAPI }) {
 function FreelancerHeroCard({ f, onClick }: { f: Freelancer; onClick: () => void }) {
   const [saved, setSaved] = useState(false);
   return (
-    <button
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onClick()}
       style={{
         textAlign: "left",
         background: "var(--accent)",
         color: "#0f0f10",
         borderRadius: 28,
         padding: 18,
-        border: "none",
         cursor: "pointer",
         position: "relative",
       }}
@@ -380,7 +382,7 @@ function FreelancerHeroCard({ f, onClick }: { f: Freelancer; onClick: () => void
           See details <IconArrowRight size={13} />
         </div>
       </div>
-    </button>
+    </div>
   );
 }
 

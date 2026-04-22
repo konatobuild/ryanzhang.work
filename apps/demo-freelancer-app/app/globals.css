@@ -35,10 +35,10 @@ button {
 }
 
 .guild-root {
-  --bg-0: #f2ede4;
+  --bg-0: #ffffff;
   --bg-card-dark: #0f0f10;
-  --surface-1: #ffffff;
-  --surface-2: #e8e2d4;
+  --surface-1: #f6f6f3;
+  --surface-2: #eeeeea;
   --text-1: #0f0f10;
   --text-2: rgba(15, 15, 16, 0.62);
   --text-3: rgba(15, 15, 16, 0.4);
