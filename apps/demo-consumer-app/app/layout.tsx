@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Pulse Fitness — iOS prototype",
+  title: "STRIDE — iOS fitness prototype",
   description:
-    "Train with intention. Readiness score, weekly load, resting HR — a fitness tracker iOS prototype.",
+    "Train like it counts. HR zones, weekly load, streaks, and personal bests — a sport-forward fitness tracker iOS prototype.",
 };
 
 export default function RootLayout({
