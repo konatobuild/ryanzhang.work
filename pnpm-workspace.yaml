@@ -1,3 +1,10 @@
 packages:
   - "apps/*"
   - "packages/*"
+
+# Share a single content-addressed store across all git worktrees.
+# Without this, each worktree's pnpm install rebuilds node_modules from
+# scratch (minutes). With it, the worktree gets a lightweight node_modules
+# that symlinks into the global virtual store (seconds).
+# See: https://pnpm.io/next/git-worktrees
+enableGlobalVirtualStore: true

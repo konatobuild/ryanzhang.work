@@ -39,3 +39,6 @@ coverage/
 
 # claude code local overrides (per-user, never share)
 .claude/settings.local.json
+
+# claude code worktrees (ephemeral per-demo working dirs — never commit)
+.claude/worktrees/
