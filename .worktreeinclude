@@ -1,0 +1,21 @@
+# Files / directories that are gitignored but MUST be copied into each new
+# worktree so the demo can be developed and deployed without re-login or
+# re-config. Claude Code reads this file when setting up a worktree via
+# `claude -w` or `isolation: worktree`. Syntax follows .gitignore.
+#
+# Reference: https://code.claude.com/docs/en/common-workflows (worktree section)
+
+# env — local secrets and per-app env overrides
+.env
+.env.local
+.env.*.local
+apps/*/.env
+apps/*/.env.local
+apps/*/.env.*.local
+
+# Vercel CLI link state (project id, org id, etc.) — avoids re-linking per worktree
+.vercel
+apps/*/.vercel
+
+# claude code per-user local overrides (optional; allows per-worktree tweaks)
+.claude/settings.local.json

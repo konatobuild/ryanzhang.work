@@ -31,13 +31,55 @@ Before any commit, verify all four:
 
 ## Branch + PR workflow
 
-- **Demo work** → branch `demo/<slug>` → push → `gh pr create` → squash-merge → delete branch
-- **Infra** ≤3 files, no code → OK to commit directly to `main`
+- **Demo work** → **worktree** at `.claude/worktrees/<slug>/` on branch `demo/<slug>` → push → `gh pr create` → squash-merge → delete branch + remove worktree. See "Worktree workflow" below.
+- **Infra** ≤3 files, no code → OK to commit directly to `main` (no worktree)
 - **Infra** otherwise → `infra/<theme>` branch → PR
 - **Portfolio** small → direct to `main`; large → `portfolio/<theme>` branch → PR
 - **Always squash-merge** (not merge-commit, not rebase-merge). Delete branch after merge.
 
 When in doubt, use the branch + PR path — it's reversible.
+
+## Worktree workflow (demos only)
+
+Parallel demo work runs in isolated git worktrees so each demo keeps its
+own working directory, `.next/` cache, dev-server port, and Vercel CLI
+state. This replaces the old "checkout + stash" pattern that caused
+demos to mix (saas-dashboard accidentally committed on demo/consumer-app).
+
+### Routing: when the user says "modify <slug> demo"
+
+1. **Check** `.claude/worktrees/<slug>/` — does it exist?
+   - Exists → `cd` in; `git pull --rebase origin main` to sync against latest `main`.
+   - Missing → `git worktree add -b demo/<slug> .claude/worktrees/<slug> main`.
+     `.worktreeinclude` auto-copies `.env.local` / `.vercel/` into the new worktree.
+     Run `pnpm install` (fast — seconds — because `enableGlobalVirtualStore` shares the content store).
+2. **All subsequent edits, reads, and shell commands happen under the worktree path**, never in the main repo. Use absolute paths so the persisted Bash cwd stays correct.
+3. **Green gate**: `pnpm --filter demo-<slug> build && lint` before any commit.
+4. **Commit** with `[<slug>] Title` prefix. Multi-commit on the branch is fine (will squash).
+5. **Push** `demo/<slug>`, then `gh pr create` with a test plan.
+6. **Stop — do not auto-merge**. Report the PR URL and wait for explicit user approval.
+
+### Merge + teardown (only when user says "merge it" or approves inline)
+
+7. `gh pr merge <PR#> --squash --delete-branch` (squash-merge, delete remote branch).
+8. Return to main repo: `cd /Users/reyn/ryanzhang.work`, `git pull --rebase origin main`.
+9. Remove the worktree: `git worktree remove .claude/worktrees/<slug>` (use `--force` only if there are uncommitted throwaway files the user confirmed discarding).
+
+### Auto-merge opt-in (per-prompt)
+
+If the user explicitly says "绿灯就 auto-merge" / "auto-merge when green" / equivalent, skip step 6 — after the PR is created and CI (if any) passes, run steps 7–9 without pausing. Otherwise default to step-6 stop.
+
+### Don't
+
+- Work on a demo from the main repo directory — always route through the worktree.
+- Copy `.env` files manually — `.worktreeinclude` handles it.
+- Leave stale worktrees after merge — always run step 9.
+- Use `git worktree remove --force` without user confirmation if uncommitted changes exist.
+- Run `pnpm install` at the main repo to satisfy a demo's deps — install inside the worktree.
+
+### First-time setup on a fresh clone
+
+Run `pnpm install` once at the root after cloning. This establishes the global virtual store. Subsequent worktree creations get their node_modules symlinked from it in seconds.
 
 ## Example titles
 
