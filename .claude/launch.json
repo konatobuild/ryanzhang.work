@@ -7,6 +7,13 @@
       "runtimeArgs": ["--filter", "portfolio", "dev"],
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "name": "demo-legal-landing",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "demo-legal-landing", "dev"],
+      "port": 3002,
+      "autoPort": true
     }
   ]
 }
