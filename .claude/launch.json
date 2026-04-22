@@ -42,6 +42,13 @@
       "runtimeArgs": ["--filter", "demo-mobile-web", "dev"],
       "port": 3005,
       "autoPort": true
+    },
+    {
+      "name": "demo-finance-app",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "demo-finance-app", "dev"],
+      "port": 3006,
+      "autoPort": true
     }
   ]
 }
