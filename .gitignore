@@ -36,3 +36,6 @@ next-env.d.ts
 # misc
 .turbo/
 coverage/
+
+# claude code local overrides (per-user, never share)
+.claude/settings.local.json

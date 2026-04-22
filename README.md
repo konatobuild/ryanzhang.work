@@ -40,12 +40,111 @@ Scaffolding nine apps at once produces nine half-baked demos. Don't do it.
    BottomNav.
 5. **Verify Featured Work.** The home page grid reflects the new `"live"`
    card automatically.
-6. **Commit** using the gridex style — English, imperative, sentence-case,
-   no conventional-commit prefix, no `Co-Authored-By` footer. Example:
-   `Ship fleet operations dashboard demo and case study`.
+6. **Commit** following the rules in the "Commit discipline" section below.
+   For the ship commit specifically: `Ship <slug> demo and case study`.
 
 [cases]: ./apps/portfolio/lib/cases.ts
 [template]: ./apps/portfolio/components/case-study/
+
+---
+
+## 📏 Commit discipline
+
+Multiple demos and the portfolio evolve **in parallel** on `main`. Commits
+are the unit of isolation; history must stay readable per workstream.
+Scope discovery uses both a `[slug]` prefix in the title and path-filtered
+`git log`.
+
+### Workstream boundary
+
+Every commit touches **exactly one** of:
+
+- **portfolio** — any file under `apps/portfolio/**`
+- **a single demo** — any file under `apps/demo-<slug>/**`
+- **infra** — root config, `pnpm-lock.yaml`, `.claude/launch.json`,
+  `.gitignore`, `ROADMAP.md`, shared `packages/**`
+
+Never mix two demos. Never mix a demo with an unrelated portfolio tweak.
+If the working tree accidentally spans two, split with `git add -p` before
+committing.
+
+**Exception — ship commit**: flipping a demo's `cases.ts` entry from
+`placeholder` to `live` intrinsically couples (a) the registry flip,
+(b) the `/work/<slug>` case study page, and (c) any final demo polish.
+These **may** be bundled in one commit titled
+`Ship <slug> demo and case study` (no `[slug]` prefix — the title names
+the slug directly).
+
+### Title format
+
+- English, imperative, sentence-case, no trailing period.
+- No `feat:` / `chore:` Conventional-Commits prefixes. No `Co-Authored-By`
+  footer.
+- **Portfolio commits**: no prefix (portfolio is the default).
+- **Demo commits**: prefix with `[<slug>]` where `<slug>` matches the
+  `cases.ts` slug.
+- **Infra commits**: prefix with `[infra]`.
+
+Examples:
+
+```
+Drop in the real hero portrait at full quality                           # portfolio
+Pin everything to the 40px page margin and strip work visual chrome      # portfolio
+[legal-landing] Scaffold Meridian & Cole from Claude Design handoff      # demo
+[legal-landing] Pass copy through industry-reality check                 # demo
+[saas-landing] Tune LATTICE hero rhythm across breakpoints               # demo
+[infra] Bump Next.js to 16.3.0                                           # infra
+Ship logistics-dashboard demo and case study                             # ship commit
+```
+
+### Body — when to add one
+
+Add a 2–4 line body (wrap ~72 chars) when the *why* isn't obvious from
+the title and the diff. Explain the reason, hidden constraint, or
+incident that motivated the change. No step-by-step narration.
+
+### Cadence
+
+Commit when you reach a **coherent paused state**:
+
+- `pnpm --filter <workstream> build` is green.
+- `pnpm --filter <workstream> lint` is clean.
+- You could walk away and leave this state in history without regret.
+
+Size doesn't matter — a 3-line fix is a valid commit, a 400-line scaffold
+is a valid commit. What matters is each commit is a legible unit.
+
+### Branching for parallel work
+
+When more than one workstream is open at once (e.g., demo1 and demo2 the
+same week), isolate each on a short-lived feature branch and land via
+squash-merge PR:
+
+- `demo/<slug>` for a demo
+- `portfolio/<theme>` for a portfolio redesign pass
+- `infra/<theme>` for infrastructure work
+
+Local WIP commits on the branch can be noisy — the squash flattens them
+into a single workstream-scoped commit on `main`. `main` stays linear and
+each commit reads as a clean chapter of one story.
+
+### Shared-file ownership
+
+- `pnpm-lock.yaml` changes ride with the workstream that triggered the
+  install.
+- `.claude/launch.json` entries for a new demo ride with that demo's
+  scaffold commit.
+- A dep bump spanning all workspaces → standalone `[infra]` commit.
+
+### Before pushing
+
+- `git log -- apps/demo-<slug>/` reads like that demo's story end-to-end.
+- `git log -- apps/portfolio/` does the same for the portfolio.
+- `git log --grep "^\[<slug>\]"` returns just that demo's commits.
+- Build + lint pass for every workstream your diff touched.
+
+See [`ROADMAP.md`](./ROADMAP.md) for the kanban view of where each demo
+currently sits in the pipeline.
 
 ---
 
