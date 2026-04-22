@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: #fff;
+  font-family: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+::selection {
+  background: #fff;
+  color: #000;
+}
+
+.pill-btn {
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease;
+}
+
+.pill-btn-ghost:hover {
+  background: rgba(74, 201, 228, 0.05);
+  border-color: rgba(74, 201, 228, 0.7) !important;
+}
+
+.pill-btn-primary:hover {
+  border-color: #4ac9e4 !important;
+  box-shadow: 0 0 26px rgba(74, 201, 228, 0.35);
+}
+
+.pill-btn-subtle:hover {
+  border-color: rgba(74, 201, 228, 0.5) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+@keyframes noiseFlicker {
+  0%,
+  100% {
+    filter: blur(2.5px);
+    opacity: 0.9;
+  }
+  40% {
+    filter: blur(3.5px);
+    opacity: 0.82;
+  }
+  70% {
+    filter: blur(2px);
+    opacity: 0.95;
+  }
+}
+
+.noise-word {
+  animation: noiseFlicker 3.6s ease-in-out infinite;
+}
+
+@keyframes replayScrub {
+  0% {
+    left: 6%;
+  }
+  46% {
+    left: 88%;
+  }
+  54% {
+    left: 88%;
+  }
+  100% {
+    left: 6%;
+  }
+}
+
+.replay-playhead {
+  animation: replayScrub 5.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .replay-playhead {
+    animation: none;
+    left: 50%;
+  }
+}
+
+@keyframes statusPulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.18);
+  }
+}
+
+.nominal-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ac9e4;
+  box-shadow: 0 0 10px rgba(74, 201, 228, 0.6);
+  margin-right: 10px;
+  animation: statusPulse 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .noise-word,
+  .nominal-dot {
+    animation: none;
+  }
+}
