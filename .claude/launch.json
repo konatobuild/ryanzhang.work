@@ -35,6 +35,13 @@
       "runtimeArgs": ["--filter", "demo-consumer-app", "dev"],
       "port": 3004,
       "autoPort": true
+    },
+    {
+      "name": "demo-mobile-web",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "demo-mobile-web", "dev"],
+      "port": 3005,
+      "autoPort": true
     }
   ]
 }
