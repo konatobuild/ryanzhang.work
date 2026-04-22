@@ -13,7 +13,7 @@ this file adds *where each demo is in the pipeline* without reading code.
 | 5 | `legal-intake`         | —                 | web-app | idea    | —                     | — |
 | 6 | `logistics-dashboard`  | —                 | web-app | idea    | —                     | — |
 | 7 | `analytics-tool`       | —                 | web-app | idea    | —                     | — |
-| 8 | `consumer-app`         | —                 | mobile  | idea    | —                     | — |
+| 8 | `consumer-app`         | Pulse Fitness     | mobile  | wip     | `demo/consumer-app`   | — |
 | 9 | `mobile-web`           | —                 | mobile  | idea    | —                     | — |
 
 ## Stages
