@@ -127,6 +127,13 @@ export const cases: CaseEntry[] = [
     category: "mobile",
     status: "placeholder",
   },
+  {
+    slug: "banking-app",
+    title: "Digital banking, in your pocket",
+    scenario: "Consumer fintech — mobile",
+    category: "mobile",
+    status: "placeholder",
+  },
 ];
 
 export function getCaseHref(entry: CaseEntry): string | null {
