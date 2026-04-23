@@ -77,6 +77,13 @@
       "runtimeArgs": ["--filter", "demo-energy-app", "dev"],
       "port": 3010,
       "autoPort": true
+    },
+    {
+      "name": "demo-appointment-calendar",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "demo-appointment-calendar", "dev"],
+      "port": 3011,
+      "autoPort": true
     }
   ]
 }
