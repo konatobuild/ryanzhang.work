@@ -10,9 +10,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Pilotdesk — Accounts",
+  title: "FlowBase — Create Booking Form",
   description:
-    "Pilotdesk is a customer success workspace — accounts, ARR, owners, renewal windows, and a detail rail with activity timeline.",
+    "FlowBase is a booking form builder — pick a template, add fields, tune publish settings, and ship a shareable form in minutes.",
 };
 
 export default function RootLayout({

@@ -1,178 +1,111 @@
-export type AccountItem = {
-  id: string;
-  name: string;
-  meta: string;
+import {
+  IcoBookings,
+  IcoBriefcase,
+  IcoCheck,
+  IcoDashboard,
+  IcoFile,
+  IcoFlash,
+  IcoForm,
+  IcoGrid,
+  IcoHash,
+  IcoJoin,
+  IcoLocation,
+  IcoMail,
+  IcoMarketing,
+  IcoPackage,
+  IcoParagraph,
+  IcoPayouts,
+  IcoPhone,
+  IcoStuff,
+  IcoText,
+  IcoUser,
+  IcoUsers,
+  type IconCmp,
+} from "../components/icons";
+
+export type NavId =
+  | "dashboard"
+  | "bookings"
+  | "instructors"
+  | "students"
+  | "stuff"
+  | "payouts"
+  | "forms"
+  | "marketing"
+  | "locations"
+  | "packages"
+  | "joins";
+
+export const NAV_ITEMS: { id: NavId; label: string; icon: IconCmp }[] = [
+  { id: "dashboard", label: "Dashboard", icon: IcoDashboard },
+  { id: "bookings", label: "Bookings", icon: IcoBookings },
+  { id: "instructors", label: "Instructors", icon: IcoUser },
+  { id: "students", label: "Students", icon: IcoUsers },
+  { id: "stuff", label: "Stuff", icon: IcoStuff },
+  { id: "payouts", label: "Payouts", icon: IcoPayouts },
+  { id: "forms", label: "Booking Forms", icon: IcoForm },
+  { id: "marketing", label: "Marketing", icon: IcoMarketing },
+  { id: "locations", label: "Location Groups", icon: IcoLocation },
+  { id: "packages", label: "Lesson Packages", icon: IcoPackage },
+  { id: "joins", label: "Join Requests", icon: IcoJoin },
+];
+
+export type TemplateId = "blank" | "quick" | "standard" | "corporate";
+
+export type Template = {
+  id: TemplateId;
+  icon: IconCmp;
+  title: string;
   sub: string;
-  kind: "account" | "doc";
+  fields: number;
 };
 
-export type AccountRow = {
-  id: string;
-  name: string;
-  kind: "account" | "doc" | "link";
-  owners: string[] | null;
-  extra?: number;
-  count: string;
-  modified: string;
-};
-
-export type ActivityItem = {
-  when: string;
-  avatar: string;
-  text: string;
-  link?: string;
-  tag?: string;
-  extra?: string;
-  sub?: string;
-};
-
-export type NavItem = {
-  id: "all" | "recent" | "watchlist" | "shared" | "segments";
-  label: string;
-  caret?: boolean;
-  active?: boolean;
-};
-
-/* Quick Access — the four accounts/playbooks your team pinned. */
-export const ACCOUNTS: AccountItem[] = [
+export const TEMPLATES: Template[] = [
   {
-    id: "a1",
-    name: "Acme Corp",
-    meta: "$480K ARR",
-    sub: "3 champions",
-    kind: "account",
+    id: "blank",
+    icon: IcoFile,
+    title: "Blank Form",
+    sub: "Start from scratch",
+    fields: 0,
   },
   {
-    id: "a2",
-    name: "Northwind Systems",
-    meta: "$220K ARR",
-    sub: "Renews in 47 days",
-    kind: "account",
+    id: "quick",
+    icon: IcoFlash,
+    title: "Quick Booking",
+    sub: "4 Essential fields",
+    fields: 4,
   },
   {
-    id: "a3",
-    name: "Linea Co",
-    meta: "$96K ARR",
-    sub: "Pilot — week 2",
-    kind: "account",
+    id: "standard",
+    icon: IcoGrid,
+    title: "Standard Form",
+    sub: "8 Common fields",
+    fields: 8,
   },
   {
-    id: "a4",
-    name: "Q2 Renewal Playbook",
-    meta: "Playbook",
-    sub: "Updated today",
-    kind: "doc",
+    id: "corporate",
+    icon: IcoBriefcase,
+    title: "Corporate",
+    sub: "Business bookings",
+    fields: 12,
   },
 ];
 
-/* Main table — accounts in the currently selected segment. */
-export const ACCOUNT_ROWS: AccountRow[] = [
-  {
-    id: "r1",
-    name: "Acme Corp",
-    kind: "account",
-    owners: ["AS", "MR"],
-    extra: 4,
-    count: "$480K ARR",
-    modified: "Yesterday",
-  },
-  {
-    id: "r2",
-    name: "Northwind Systems",
-    kind: "account",
-    owners: ["MR"],
-    count: "$220K ARR",
-    modified: "Apr 10, 2026",
-  },
-  {
-    id: "r3",
-    name: "Linea Co",
-    kind: "account",
-    owners: ["MR", "AV"],
-    count: "$96K ARR",
-    modified: "Apr 02, 2026",
-  },
-  {
-    id: "r4",
-    name: "Stripe Relay",
-    kind: "account",
-    owners: ["MR", "AV"],
-    extra: 0,
-    count: "$64K ARR",
-    modified: "Yesterday",
-  },
-  {
-    id: "r5",
-    name: "Q2 Renewal Playbook",
-    kind: "doc",
-    owners: null,
-    count: "Doc",
-    modified: "Oct 12, 2025",
-  },
-  {
-    id: "r6",
-    name: "Churn-save script",
-    kind: "doc",
-    owners: null,
-    count: "Doc",
-    modified: "Oct 12, 2025",
-  },
-  {
-    id: "r7",
-    name: "Gainsight sync",
-    kind: "link",
-    owners: null,
-    count: "Link",
-    modified: "Oct 12, 2025",
-  },
-];
+export type FieldTypeId =
+  | "short"
+  | "long"
+  | "email"
+  | "phone"
+  | "number"
+  | "checkbox";
 
-/* Right rail activity — context for the selected account (Acme Corp). */
-export const ACTIVITY: ActivityItem[] = [
-  {
-    when: "Yesterday",
-    avatar: "MK",
-    text: "You shared account access with",
-    link: "Miko",
-  },
-  {
-    when: "Yesterday",
-    avatar: "AS",
-    text: "You shared account access with",
-    link: "Ashley",
-  },
-  {
-    when: "Apr 1, 2026",
-    avatar: "YO",
-    text: "You updated",
-    link: "Renewal terms",
-    sub: "Renewal terms",
-  },
-  {
-    when: "Feb 21, 2026",
-    avatar: "MR",
-    text: "You added tag",
-    tag: "Enterprise",
-    extra: "+2",
-  },
-  {
-    when: "Feb 16, 2026",
-    avatar: "NO",
-    text: "You changed edit to view access for",
-    link: "Nolan",
-  },
-  {
-    when: "Feb 8, 2026",
-    avatar: "MR",
-    text: "You updated",
-    link: "QBR deck",
-  },
-];
+export type FieldType = { id: FieldTypeId; icon: IconCmp; label: string };
 
-export const NAV: NavItem[] = [
-  { id: "all", label: "All Accounts", caret: true, active: true },
-  { id: "recent", label: "Recent" },
-  { id: "watchlist", label: "Watchlist" },
-  { id: "shared", label: "Shared" },
-  { id: "segments", label: "Segments" },
+export const FIELDS: FieldType[] = [
+  { id: "short", icon: IcoText, label: "Short Text" },
+  { id: "long", icon: IcoParagraph, label: "Long Text" },
+  { id: "email", icon: IcoMail, label: "Email" },
+  { id: "phone", icon: IcoPhone, label: "Phone" },
+  { id: "number", icon: IcoHash, label: "Number" },
+  { id: "checkbox", icon: IcoCheck, label: "Checkbox" },
 ];
