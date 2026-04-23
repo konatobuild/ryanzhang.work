@@ -148,6 +148,13 @@ export const cases: CaseEntry[] = [
     category: "mobile",
     status: "placeholder",
   },
+  {
+    slug: "appointment-calendar",
+    title: "Editorial appointment calendar",
+    scenario: "Wellness & salon scheduling SaaS",
+    category: "web-app",
+    status: "placeholder",
+  },
 ];
 
 export function getCaseHref(entry: CaseEntry): string | null {
