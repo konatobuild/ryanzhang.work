@@ -56,6 +56,13 @@
       "runtimeArgs": ["--filter", "demo-freelancer-app", "dev"],
       "port": 3007,
       "autoPort": true
+    },
+    {
+      "name": "demo-banking-app",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "demo-banking-app", "dev"],
+      "port": 3008,
+      "autoPort": true
     }
   ]
 }
