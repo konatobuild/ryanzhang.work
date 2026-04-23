@@ -70,6 +70,13 @@
       "runtimeArgs": ["--filter", "demo-voice-recorder", "dev"],
       "port": 3009,
       "autoPort": true
+    },
+    {
+      "name": "demo-energy-app",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "demo-energy-app", "dev"],
+      "port": 3010,
+      "autoPort": true
     }
   ]
 }

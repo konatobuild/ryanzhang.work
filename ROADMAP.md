@@ -20,6 +20,7 @@ this file adds *where each demo is in the pipeline* without reading code.
 | 12 | `freelancer-app`      | Guild             | mobile  | wip     | `demo/freelancer-app` | — |
 | 13 | `banking-app`         | Volt              | mobile  | wip     | `demo/banking-app`    | — |
 | 14 | `voice-recorder`      | Voice Recorder    | mobile  | wip     | `demo/voice-recorder` | — |
+| 15 | `energy-app`          | Sunhold           | mobile  | wip     | `demo/energy-app`     | — |
 
 ## Stages
 
