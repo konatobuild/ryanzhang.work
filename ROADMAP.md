@@ -18,6 +18,7 @@ this file adds *where each demo is in the pipeline* without reading code.
 | 10 | `saas-dashboard`      | Pilotdesk         | web-app | wip     | `demo/saas-dashboard` | — |
 | 11 | `finance-app`         | FinPilot          | mobile  | wip     | `demo/finance-app`    | — |
 | 12 | `freelancer-app`      | Guild             | mobile  | wip     | `demo/freelancer-app` | — |
+| 13 | `banking-app`         | Volt              | mobile  | wip     | `demo/banking-app`    | — |
 
 ## Stages
 
