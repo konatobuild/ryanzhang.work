@@ -63,6 +63,13 @@
       "runtimeArgs": ["--filter", "demo-banking-app", "dev"],
       "port": 3008,
       "autoPort": true
+    },
+    {
+      "name": "demo-voice-recorder",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "demo-voice-recorder", "dev"],
+      "port": 3009,
+      "autoPort": true
     }
   ]
 }
