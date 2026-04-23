@@ -134,6 +134,13 @@ export const cases: CaseEntry[] = [
     category: "mobile",
     status: "placeholder",
   },
+  {
+    slug: "voice-recorder",
+    title: "Voice recorder with live transcription",
+    scenario: "Creator / productivity utility — mobile",
+    category: "mobile",
+    status: "placeholder",
+  },
 ];
 
 export function getCaseHref(entry: CaseEntry): string | null {
