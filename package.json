@@ -15,5 +15,14 @@
     "node": ">=20",
     "pnpm": ">=10"
   },
-  "packageManager": "pnpm@10.33.0"
+  "packageManager": "pnpm@10.33.0",
+  "pnpm": {
+    "packageExtensions": {
+      "eslint-config-next": {
+        "peerDependencies": {
+          "next": "*"
+        }
+      }
+    }
+  }
 }
