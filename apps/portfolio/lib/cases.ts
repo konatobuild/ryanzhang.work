@@ -141,6 +141,13 @@ export const cases: CaseEntry[] = [
     category: "mobile",
     status: "placeholder",
   },
+  {
+    slug: "energy-app",
+    title: "Home energy monitor",
+    scenario: "Consumer IoT — solar & battery",
+    category: "mobile",
+    status: "placeholder",
+  },
 ];
 
 export function getCaseHref(entry: CaseEntry): string | null {
