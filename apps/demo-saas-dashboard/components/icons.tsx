@@ -1,15 +1,17 @@
-import type { CSSProperties, SVGProps } from "react";
+import type { ComponentType, CSSProperties, ReactNode, SVGProps } from "react";
 
-type IconProps = {
+export type IconProps = {
   size?: number;
-  stroke?: number;
+  strokeWidth?: number;
   style?: CSSProperties;
 } & Omit<SVGProps<SVGSVGElement>, "stroke">;
 
-function mkIcon(path: React.ReactNode) {
+export type IconCmp = ComponentType<IconProps>;
+
+function mkIcon(path: ReactNode) {
   return function IconCmp({
     size = 18,
-    stroke = 1.6,
+    strokeWidth = 1.6,
     style,
     ...rest
   }: IconProps) {
@@ -20,7 +22,7 @@ function mkIcon(path: React.ReactNode) {
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth={stroke}
+        strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeLinejoin="round"
         style={style}
@@ -32,204 +34,198 @@ function mkIcon(path: React.ReactNode) {
   };
 }
 
-/* Account card — same 3-layer blue depth language as FolderGlyph,
-   but reads as a customer record (top band + avatar + name lines). */
-export function AccountGlyph({ size = 40 }: { size?: number }) {
-  return (
-    <svg width={size} height={size * 0.82} viewBox="0 0 40 33" fill="none">
-      <path
-        d="M3 6a3 3 0 0 1 3-3h28a3 3 0 0 1 3 3v20a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6z"
-        fill="#5A70FF"
-      />
-      <path
-        d="M2 9a3 3 0 0 1 3-3h30a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V9z"
-        fill="#2F4BFF"
-      />
-      <path
-        d="M2 9a3 3 0 0 1 3-3h30a3 3 0 0 1 3 3v3H2V9z"
-        fill="#B9C3FF"
-      />
-      <circle cx="9" cy="22" r="3" fill="#B9C3FF" fillOpacity="0.95" />
-      <rect
-        x="14"
-        y="19.5"
-        width="20"
-        height="1.8"
-        rx="0.9"
-        fill="#B9C3FF"
-        fillOpacity="0.6"
-      />
-      <rect
-        x="14"
-        y="23"
-        width="14"
-        height="1.8"
-        rx="0.9"
-        fill="#B9C3FF"
-        fillOpacity="0.45"
-      />
-    </svg>
-  );
-}
+/* Sidebar navigation */
+export const IcoDashboard = mkIcon(
+  <>
+    <rect x="3" y="3" width="7" height="9" rx="1.2" />
+    <rect x="14" y="3" width="7" height="5" rx="1.2" />
+    <rect x="14" y="12" width="7" height="9" rx="1.2" />
+    <rect x="3" y="16" width="7" height="5" rx="1.2" />
+  </>,
+);
 
-/* Isometric-ish folder in the ONE accent blue */
-export function FolderGlyph({ size = 40 }: { size?: number }) {
-  return (
-    <svg width={size} height={size * 0.82} viewBox="0 0 40 33" fill="none">
-      <path
-        d="M2 6a3 3 0 0 1 3-3h8l3 3h19a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V6z"
-        fill="#5A70FF"
-      />
-      <path
-        d="M3 11a3 3 0 0 1 3-3h28a3 3 0 0 1 3 3v16a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V11z"
-        fill="#2F4BFF"
-      />
-      <path
-        d="M3 11a3 3 0 0 1 3-3h28a3 3 0 0 1 3 3v2H3v-2z"
-        fill="#B9C3FF"
-      />
-    </svg>
-  );
-}
+export const IcoBookings = mkIcon(
+  <>
+    <rect x="3" y="4.5" width="18" height="16" rx="2" />
+    <path d="M3 9h18" />
+    <path d="M8 3v3M16 3v3" />
+    <circle cx="8.5" cy="13.5" r="0.8" fill="currentColor" />
+    <circle cx="12" cy="13.5" r="0.8" fill="currentColor" />
+    <circle cx="15.5" cy="13.5" r="0.8" fill="currentColor" />
+  </>,
+);
 
-/* Grayscale document */
-export function DocGlyph({ size = 40 }: { size?: number }) {
-  return (
-    <svg width={size * 0.82} height={size} viewBox="0 0 33 40" fill="none">
-      <path
-        d="M3 4a3 3 0 0 1 3-3h14l10 10v25a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V4z"
-        fill="var(--gray-100)"
-        stroke="var(--gray-300)"
-        strokeWidth="1.2"
-      />
-      <path
-        d="M20 1v6a3 3 0 0 0 3 3h6"
-        stroke="var(--gray-300)"
-        strokeWidth="1.2"
-        fill="none"
-      />
-      <path
-        d="M9 20h14M9 25h14M9 30h9"
-        stroke="var(--gray-400)"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
+export const IcoUser = mkIcon(
+  <>
+    <circle cx="12" cy="8" r="3.5" />
+    <path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6" />
+  </>,
+);
 
-/* Link/bookmark glyph — grayscale */
-export function LinkGlyph({ size = 40 }: { size?: number }) {
-  return (
-    <svg width={size * 0.82} height={size} viewBox="0 0 33 40" fill="none">
-      <path
-        d="M3 4a3 3 0 0 1 3-3h14l10 10v25a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V4z"
-        fill="var(--gray-100)"
-        stroke="var(--gray-300)"
-        strokeWidth="1.2"
-      />
-      <path
-        d="M20 1v6a3 3 0 0 0 3 3h6"
-        stroke="var(--gray-300)"
-        strokeWidth="1.2"
-        fill="none"
-      />
-      <path
-        d="M12 24c0-2 1.5-4 4-4h1M20 24c0 2-1.5 4-4 4h-1M14 24h8"
-        stroke="var(--gray-500)"
-        strokeWidth="1.3"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
+export const IcoUsers = mkIcon(
+  <>
+    <circle cx="9" cy="8" r="3" />
+    <circle cx="17" cy="10" r="2.3" />
+    <path d="M3 19c0-3 2.7-5 6-5s6 2 6 5" />
+    <path d="M15.5 19c.2-2.2 2-3.3 4-3.3s3.5 1 3.5 3.3" />
+  </>,
+);
 
-export const Folder = mkIcon(
-  <path d="M3 6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z" />,
-);
-export const Clock = mkIcon(
+export const IcoStuff = mkIcon(
   <>
-    <circle cx="12" cy="12" r="8.5" />
-    <path d="M12 7.5V12l3 1.8" />
+    <circle cx="12" cy="8" r="3.2" />
+    <path d="M6 20c0-3 2.5-5 6-5s6 2 6 5" />
   </>,
 );
-export const Star = mkIcon(
-  <path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.2 1 5.9L12 17l-5.2 2.8 1-5.9L3.5 9.7l5.9-.8L12 3.5z" />,
-);
-export const Share = mkIcon(
+
+export const IcoPayouts = mkIcon(
   <>
-    <circle cx="6" cy="12" r="2" />
-    <circle cx="18" cy="6" r="2" />
-    <circle cx="18" cy="18" r="2" />
-    <path d="M8 11l8-4M8 13l8 4" />
+    <rect x="3" y="6" width="18" height="13" rx="2" />
+    <path d="M3 10h18" />
+    <path d="M7 15h3" />
   </>,
 );
-export const Tag = mkIcon(
+
+export const IcoForm = mkIcon(
   <>
-    <path d="M4 4h8l8 8-8 8-8-8V4z" />
-    <circle cx="8" cy="8" r="1.2" fill="currentColor" />
+    <rect x="4" y="3" width="16" height="18" rx="2" />
+    <path d="M8 8h8M8 12h8M8 16h5" />
   </>,
 );
-export const Gear = mkIcon(
+
+export const IcoMarketing = mkIcon(
   <>
-    <circle cx="12" cy="12" r="3" />
-    <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4" />
+    <path d="M3 10v4a1 1 0 0 0 1 1h3l5 4V5L7 9H4a1 1 0 0 0-1 1Z" />
+    <path d="M16 9a4 4 0 0 1 0 6" />
   </>,
 );
-export const Trash = mkIcon(
-  <path d="M5 7h14M9 7V5a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 5v2M7 7l1 12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-12" />,
-);
-export const Pie = mkIcon(
+
+export const IcoLocation = mkIcon(
   <>
-    <circle cx="12" cy="12" r="8.5" />
-    <path d="M12 12l5-3M12 12V3" />
+    <path d="M12 21s-7-6.3-7-12a7 7 0 1 1 14 0c0 5.7-7 12-7 12Z" />
+    <circle cx="12" cy="9" r="2.5" />
   </>,
 );
-export const Search = mkIcon(
+
+export const IcoPackage = mkIcon(
   <>
-    <circle cx="11" cy="11" r="6" />
-    <path d="M20 20l-3.5-3.5" />
+    <path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5v-9Z" />
+    <path d="M3 7.5 12 12l9-4.5" />
+    <path d="M12 12v9" />
   </>,
 );
-export const Bell = mkIcon(
+
+export const IcoJoin = mkIcon(
   <>
-    <path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2H4.5L6 16z" />
-    <path d="M10 20a2 2 0 0 0 4 0" />
+    <path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3" />
+    <path d="M10 17l-5-5 5-5" />
+    <path d="M5 12h10" />
   </>,
 );
-export const Activity = mkIcon(
-  <path d="M3 12h4l3-7 4 14 3-7h4" />,
-);
-export const Calendar = mkIcon(
+
+export const IcoSettings = mkIcon(
   <>
-    <rect x="4" y="5" width="16" height="15" rx="2" />
-    <path d="M4 10h16M9 3v4M15 3v4" />
+    <circle cx="12" cy="12" r="2.7" />
+    <path d="M19.4 14.6a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V20a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 18.4a1.65 1.65 0 0 0-1.82.33l-.06.06A2 2 0 1 1 4.29 15.96l.06-.06A1.65 1.65 0 0 0 4.68 14.09 1.65 1.65 0 0 0 3.17 13.1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8.1a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V2a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.39.25.69.62.87 1.05" />
   </>,
 );
-export const Users = mkIcon(
+
+export const IcoLogout = mkIcon(
   <>
-    <circle cx="9" cy="9" r="3.2" />
-    <path d="M3 19c.8-3 3.4-4.8 6-4.8s5.2 1.8 6 4.8" />
-    <circle cx="17" cy="10" r="2.4" />
-    <path d="M15 19c.5-2 1.9-3.2 4-3.2s3 1.2 3 3.2" />
+    <path d="M9 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4" />
+    <path d="M16 17l5-5-5-5" />
+    <path d="M21 12H10" />
   </>,
 );
-export const ChevronD = mkIcon(<path d="M6 9l6 6 6-6" />);
-export const ChevronR = mkIcon(<path d="M9 6l6 6-6 6" />);
-export const Plus = mkIcon(<path d="M12 5v14M5 12h14" />);
-export const More = mkIcon(
+
+/* Header */
+export const IcoSearch = mkIcon(
   <>
-    <circle cx="5" cy="12" r="1.3" fill="currentColor" />
-    <circle cx="12" cy="12" r="1.3" fill="currentColor" />
-    <circle cx="19" cy="12" r="1.3" fill="currentColor" />
+    <circle cx="11" cy="11" r="7" />
+    <path d="m20 20-3.2-3.2" />
   </>,
 );
-export const Grid = mkIcon(
+
+export const IcoChevron = mkIcon(<path d="m6 9 6 6 6-6" />);
+export const IcoChevronR = mkIcon(<path d="m9 6 6 6-6 6" />);
+
+export const IcoBell = mkIcon(
   <>
-    <rect x="4" y="4" width="7" height="7" rx="1.4" />
-    <rect x="13" y="4" width="7" height="7" rx="1.4" />
-    <rect x="4" y="13" width="7" height="7" rx="1.4" />
-    <rect x="13" y="13" width="7" height="7" rx="1.4" />
+    <path d="M6 8a6 6 0 1 1 12 0c0 4 2 6 2 6H4s2-2 2-6Z" />
+    <path d="M10 19a2 2 0 0 0 4 0" />
   </>,
 );
-export const X = mkIcon(<path d="M6 6l12 12M18 6L6 18" />);
+
+/* Template tile icons */
+export const IcoFile = mkIcon(
+  <>
+    <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+    <path d="M14 3v5h5" />
+  </>,
+);
+
+export const IcoFlash = mkIcon(
+  <path d="M13 2 4 14h7l-1 8 9-12h-7z" />,
+);
+
+export const IcoGrid = mkIcon(
+  <>
+    <rect x="3" y="3" width="7" height="7" rx="1" />
+    <rect x="14" y="3" width="7" height="7" rx="1" />
+    <rect x="3" y="14" width="7" height="7" rx="1" />
+    <rect x="14" y="14" width="7" height="7" rx="1" />
+  </>,
+);
+
+export const IcoBriefcase = mkIcon(
+  <>
+    <rect x="3" y="7" width="18" height="13" rx="2" />
+    <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+    <path d="M3 12h18" />
+  </>,
+);
+
+/* Field tile icons */
+export const IcoText = mkIcon(
+  <>
+    <path d="M4 7V5h16v2" />
+    <path d="M12 5v14" />
+    <path d="M9 19h6" />
+  </>,
+);
+
+export const IcoParagraph = mkIcon(
+  <path d="M4 6h16M4 12h16M4 18h10" />,
+);
+
+export const IcoMail = mkIcon(
+  <>
+    <rect x="3" y="5" width="18" height="14" rx="2" />
+    <path d="m3 7 9 6 9-6" />
+  </>,
+);
+
+export const IcoPhone = mkIcon(
+  <path d="M4 5c0-1 1-2 2-2h2l2 4-2 1.5a12 12 0 0 0 5.5 5.5L15 12l4 2v2c0 1-1 2-2 2A14 14 0 0 1 4 5Z" />,
+);
+
+export const IcoCheck = mkIcon(<path d="m5 12 5 5L20 7" />);
+
+export const IcoCheckCircle = mkIcon(
+  <>
+    <circle cx="12" cy="12" r="9" />
+    <path d="m8 12 3 3 5-6" />
+  </>,
+);
+
+export const IcoHash = mkIcon(
+  <path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18" />,
+);
+
+export const IcoInfo = mkIcon(
+  <>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 11v5" />
+    <circle cx="12" cy="8" r="0.6" fill="currentColor" />
+  </>,
+);
