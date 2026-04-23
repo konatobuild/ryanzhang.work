@@ -925,7 +925,7 @@ export function HomeScreen({ accent, onNavigate }: { accent: string; onNavigate:
           <div
             style={{
               display: "flex",
-              gap: 8,
+              gap: 6,
               marginTop: 18,
               overflowX: "auto",
               paddingBottom: 4,
@@ -935,7 +935,7 @@ export function HomeScreen({ accent, onNavigate }: { accent: string; onNavigate:
             {[
               { pct: "30%", label: "Transfer" },
               { pct: "35%", label: "Leisure" },
-              { pct: "15%", label: "Receiving" },
+              { pct: "15%", label: "Income" },
               { pct: "20%", label: "Subs" },
             ].map((c, i) => (
               <div
@@ -944,13 +944,13 @@ export function HomeScreen({ accent, onNavigate }: { accent: string; onNavigate:
                   flexShrink: 0,
                   background: "#eeece4",
                   borderRadius: 999,
-                  padding: "10px 16px",
-                  fontSize: 13,
+                  padding: "9px 12px",
+                  fontSize: 12.5,
                   whiteSpace: "nowrap",
                 }}
               >
                 <span style={{ fontWeight: 600 }}>{c.pct}</span>
-                <span style={{ color: "#5c5c55", marginLeft: 6 }}>{c.label}</span>
+                <span style={{ color: "#5c5c55", marginLeft: 5 }}>{c.label}</span>
               </div>
             ))}
           </div>
@@ -1482,21 +1482,20 @@ function StatCard({
           <div style={{ fontSize: 11, color: pctColor, fontWeight: 600 }}>{pct}</div>
         )}
       </div>
-      {showPeriod && (
-        <div
-          style={{
-            fontSize: 11,
-            color: pctColor,
-            fontWeight: 600,
-            position: "absolute",
-            top: 16,
-            right: 78,
-          }}
-        >
-          {pct}
-        </div>
-      )}
-      <div style={{ fontSize: 12, color: "#8a8a85", marginTop: 14 }}>{label}</div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 8,
+          marginTop: 14,
+        }}
+      >
+        <div style={{ fontSize: 12, color: "#8a8a85" }}>{label}</div>
+        {showPeriod && (
+          <div style={{ fontSize: 11, color: pctColor, fontWeight: 600 }}>{pct}</div>
+        )}
+      </div>
       <div
         style={{
           fontFamily: serif,
@@ -1699,7 +1698,6 @@ export function AnalyticsScreen({
               {months.map((m, i) => {
                 const maxH = 150;
                 const h = (m.v / 900) * maxH;
-                const showLabel = m.tall || i === 0 || i === 2 || i === 5 || i === 6;
                 return (
                   <div
                     key={i}
@@ -1711,18 +1709,19 @@ export function AnalyticsScreen({
                       gap: 4,
                     }}
                   >
-                    {showLabel ? (
+                    {m.tall ? (
                       <div
                         style={{
-                          fontSize: 9,
-                          color: "rgba(255,255,255,0.8)",
+                          fontSize: 10,
+                          fontWeight: 500,
+                          color: "rgba(255,255,255,0.92)",
                           whiteSpace: "nowrap",
                         }}
                       >
-                        ${m.v.toFixed(2)}
+                        ${Math.round(m.v)}
                       </div>
                     ) : (
-                      <div style={{ height: 10 }} />
+                      <div style={{ height: 12 }} />
                     )}
                     <div
                       style={{
