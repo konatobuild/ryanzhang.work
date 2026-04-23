@@ -155,6 +155,13 @@ export const cases: CaseEntry[] = [
     category: "web-app",
     status: "placeholder",
   },
+  {
+    slug: "contacts-app",
+    title: "Personal CRM for founders",
+    scenario: "Relationship tracker — founder/exec",
+    category: "web-app",
+    status: "placeholder",
+  },
 ];
 
 export function getCaseHref(entry: CaseEntry): string | null {
