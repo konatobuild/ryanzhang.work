@@ -1,9 +1,12 @@
 import type { NextConfig } from "next";
-import path from "node:path";
+import os from "node:os";
 
 const nextConfig: NextConfig = {
   turbopack: {
-    root: path.join(__dirname, "../.."),
+    // Point above both the worktree and the pnpm content store so Turbopack
+    // finds `next/package.json` without walking into dot-directories like
+    // `.claude/worktrees/` which it otherwise skips during auto-inference.
+    root: os.homedir(),
   },
 };
 

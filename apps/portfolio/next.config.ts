@@ -1,10 +1,12 @@
 import type { NextConfig } from "next";
-import path from "node:path";
+import os from "node:os";
 
 const nextConfig: NextConfig = {
-  // Pin the workspace root so Next.js does not walk up to `/Users/reyn/package-lock.json`.
   turbopack: {
-    root: path.join(__dirname, "../.."),
+    // Point above both the worktree and the pnpm content store so Turbopack
+    // finds `next/package.json` without walking into dot-directories like
+    // `.claude/worktrees/` which it otherwise skips during auto-inference.
+    root: os.homedir(),
   },
   // Next.js 16 requires quality values be allowlisted. Default is [75] only —
   // any other quality prop silently falls back to 75. Enable higher tiers
