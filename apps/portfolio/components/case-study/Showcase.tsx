@@ -4,17 +4,23 @@ import type { ShowcaseItem } from "./types";
 
 interface ShowcaseProps {
   items: ShowcaseItem[];
+  label?: string;
+  heading?: string;
 }
 
-export function Showcase({ items }: ShowcaseProps) {
+export function Showcase({
+  items,
+  label = "Solution",
+  heading = "How it comes together",
+}: ShowcaseProps) {
   return (
     <section className="container-page px-6 md:px-10 pt-24 md:pt-32">
       <div className="mb-10 grid gap-8 md:grid-cols-[220px_1fr] md:gap-16">
         <MetaLabel as="p" className="md:pt-3">
-          Solution
+          {label}
         </MetaLabel>
         <h2 className="text-3xl md:text-4xl font-semibold tracking-tight max-w-2xl">
-          How it comes together
+          {heading}
         </h2>
       </div>
 

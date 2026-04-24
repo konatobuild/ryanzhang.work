@@ -26,9 +26,10 @@ export function Hero({
   isConcept,
 }: HeroProps) {
   return (
-    <section className="container-page px-6 md:px-10 pt-12 md:pt-20">
-      <div className="grid gap-10 md:gap-14">
-        <header className="max-w-4xl">
+    <section className="container-page px-6 md:px-10 pt-8 md:pt-12">
+      <div className="grid gap-10 md:grid-cols-[3fr_1fr] md:gap-16">
+        {/* Left — identity */}
+        <header>
           {isConcept && (
             <MetaLabel
               as="p"
@@ -41,57 +42,39 @@ export function Hero({
           <h1 className="text-5xl md:text-7xl font-semibold leading-[1.02] tracking-[-0.03em]">
             {title}
           </h1>
-          <p className="mt-6 text-lg md:text-xl text-[color:var(--color-muted)] max-w-3xl leading-relaxed">
+          <p className="mt-5 text-lg md:text-xl text-[color:var(--color-muted)] max-w-3xl leading-relaxed">
             {description}
           </p>
+        </header>
 
-          <dl className="mt-10 grid grid-cols-3 gap-6 max-w-2xl">
-            <div>
-              <MetaLabel as="dt" className="mb-1">
-                Role
-              </MetaLabel>
-              <dd className="text-[15px] font-medium">{meta.role}</dd>
-            </div>
-            <div>
-              <MetaLabel as="dt" className="mb-1">
-                Timeline
-              </MetaLabel>
-              <dd className="text-[15px] font-medium">{meta.timeline}</dd>
-            </div>
-            <div>
-              <MetaLabel as="dt" className="mb-1">
-                Type
-              </MetaLabel>
-              <dd className="text-[15px] font-medium">{meta.type}</dd>
-            </div>
-          </dl>
-
+        {/* Right — meta rail: single mono line (no labels) + optional CTA.
+            Labels are dropped because the values are self-evident in context. */}
+        <aside className="flex flex-col gap-5 md:pt-3">
+          <MetaLabel as="p" className="leading-relaxed">
+            {meta.role} · {meta.timeline} · {meta.type}
+          </MetaLabel>
           {liveUrl && (
-            <div className="mt-10">
+            <div>
               <ButtonLink href={liveUrl} external>
                 View live demo →
               </ButtonLink>
             </div>
           )}
-        </header>
-
-        <div className="card overflow-hidden aspect-[16/10] relative bg-[#f4f4f4]">
-          {image ? (
-            <Image
-              src={image.src}
-              alt={image.alt}
-              fill
-              sizes="(min-width: 1200px) 1200px, 100vw"
-              priority
-              className="object-cover"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              <MetaLabel>Hero screenshot placeholder</MetaLabel>
-            </div>
-          )}
-        </div>
+        </aside>
       </div>
+
+      {image && (
+        <div className="mt-12 card overflow-hidden aspect-[16/10] relative bg-[#f4f4f4]">
+          <Image
+            src={image.src}
+            alt={image.alt}
+            fill
+            sizes="(min-width: 1200px) 1200px, 100vw"
+            priority
+            className="object-cover"
+          />
+        </div>
+      )}
     </section>
   );
 }
