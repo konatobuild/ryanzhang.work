@@ -8,7 +8,7 @@ this file adds *where each demo is in the pipeline* without reading code.
 |---|---|---|---|---|---|---|
 | 1 | `saas-landing`         | LATTICE           | landing | wip     | `demo/saas-landing`   | — |
 | 2 | `legal-landing`        | Meridian & Cole   | landing | wip     | `demo/legal-landing`  | — |
-| 3 | `d2c-landing`          | —                 | landing | idea    | —                     | — |
+| 3 | `commerce-landing`     | Northwind         | landing | wip     | `demo/commerce-landing` | — |
 | 4 | `professional-landing` | —                 | landing | idea    | —                     | — |
 | 5 | `legal-intake`         | —                 | web-app | idea    | —                     | — |
 | 6 | `logistics-dashboard`  | —                 | web-app | idea    | —                     | — |

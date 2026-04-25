@@ -91,6 +91,13 @@
       "runtimeArgs": ["--filter", "demo-devtools-landing", "dev"],
       "port": 3012,
       "autoPort": true
+    },
+    {
+      "name": "demo-commerce-landing",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "demo-commerce-landing", "dev"],
+      "port": 3013,
+      "autoPort": true
     }
   ]
 }
