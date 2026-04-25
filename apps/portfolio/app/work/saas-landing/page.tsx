@@ -240,25 +240,41 @@ const gallery: GalleryItem[] = [
     label: "01 / Hero",
     caption: "The thesis, set in type — against a grid that reacts to the cursor.",
     layout: "bleed",
-    aspect: "16 / 9",
+    aspect: "4 / 3",
+    image: {
+      src: "/work/saas-landing/01-hero.png",
+      alt: "LATTICE landing page hero rendered on a laptop, suspended among floating monochrome rocks.",
+    },
   },
   {
     label: "02 / Manifesto",
     caption: "A single claim, filed like an internal paper.",
     layout: "contained",
-    aspect: "16 / 10",
+    aspect: "4062 / 2182",
+    image: {
+      src: "/work/saas-landing/02-manifesto.jpg",
+      alt: "LATTICE manifesto section on a dark laptop screen, framed by floating monochrome rocks.",
+    },
   },
   {
-    label: "03 / Architecture",
-    caption: "Four motifs, one per step. Each paints itself at 60fps.",
+    label: "03 / Deploy",
+    caption: "Two surfaces, one binary — cloud at fractional cents, self-hosted at procurement scale. Same typography either way.",
     layout: "left",
-    aspect: "4 / 5",
+    aspect: "3567 / 3988",
+    image: {
+      src: "/work/saas-landing/03-architecture.jpg",
+      alt: "LATTICE deploy panel on a tablet — Cloud at $0.0008, Self-Hosted at $240k — framed by floating monochrome rocks.",
+    },
   },
   {
-    label: "04 / Deploy",
-    caption: "Two surfaces, one binary. Procurement clauses in the same font as the manifesto.",
+    label: "04 / Benchmarks",
+    caption: "Three numbers, one claim. The largest type on the page is reserved for evidence.",
     layout: "right",
-    aspect: "4 / 5",
+    aspect: "2454 / 2840",
+    image: {
+      src: "/work/saas-landing/04-deploy.jpg",
+      alt: "LATTICE benchmarks panel — 97.3%, 11ms, 2.8× — on a tilted laptop screen against monochrome rocks.",
+    },
   },
 ];
 
