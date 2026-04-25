@@ -72,6 +72,13 @@ export const cases: CaseEntry[] = [
     status: "placeholder",
   },
   {
+    slug: "devtools-landing",
+    title: "Developer-tools launch page",
+    scenario: "Developer-tools SaaS",
+    category: "landing",
+    status: "placeholder",
+  },
+  {
     slug: "legal-intake",
     title: "Client intake that doesn't feel like a form",
     scenario: "Law firm / medical clinic",
