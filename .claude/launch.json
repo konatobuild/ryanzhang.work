@@ -84,6 +84,13 @@
       "runtimeArgs": ["--filter", "demo-appointment-calendar", "dev"],
       "port": 3011,
       "autoPort": true
+    },
+    {
+      "name": "demo-devtools-landing",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "demo-devtools-landing", "dev"],
+      "port": 3012,
+      "autoPort": true
     }
   ]
 }
