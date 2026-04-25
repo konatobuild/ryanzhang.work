@@ -1,26 +1,26 @@
 @import "tailwindcss";
 
 /* ============================================
-   FLOWBASE — Booking Form Builder
-   Palette: soft off-white canvas, deep forest
-   green accent, warm neutral grays.
+   FOLIAGE STUDIO — Members workspace
+   Warm off-white canvas, hairline rules,
+   muted moss-green accent (oklch).
    ============================================ */
 :root {
-  --bg: #f2f3ee;
-  --panel: #ffffff;
-  --sidebar: #ffffff;
-  --ink: #1c2321;
-  --ink-2: #3d4541;
-  --muted: #8a918d;
-  --muted-2: #b4b9b5;
-  --line: #e8e9e3;
-  --line-2: #eeefea;
-  --accent: #2f5d50;
-  --accent-2: #3f7a65;
-  --accent-3: #cfe3d6;
-  --accent-soft: #eaf2ec;
-  --chip: #f0f1ec;
-  --danger: #c0493c;
+  --bg: #f6f4ee;
+  --surface: #ffffff;
+  --surface-2: #fafaf7;
+  --ink: #0f0f0e;
+  --ink-2: #2a2a26;
+  --muted: #6b6a63;
+  --muted-2: #9b9a93;
+  --line: #e8e5dc;
+  --line-2: #efede5;
+  --chip: #f0eee5;
+  --accent: oklch(0.62 0.13 145);
+  --accent-soft: oklch(0.95 0.04 145);
+  --danger: oklch(0.55 0.16 25);
+  --radius: 12px;
+  --radius-sm: 8px;
 }
 
 *,
@@ -33,16 +33,16 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background: var(--bg);
-  color: var(--ink);
 }
 
 body {
   font-family:
     var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
+  background: var(--bg);
+  color: var(--ink);
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.45;
   letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
 }
@@ -57,12 +57,14 @@ button {
 }
 
 input,
-textarea {
+textarea,
+select {
   font-family: inherit;
 }
 
 input:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
   outline: none;
 }
 
@@ -70,15 +72,20 @@ textarea:focus {
   color: var(--muted-2);
 }
 
+.mono {
+  font-family:
+    var(--font-mono), "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo,
+    monospace;
+}
+
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--line);
-  border-radius: 10px;
-  border: 2px solid var(--bg);
+  border-radius: 4px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: var(--muted-2);
+::-webkit-scrollbar-track {
+  background: transparent;
 }

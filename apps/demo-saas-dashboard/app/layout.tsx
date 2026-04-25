@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -9,17 +9,24 @@ const inter = Inter({
   display: "swap",
 });
 
+const mono = JetBrains_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "FlowBase — Create Booking Form",
+  title: "Foliage — Members",
   description:
-    "FlowBase is a booking form builder — pick a template, add fields, tune publish settings, and ship a shareable form in minutes.",
+    "Foliage Studio members workspace — manage who has access, what they can do, and how they show up across the editorial system.",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={`${inter.variable} ${mono.variable}`}>
       <body>{children}</body>
     </html>
   );
