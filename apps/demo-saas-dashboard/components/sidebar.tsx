@@ -155,13 +155,14 @@ const styles: Record<string, CSSProperties> = {
     width: 32,
     height: 32,
     borderRadius: 8,
-    background: "linear-gradient(135deg, oklch(0.85 0.08 145), oklch(0.7 0.12 200))",
-    color: "var(--ink)",
+    background: "var(--ink)",
+    color: "var(--accent)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     fontWeight: 600,
     fontSize: 12,
+    letterSpacing: "-.02em",
   },
   expandHandle: {
     position: "absolute",
@@ -221,12 +222,12 @@ export function Sidebar({
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={styles.brandIcon}>
-            <Icon name="leaf" size={16} />
+            <Icon name="atria" size={16} />
           </div>
           {!collapsed && (
             <div>
               <div style={{ fontWeight: 600, fontSize: 14, lineHeight: 1.1 }}>
-                Foliage
+                Atria
               </div>
               <div
                 className="mono"
@@ -236,7 +237,7 @@ export function Sidebar({
                   letterSpacing: ".04em",
                 }}
               >
-                STUDIO · v3.2
+                CLINICAL · v4.1
               </div>
             </div>
           )}
@@ -363,13 +364,13 @@ export function Sidebar({
                   textOverflow: "ellipsis",
                 }}
               >
-                Elif Marchetti
+                Dr. Elif Marchetti
               </div>
               <div
                 style={{ fontSize: 10.5, color: "var(--muted)" }}
                 className="mono"
               >
-                OWNER · 14d trial
+                CMO · ATRIA HEALTH
               </div>
             </div>
             <button

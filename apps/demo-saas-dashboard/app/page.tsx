@@ -3,13 +3,15 @@
 import { useState } from "react";
 import { Header } from "../components/header";
 import { Sidebar } from "../components/sidebar";
-import { UsersPage } from "../components/users-page";
-import { ALL_USERS, type User } from "../lib/data";
+import { ProvidersPage } from "../components/users-page";
+import { AssistantPanel } from "../components/assistant-panel";
+import { ALL_PROVIDERS, type Provider } from "../lib/data";
 
 export default function Page() {
-  const [activeNav, setActiveNav] = useState<string>("users");
+  const [activeNav, setActiveNav] = useState<string>("providers");
   const [collapsed, setCollapsed] = useState(false);
-  const [users, setUsers] = useState<User[]>(ALL_USERS);
+  const [assistantOpen, setAssistantOpen] = useState(true);
+  const [providers, setProviders] = useState<Provider[]>(ALL_PROVIDERS);
 
   return (
     <div
@@ -29,11 +31,18 @@ export default function Page() {
           flexDirection: "column",
         }}
       >
-        <Header />
+        <Header
+          assistantOpen={assistantOpen}
+          onToggleAssistant={() => setAssistantOpen((o) => !o)}
+        />
         <div style={{ flex: 1 }}>
-          <UsersPage users={users} setUsers={setUsers} />
+          <ProvidersPage providers={providers} setProviders={setProviders} />
         </div>
       </main>
+      <AssistantPanel
+        open={assistantOpen}
+        onClose={() => setAssistantOpen(false)}
+      />
     </div>
   );
 }

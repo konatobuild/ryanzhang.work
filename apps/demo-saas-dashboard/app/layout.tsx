@@ -17,9 +17,9 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Foliage — Members",
+  title: "Atria — Providers",
   description:
-    "Foliage Studio members workspace — manage who has access, what they can do, and how they show up across the editorial system.",
+    "Atria provider operations — credentialing, scheduling, and clinical privileges for multi-specialty health systems.",
 };
 
 export default function RootLayout({

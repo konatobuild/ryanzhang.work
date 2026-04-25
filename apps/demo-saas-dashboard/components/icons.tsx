@@ -47,21 +47,6 @@ export function Icon({
           <path d="M21 18c0-2-1.5-3.5-4-3.5" />
         </svg>
       );
-    case "file":
-      return (
-        <svg {...props}>
-          <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
-          <path d="M14 3v5h5" />
-        </svg>
-      );
-    case "image":
-      return (
-        <svg {...props}>
-          <rect x="3" y="4" width="18" height="16" rx="2" />
-          <circle cx="9" cy="10" r="1.5" />
-          <path d="m3 17 5-5 4 4 3-3 6 6" />
-        </svg>
-      );
     case "edit":
       return (
         <svg {...props}>
@@ -312,6 +297,86 @@ export function Icon({
       return (
         <svg {...props}>
           <path d="M11 20A7 7 0 0 1 4 13c0-6 5-9 16-9 0 9-3 16-9 16zM4 22 17 9" />
+        </svg>
+      );
+    case "stethoscope":
+      return (
+        <svg {...props}>
+          <path d="M5 3v6a5 5 0 0 0 10 0V3M7 3H4M16 3h-3" />
+          <path d="M10 14v3a4 4 0 0 0 8 0v-1" />
+          <circle cx="18" cy="13" r="2.2" />
+        </svg>
+      );
+    case "calendar":
+      return (
+        <svg {...props}>
+          <rect x="3" y="5" width="18" height="16" rx="2" />
+          <path d="M3 10h18M8 3v4M16 3v4" />
+        </svg>
+      );
+    case "shield":
+      return (
+        <svg {...props}>
+          <path d="M12 3 4 6v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V6z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+      );
+    case "id-card":
+      return (
+        <svg {...props}>
+          <rect x="3" y="5" width="18" height="14" rx="2" />
+          <circle cx="9" cy="12" r="2.2" />
+          <path d="M14 10h4M14 14h4M5.5 16.5c.6-1.4 1.9-2.2 3.5-2.2s2.9.8 3.5 2.2" />
+        </svg>
+      );
+    case "branch":
+      return (
+        <svg {...props}>
+          <circle cx="6" cy="6" r="2" />
+          <circle cx="6" cy="18" r="2" />
+          <circle cx="18" cy="12" r="2" />
+          <path d="M6 8v8M8 6h6a4 4 0 0 1 4 4v0M8 18h6a4 4 0 0 0 4-4v0" />
+        </svg>
+      );
+    case "scroll":
+      return (
+        <svg {...props}>
+          <path d="M5 4h11a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V4z" />
+          <path d="M9 8h6M9 12h6M9 16h4M19 7h2v3a3 3 0 0 1-3 3" />
+        </svg>
+      );
+    case "atria":
+      // Stylized "A" / heart-chamber mark used for the brand glyph.
+      return (
+        <svg
+          width={props.width}
+          height={props.height}
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className={props.className}
+          style={props.style}
+        >
+          <path d="M5 20 11 4h2l6 16h-3.2l-1.3-3.6H9.5L8.2 20zm5.4-6.4h3.2L12 8.6z" />
+        </svg>
+      );
+    case "send":
+      return (
+        <svg {...props}>
+          <path d="m4 12 16-8-6 18-3-7z" />
+          <path d="m4 12 7 3" />
+        </svg>
+      );
+    case "mic":
+      return (
+        <svg {...props}>
+          <rect x="9" y="3" width="6" height="12" rx="3" />
+          <path d="M5 11a7 7 0 0 0 14 0M12 18v3" />
+        </svg>
+      );
+    case "expand":
+      return (
+        <svg {...props}>
+          <path d="M9 4H4v5M15 4h5v5M4 15v5h5M20 15v5h-5" />
         </svg>
       );
     default:

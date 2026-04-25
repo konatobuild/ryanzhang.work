@@ -16,7 +16,12 @@ const iconBtn: CSSProperties = {
   justifyContent: "center",
 };
 
-export function Header() {
+interface HeaderProps {
+  assistantOpen?: boolean;
+  onToggleAssistant?: () => void;
+}
+
+export function Header({ assistantOpen, onToggleAssistant }: HeaderProps = {}) {
   return (
     <header
       style={{
@@ -111,6 +116,18 @@ export function Header() {
         <button type="button" title="Settings" style={iconBtn}>
           <Icon name="gear" size={16} />
         </button>
+        <button
+          type="button"
+          title={assistantOpen ? "Hide assistant" : "Open assistant"}
+          onClick={onToggleAssistant}
+          style={{
+            ...iconBtn,
+            background: assistantOpen ? "var(--ink)" : "transparent",
+            color: assistantOpen ? "var(--accent)" : "var(--ink-2)",
+          }}
+        >
+          <Icon name="sparkle" size={16} />
+        </button>
 
         <div
           style={{
@@ -147,15 +164,15 @@ export function Header() {
             height: 34,
             borderRadius: 99,
             border: "2px solid var(--line)",
-            background:
-              "linear-gradient(135deg, oklch(0.85 0.08 145), oklch(0.7 0.12 200))",
-            color: "var(--ink)",
+            background: "var(--ink)",
+            color: "var(--accent)",
             fontWeight: 600,
             fontSize: 12,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             padding: 0,
+            letterSpacing: "-.02em",
           }}
         >
           EM

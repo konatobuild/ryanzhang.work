@@ -5,24 +5,37 @@ import {
   useState,
   type CSSProperties,
   type FormEvent,
+  type KeyboardEvent,
   type ReactNode,
 } from "react";
 import { Icon } from "./icons";
-import { ROLES, type IconName, type Status, type User } from "../lib/data";
+import {
+  PROVIDER_ROLES,
+  type IconName,
+  type Provider,
+  type ProviderRole,
+  type Status,
+} from "../lib/data";
 
-interface UsersPageProps {
-  users: User[];
-  setUsers: (next: User[]) => void;
+interface ProvidersPageProps {
+  providers: Provider[];
+  setProviders: (next: Provider[]) => void;
 }
 
-function Avatar({ user, size = 48 }: { user: User; size?: number }) {
+function Avatar({
+  provider,
+  size = 48,
+}: {
+  provider: Provider;
+  size?: number;
+}) {
   return (
     <div
       style={{
         width: size,
         height: size,
         borderRadius: 99,
-        background: `linear-gradient(135deg, oklch(0.88 0.06 ${user.hue}), oklch(0.72 0.10 ${(user.hue + 60) % 360}))`,
+        background: `linear-gradient(135deg, oklch(0.94 0.13 ${provider.hue}), oklch(0.82 0.18 ${(provider.hue + 12) % 360}))`,
         color: "var(--ink)",
         display: "flex",
         alignItems: "center",
@@ -33,17 +46,39 @@ function Avatar({ user, size = 48 }: { user: User; size?: number }) {
         letterSpacing: "-.01em",
       }}
     >
-      {user.initials}
+      {provider.initials}
     </div>
   );
 }
 
+const STATUS_PRESENTATION: Record<
+  Status,
+  { dot: string; halo: string; label: string }
+> = {
+  "On shift": {
+    dot: "var(--accent)",
+    halo: "var(--accent-soft)",
+    label: "On shift",
+  },
+  "On call": {
+    dot: "var(--ink)",
+    halo: "var(--chip)",
+    label: "On call",
+  },
+  "Off duty": {
+    dot: "var(--muted-2)",
+    halo: "transparent",
+    label: "Off duty",
+  },
+  "On leave": {
+    dot: "var(--danger)",
+    halo: "rgba(229,72,77,.18)",
+    label: "On leave",
+  },
+};
+
 function StatusDot({ status }: { status: Status }) {
-  const map: Record<Status, string> = {
-    Active: "var(--accent)",
-    Idle: "oklch(0.75 0.10 80)",
-    Pending: "var(--muted-2)",
-  };
+  const p = STATUS_PRESENTATION[status];
   return (
     <span
       style={{
@@ -51,9 +86,8 @@ function StatusDot({ status }: { status: Status }) {
         width: 6,
         height: 6,
         borderRadius: 99,
-        background: map[status],
-        boxShadow:
-          status === "Active" ? "0 0 0 3px oklch(0.95 0.04 145)" : "none",
+        background: p.dot,
+        boxShadow: p.halo !== "transparent" ? `0 0 0 3px ${p.halo}` : "none",
       }}
     />
   );
@@ -68,23 +102,36 @@ function Checkbox({
   onChange: () => void;
   indeterminate?: boolean;
 }) {
+  const handleKey = (e: KeyboardEvent<HTMLSpanElement>) => {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      onChange();
+    }
+  };
   return (
-    <button
-      type="button"
-      onClick={onChange}
+    <span
+      role="checkbox"
+      aria-checked={indeterminate ? "mixed" : checked}
+      tabIndex={0}
+      onClick={(e) => {
+        e.stopPropagation();
+        onChange();
+      }}
+      onKeyDown={handleKey}
       style={{
         width: 18,
         height: 18,
         borderRadius: 5,
         border: `1.5px solid ${checked || indeterminate ? "var(--ink)" : "var(--line)"}`,
         background: checked || indeterminate ? "var(--ink)" : "var(--surface)",
-        color: "var(--surface)",
+        color: "var(--accent)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: 0,
         flexShrink: 0,
         transition: "all .12s",
+        cursor: "pointer",
+        outlineOffset: 2,
       }}
     >
       {checked && <Icon name="check" size={11} stroke={2.5} />}
@@ -93,12 +140,12 @@ function Checkbox({
           style={{
             width: 8,
             height: 1.5,
-            background: "var(--surface)",
+            background: "var(--accent)",
             borderRadius: 1,
           }}
         />
       )}
-    </button>
+    </span>
   );
 }
 
@@ -113,8 +160,8 @@ const cardIconBtn: CSSProperties = {
   padding: 0,
 };
 
-interface UserCardProps {
-  user: User;
+interface ProviderCardProps {
+  provider: Provider;
   selected: boolean;
   onSelect: () => void;
   onEdit: () => void;
@@ -160,14 +207,14 @@ function MetaRow({
   );
 }
 
-function UserCard({
-  user,
+function ProviderCard({
+  provider,
   selected,
   onSelect,
   onEdit,
   onDelete,
   onView,
-}: UserCardProps) {
+}: ProviderCardProps) {
   return (
     <div
       style={{
@@ -178,7 +225,7 @@ function UserCard({
         transition: "border-color .15s, box-shadow .15s",
         boxShadow: selected
           ? "0 0 0 1px var(--ink)"
-          : "0 1px 0 rgba(15,15,14,.02)",
+          : "0 1px 0 rgba(10,10,10,.02)",
         position: "relative",
       }}
       onMouseEnter={(e) => {
@@ -233,15 +280,15 @@ function UserCard({
           marginTop: 4,
         }}
       >
-        <Avatar user={user} size={56} />
+        <Avatar provider={provider} size={56} />
         <div style={{ marginTop: 10, fontWeight: 600, fontSize: 14.5 }}>
-          {user.name}
+          {provider.name}
         </div>
         <div
           className="mono"
           style={{ fontSize: 11.5, color: "var(--muted)", marginTop: 2 }}
         >
-          @{user.handle}
+          NPI {provider.npi}
         </div>
       </div>
 
@@ -254,14 +301,25 @@ function UserCard({
       />
 
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        <MetaRow icon="mail" label={user.email} mono />
+        <MetaRow icon="mail" label={provider.email} mono />
         <MetaRow
           icon="badge"
           label={
             <>
-              <span>Role: </span>
+              <span>Title: </span>
               <span style={{ color: "var(--ink)", fontWeight: 500 }}>
-                {user.role}
+                {provider.role}, {provider.specialty}
+              </span>
+            </>
+          }
+        />
+        <MetaRow
+          icon="branch"
+          label={
+            <>
+              <span>Unit: </span>
+              <span style={{ color: "var(--ink)", fontWeight: 500 }}>
+                {provider.unit}
               </span>
             </>
           }
@@ -270,9 +328,9 @@ function UserCard({
           icon="message"
           label={
             <>
-              <span>Posts: </span>
+              <span>Cases MTD: </span>
               <span style={{ color: "var(--ink)", fontWeight: 500 }}>
-                {user.posts}
+                {provider.cases}
               </span>
             </>
           }
@@ -287,10 +345,10 @@ function UserCard({
                 fontSize: 12,
               }}
             >
-              <StatusDot status={user.status} />
+              <StatusDot status={provider.status} />
               <span style={{ color: "var(--muted)" }}>Status:</span>
               <span style={{ color: "var(--ink)", fontWeight: 500 }}>
-                {user.status}
+                {provider.status}
               </span>
             </div>
           }
@@ -300,16 +358,16 @@ function UserCard({
   );
 }
 
-const LIST_GRID = "40px 1.5fr 1.5fr 1fr 100px 80px 110px";
+const LIST_GRID = "40px 1.6fr 1.4fr 1.2fr 110px 90px 110px";
 
-function UserListRow({
-  user,
+function ProviderListRow({
+  provider,
   selected,
   onSelect,
   onEdit,
   onDelete,
   onView,
-}: UserCardProps) {
+}: ProviderCardProps) {
   return (
     <div
       style={{
@@ -338,7 +396,7 @@ function UserListRow({
           minWidth: 0,
         }}
       >
-        <Avatar user={user} size={32} />
+        <Avatar provider={provider} size={32} />
         <div style={{ minWidth: 0 }}>
           <div
             style={{
@@ -349,29 +407,42 @@ function UserListRow({
               textOverflow: "ellipsis",
             }}
           >
-            {user.name}
+            {provider.name}
           </div>
           <div
             className="mono"
             style={{ fontSize: 10.5, color: "var(--muted)" }}
           >
-            @{user.handle}
+            NPI {provider.npi}
           </div>
+        </div>
+      </div>
+      <div
+        style={{
+          fontSize: 12.5,
+          minWidth: 0,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
+        <div>{provider.role}</div>
+        <div className="mono" style={{ fontSize: 10.5, color: "var(--muted)" }}>
+          {provider.specialty}
         </div>
       </div>
       <div
         className="mono"
         style={{
-          fontSize: 12,
+          fontSize: 11.5,
           color: "var(--muted)",
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
         }}
       >
-        {user.email}
+        {provider.unit}
       </div>
-      <div style={{ fontSize: 12.5 }}>{user.role}</div>
       <div
         style={{
           display: "flex",
@@ -380,11 +451,11 @@ function UserListRow({
           fontSize: 12.5,
         }}
       >
-        <StatusDot status={user.status} />
-        {user.status}
+        <StatusDot status={provider.status} />
+        {provider.status}
       </div>
       <div className="mono" style={{ fontSize: 12, color: "var(--muted)" }}>
-        {user.posts} posts
+        {provider.cases} cases
       </div>
       <div
         style={{
@@ -446,8 +517,8 @@ function Pill({
             fontSize: 10,
             padding: "1px 6px",
             borderRadius: 99,
-            background: active ? "rgba(255,255,255,.18)" : "var(--chip)",
-            color: "inherit",
+            background: active ? "var(--accent)" : "var(--chip)",
+            color: active ? "var(--ink)" : "inherit",
           }}
         >
           {count}
@@ -540,11 +611,135 @@ const pgBtn: CSSProperties = {
   justifyContent: "center",
 };
 
-export function UsersPage({ users, setUsers }: UsersPageProps) {
+function InsightBanner({ savedHours }: { savedHours: number }) {
+  return (
+    <div
+      style={{
+        position: "relative",
+        marginBottom: 18,
+        padding: "18px 22px",
+        borderRadius: 14,
+        border: "1px solid var(--line)",
+        background: "var(--surface)",
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        gap: 18,
+      }}
+    >
+      {/* Frosted accent layer */}
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "radial-gradient(120% 90% at 22% 0%, var(--accent-glow), transparent 55%), radial-gradient(80% 60% at 60% 110%, var(--accent-soft), transparent 60%)",
+          filter: "blur(28px)",
+          opacity: 0.85,
+          pointerEvents: "none",
+        }}
+      />
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "rgba(255,255,255,.55)",
+          backdropFilter: "blur(2px)",
+          pointerEvents: "none",
+        }}
+      />
+
+      <div
+        style={{
+          position: "relative",
+          width: 44,
+          height: 44,
+          borderRadius: 12,
+          background: "var(--ink)",
+          color: "var(--accent)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        <Icon name="sparkle" size={18} />
+      </div>
+
+      <div style={{ position: "relative", flex: 1, minWidth: 0 }}>
+        <div
+          className="mono"
+          style={{
+            fontSize: 10.5,
+            color: "var(--muted)",
+            letterSpacing: ".08em",
+            textTransform: "uppercase",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <span style={{ color: "var(--ink)", fontWeight: 600 }}>
+            Atria Insight
+          </span>
+          <span>·</span>
+          <span>This month</span>
+        </div>
+        <div
+          style={{
+            fontSize: 19.5,
+            fontWeight: 600,
+            letterSpacing: "-.018em",
+            marginTop: 4,
+            lineHeight: 1.3,
+          }}
+        >
+          Auto-scheduling freed up{" "}
+          <span
+            style={{
+              padding: "1px 8px",
+              background: "var(--ink)",
+              color: "var(--accent)",
+              borderRadius: 6,
+              fontWeight: 700,
+            }}
+          >
+            {savedHours} attending hours
+          </span>{" "}
+          and closed 6 credential gaps before they hit a shift.
+        </div>
+      </div>
+
+      <button
+        type="button"
+        style={{
+          position: "relative",
+          padding: "8px 14px 8px 14px",
+          borderRadius: 999,
+          background: "var(--ink)",
+          color: "var(--surface)",
+          fontSize: 12.5,
+          fontWeight: 500,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 8,
+          flexShrink: 0,
+        }}
+      >
+        See breakdown
+        <Icon name="arrow-right" size={13} />
+      </button>
+    </div>
+  );
+}
+
+export function ProvidersPage({ providers, setProviders }: ProvidersPageProps) {
   const [filter, setFilter] = useState<string>("All");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Set<string>>(
-    () => new Set(users[0] ? [users[0].id] : []),
+    () => new Set(providers[0] ? [providers[0].id] : []),
   );
   const [view, setView] = useState<"grid" | "list">("grid");
   const [page, setPage] = useState(1);
@@ -552,29 +747,30 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
   const [toast, setToast] = useState<string | null>(null);
 
   const filterCounts = useMemo(() => {
-    const c: Record<string, number> = { All: users.length };
-    ROLES.forEach((r) => {
-      c[r] = users.filter((u) => u.role === r).length;
+    const c: Record<string, number> = { All: providers.length };
+    PROVIDER_ROLES.forEach((r) => {
+      c[r] = providers.filter((u) => u.role === r).length;
     });
     return c;
-  }, [users]);
+  }, [providers]);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
-    return users.filter((u) => {
+    return providers.filter((u) => {
       if (filter !== "All" && u.role !== filter) return false;
       if (
         q &&
         !(
           u.name.toLowerCase().includes(q) ||
           u.email.includes(q) ||
-          u.handle.includes(q)
+          u.npi.includes(q) ||
+          u.specialty.toLowerCase().includes(q)
         )
       )
         return false;
       return true;
     });
-  }, [users, filter, search]);
+  }, [providers, filter, search]);
 
   const toggle = (id: string) => {
     const next = new Set(selected);
@@ -595,24 +791,30 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
   };
   const deleteSelected = () => {
     if (selected.size === 0) return;
-    setUsers(users.filter((u) => !selected.has(u.id)));
+    setProviders(providers.filter((u) => !selected.has(u.id)));
     showToast(
-      `${selected.size} member${selected.size > 1 ? "s" : ""} removed`,
+      `${selected.size} provider${selected.size > 1 ? "s" : ""} removed`,
     );
     setSelected(new Set());
   };
   const deleteOne = (id: string) => {
-    setUsers(users.filter((u) => u.id !== id));
+    setProviders(providers.filter((u) => u.id !== id));
     const next = new Set(selected);
     next.delete(id);
     setSelected(next);
-    showToast("Member removed");
+    showToast("Provider removed");
   };
-  const addUser = (u: User) => {
-    setUsers([u, ...users]);
+  const addProvider = (u: Provider) => {
+    setProviders([u, ...providers]);
     setShowAdd(false);
-    showToast(`${u.name} invited`);
+    showToast(`${u.name} added`);
   };
+
+  const onShiftCount = providers.filter((u) => u.status === "On shift").length;
+  const credentialDueCount = providers.filter(
+    (u) => u.credentialDueDays <= 30,
+  ).length;
+  const onLeaveCount = providers.filter((u) => u.status === "On leave").length;
 
   return (
     <div style={{ padding: "0 28px 28px", position: "relative" }}>
@@ -638,9 +840,9 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
         >
           <span>WORKSPACE</span>
           <Icon name="chevron-right" size={11} />
-          <span>People</span>
+          <span>Clinical</span>
           <Icon name="chevron-right" size={11} />
-          <span style={{ color: "var(--ink)" }}>Members</span>
+          <span style={{ color: "var(--ink)" }}>Providers</span>
         </div>
         <div
           style={{
@@ -652,11 +854,11 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
         >
           <button type="button" style={subBtn}>
             <Icon name="message" size={13} />
-            Help chat
+            Page chief
           </button>
           <button type="button" style={subBtn}>
             <Icon name="docs" size={13} />
-            Docs
+            Roster export
           </button>
           <button type="button" style={subBtn}>
             <Icon name="print" size={13} />
@@ -664,6 +866,9 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
           </button>
         </div>
       </div>
+
+      {/* Insight banner */}
+      <InsightBanner savedHours={142} />
 
       {/* Page title */}
       <div
@@ -684,14 +889,14 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
                 width: 38,
                 height: 38,
                 borderRadius: 10,
-                background: "var(--accent-soft)",
+                background: "var(--ink)",
                 color: "var(--accent)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <Icon name="users" size={18} />
+              <Icon name="stethoscope" size={18} />
             </div>
             <div>
               <h1
@@ -702,7 +907,7 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
                   letterSpacing: "-.015em",
                 }}
               >
-                Members
+                Providers
               </h1>
               <div
                 style={{
@@ -711,9 +916,8 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
                   marginTop: 2,
                 }}
               >
-                Manage who has access to{" "}
-                <span style={{ color: "var(--ink)" }}>foliage.studio</span> and
-                what they can do.
+                Manage who&rsquo;s on shift, on call, and credentialed at{" "}
+                <span style={{ color: "var(--ink)" }}>atriahealth.org</span>.
               </div>
             </div>
           </div>
@@ -736,7 +940,7 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search members…"
+              placeholder="Search providers, NPI, specialty…"
               style={{
                 flex: 1,
                 background: "transparent",
@@ -759,7 +963,7 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
             </span>
           </div>
           <ToolbarBtn icon="plus" primary onClick={() => setShowAdd(true)}>
-            Invite member
+            Add provider
           </ToolbarBtn>
         </div>
       </div>
@@ -780,28 +984,32 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
         {(
           [
             {
-              label: "Total members",
-              value: users.length,
-              sub: "+12 this month",
-              icon: "users",
+              label: "Active providers",
+              value: providers.length,
+              sub: "+4 this quarter",
+              icon: "stethoscope",
+              accent: false,
             },
             {
-              label: "Active now",
-              value: users.filter((u) => u.status === "Active").length,
-              sub: "past 24 hours",
+              label: "On shift right now",
+              value: onShiftCount,
+              sub: "5 services covered",
               icon: "sparkle",
+              accent: true,
             },
             {
-              label: "Pending invites",
-              value: users.filter((u) => u.status === "Pending").length,
-              sub: "2 expire today",
-              icon: "mail",
+              label: "Credentials due ≤30d",
+              value: credentialDueCount,
+              sub: "auto-renewals queued",
+              icon: "id-card",
+              accent: false,
             },
             {
-              label: "Seats remaining",
-              value: 32 - users.length,
-              sub: "on Studio plan",
+              label: "Open requisitions",
+              value: 4 + onLeaveCount,
+              sub: "across 5 departments",
               icon: "badge",
+              accent: false,
             },
           ] as const
         ).map((stat) => (
@@ -845,9 +1053,24 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
                 fontWeight: 600,
                 letterSpacing: "-.02em",
                 lineHeight: 1,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
               }}
             >
-              {stat.value}
+              <span>{stat.value}</span>
+              {stat.accent && (
+                <span
+                  style={{
+                    display: "inline-block",
+                    width: 8,
+                    height: 8,
+                    borderRadius: 99,
+                    background: "var(--accent)",
+                    boxShadow: "0 0 0 4px var(--accent-soft)",
+                  }}
+                />
+              )}
             </div>
             <div style={{ fontSize: 11.5, color: "var(--muted)" }}>
               {stat.sub}
@@ -881,9 +1104,9 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
             onClick={() => setFilter("All")}
             count={filterCounts.All}
           >
-            All members
+            All providers
           </Pill>
-          {ROLES.map((role) => (
+          {PROVIDER_ROLES.map((role) => (
             <Pill
               key={role}
               active={filter === role}
@@ -907,12 +1130,17 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
             gap: 12,
           }}
         >
-          <div
-            style={{ display: "flex", alignItems: "center", gap: 10 }}
-          >
-            <button
-              type="button"
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div
+              role="button"
+              tabIndex={0}
               onClick={toggleAll}
+              onKeyDown={(e) => {
+                if (e.key === " " || e.key === "Enter") {
+                  e.preventDefault();
+                  toggleAll();
+                }
+              }}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -923,6 +1151,8 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
                 borderRadius: 8,
                 fontSize: 12.5,
                 color: "var(--ink-2)",
+                cursor: "pointer",
+                userSelect: "none",
               }}
             >
               <Checkbox
@@ -930,10 +1160,8 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
                 indeterminate={someSelected && !allSelected}
                 onChange={toggleAll}
               />
-              {selected.size > 0
-                ? `${selected.size} selected`
-                : "Select all"}
-            </button>
+              {selected.size > 0 ? `${selected.size} selected` : "Select all"}
+            </div>
             {selected.size > 0 && (
               <button
                 type="button"
@@ -949,11 +1177,9 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
             )}
           </div>
 
-          <div
-            style={{ display: "flex", alignItems: "center", gap: 6 }}
-          >
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <ToolbarBtn icon="filter">Filters</ToolbarBtn>
-            <ToolbarBtn icon="settings-2">Sort: Recent</ToolbarBtn>
+            <ToolbarBtn icon="settings-2">Sort: Last shift</ToolbarBtn>
             <ToolbarBtn icon="pencil">Bulk edit</ToolbarBtn>
             <ToolbarBtn icon="trash" danger onClick={deleteSelected}>
               Delete
@@ -979,10 +1205,8 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
                 onClick={() => setView("list")}
                 style={{
                   ...viewBtn,
-                  background:
-                    view === "list" ? "var(--ink)" : "var(--surface)",
-                  color:
-                    view === "list" ? "var(--surface)" : "var(--muted)",
+                  background: view === "list" ? "var(--ink)" : "var(--surface)",
+                  color: view === "list" ? "var(--surface)" : "var(--muted)",
                 }}
               >
                 <Icon name="list" size={14} />
@@ -992,10 +1216,8 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
                 onClick={() => setView("grid")}
                 style={{
                   ...viewBtn,
-                  background:
-                    view === "grid" ? "var(--ink)" : "var(--surface)",
-                  color:
-                    view === "grid" ? "var(--surface)" : "var(--muted)",
+                  background: view === "grid" ? "var(--ink)" : "var(--surface)",
+                  color: view === "grid" ? "var(--surface)" : "var(--muted)",
                 }}
               >
                 <Icon name="cards" size={14} />
@@ -1009,16 +1231,15 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fill, minmax(248px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(248px, 1fr))",
               gap: 12,
               padding: 16,
             }}
           >
             {filtered.map((u) => (
-              <UserCard
+              <ProviderCard
                 key={u.id}
-                user={u}
+                provider={u}
                 selected={selected.has(u.id)}
                 onSelect={() => toggle(u.id)}
                 onEdit={() => showToast(`Editing ${u.name}`)}
@@ -1044,7 +1265,7 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
                     marginBottom: 4,
                   }}
                 >
-                  No members match
+                  No providers match
                 </div>
                 Try clearing filters or refining your search.
               </div>
@@ -1068,17 +1289,17 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
               }}
             >
               <span />
-              <span>Member</span>
-              <span>Email</span>
-              <span>Role</span>
+              <span>Provider</span>
+              <span>Title</span>
+              <span>Unit</span>
               <span>Status</span>
-              <span>Posts</span>
+              <span>Cases</span>
               <span style={{ textAlign: "right" }}>Actions</span>
             </div>
             {filtered.map((u) => (
-              <UserListRow
+              <ProviderListRow
                 key={u.id}
-                user={u}
+                provider={u}
                 selected={selected.has(u.id)}
                 onSelect={() => toggle(u.id)}
                 onEdit={() => showToast(`Editing ${u.name}`)}
@@ -1095,7 +1316,7 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
                   fontSize: 13.5,
                 }}
               >
-                No members match your filters.
+                No providers match your filters.
               </div>
             )}
           </div>
@@ -1115,13 +1336,10 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
         >
           <div className="mono" style={{ fontSize: 11.5 }}>
             Showing{" "}
-            <span style={{ color: "var(--ink)" }}>1–{filtered.length}</span>{" "}
-            of{" "}
-            <span style={{ color: "var(--ink)" }}>{users.length}</span>
+            <span style={{ color: "var(--ink)" }}>1–{filtered.length}</span> of{" "}
+            <span style={{ color: "var(--ink)" }}>312</span>
           </div>
-          <div
-            style={{ display: "flex", alignItems: "center", gap: 4 }}
-          >
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
             <button type="button" style={pgBtn}>
               <Icon name="arrow-left" size={13} />
             </button>
@@ -1143,11 +1361,9 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
                 {n}
               </button>
             ))}
-            <span style={{ padding: "0 6px", color: "var(--muted-2)" }}>
-              …
-            </span>
+            <span style={{ padding: "0 6px", color: "var(--muted-2)" }}>…</span>
             <button type="button" style={pgBtn}>
-              21
+              13
             </button>
             <button type="button" style={pgBtn}>
               <Icon name="arrow-right" size={13} />
@@ -1190,13 +1406,11 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
         }}
       >
         <div className="mono" style={{ fontSize: 11 }}>
-          © 2078 Foliage Studio · Region: eu-west-2 · Build 4a91c
+          © 2026 Atria Clinical Cloud · Region: us-east-2 · Build 4a91c
         </div>
-        <div
-          style={{ display: "flex", alignItems: "center", gap: 14 }}
-        >
-          <span>Privacy</span>
-          <span>Terms</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <span>HIPAA</span>
+          <span>SOC 2</span>
           <span>Status</span>
           <select
             style={{
@@ -1209,17 +1423,17 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
             }}
           >
             <option>English (US)</option>
-            <option>Deutsch</option>
-            <option>日本語</option>
+            <option>Español</option>
+            <option>Français</option>
           </select>
         </div>
       </div>
 
       {showAdd && (
-        <AddMemberModal
+        <AddProviderModal
           onClose={() => setShowAdd(false)}
-          onAdd={addUser}
-          existing={users}
+          onAdd={addProvider}
+          existing={providers}
         />
       )}
 
@@ -1232,7 +1446,7 @@ export function UsersPage({ users, setUsers }: UsersPageProps) {
             transform: "translateX(-50%)",
             padding: "10px 16px",
             background: "var(--ink)",
-            color: "var(--surface)",
+            color: "var(--accent)",
             borderRadius: 10,
             fontSize: 13,
             fontWeight: 500,
@@ -1287,33 +1501,46 @@ const inputStyle: CSSProperties = {
 
 interface AddModalProps {
   onClose: () => void;
-  onAdd: (u: User) => void;
-  existing: User[];
+  onAdd: (u: Provider) => void;
+  existing: Provider[];
 }
 
-function AddMemberModal({ onClose, onAdd, existing }: AddModalProps) {
+const PROVIDER_ROLE_BLURBS: Record<ProviderRole, string> = {
+  Attending: "Full privileges",
+  Resident: "Supervised",
+  Fellow: "Subspecialty",
+  "Nurse practitioner": "Mid-level",
+  "Physician assistant": "Mid-level",
+};
+
+function AddProviderModal({ onClose, onAdd, existing }: AddModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState<(typeof ROLES)[number]>("Editor");
+  const [role, setRole] = useState<ProviderRole>("Attending");
+  const [specialty, setSpecialty] = useState("Cardiology");
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
     const trimmedName = name.trim();
     const trimmedEmail = email.trim();
     if (!trimmedName || !trimmedEmail) return;
-    const parts = trimmedName.split(" ");
+    const parts = trimmedName.replace(/^Dr\.\s*/i, "").split(" ");
+    const npi = String(1_400_000_000 + Math.floor(Math.random() * 600_000_000));
     onAdd({
-      id: "u_" + Date.now(),
-      name: trimmedName,
-      handle: trimmedName.toLowerCase().replace(/\s+/g, "."),
+      id: "p_" + Date.now(),
+      name: trimmedName.startsWith("Dr.") ? trimmedName : `Dr. ${trimmedName}`,
+      npi,
       email: trimmedEmail,
       role,
-      status: "Pending",
-      posts: 0,
+      specialty,
+      unit: "Tower 4 · West",
+      status: "Off duty",
+      cases: 0,
       joined: new Date().toISOString().slice(0, 10),
-      hue: Math.floor(Math.random() * 360),
+      hue: 90 + Math.floor(Math.random() * 40),
       initials:
-        ((parts[0]?.[0] || "") + (parts[1]?.[0] || "")).toUpperCase() || "NN",
+        ((parts[0]?.[0] || "") + (parts[1]?.[0] || "")).toUpperCase() || "DR",
+      credentialDueDays: 365,
     });
   };
 
@@ -1323,7 +1550,7 @@ function AddMemberModal({ onClose, onAdd, existing }: AddModalProps) {
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(15,15,14,.32)",
+        background: "rgba(10,10,10,.32)",
         backdropFilter: "blur(4px)",
         display: "flex",
         alignItems: "center",
@@ -1339,7 +1566,7 @@ function AddMemberModal({ onClose, onAdd, existing }: AddModalProps) {
           background: "var(--surface)",
           border: "1px solid var(--line)",
           borderRadius: 14,
-          width: 460,
+          width: 480,
           maxWidth: "100%",
           boxShadow: "0 20px 60px rgba(0,0,0,.18)",
           overflow: "hidden",
@@ -1360,7 +1587,7 @@ function AddMemberModal({ onClose, onAdd, existing }: AddModalProps) {
               textTransform: "uppercase",
             }}
           >
-            NEW MEMBER
+            NEW PROVIDER
           </div>
           <div
             style={{
@@ -1370,16 +1597,11 @@ function AddMemberModal({ onClose, onAdd, existing }: AddModalProps) {
               letterSpacing: "-.01em",
             }}
           >
-            Invite someone to Foliage
+            Add a clinician to Atria
           </div>
-          <div
-            style={{
-              fontSize: 12.5,
-              color: "var(--muted)",
-              marginTop: 4,
-            }}
-          >
-            They’ll receive an email with a one-time link valid for 72 hours.
+          <div style={{ fontSize: 12.5, color: "var(--muted)", marginTop: 4 }}>
+            They&rsquo;ll receive a credentialing checklist by email — onboarding
+            unlocks once license, DEA, and board certs are verified.
           </div>
         </div>
         <div
@@ -1394,7 +1616,7 @@ function AddMemberModal({ onClose, onAdd, existing }: AddModalProps) {
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Mira Okafor"
+              placeholder="e.g. Dr. Mira Okafor"
               autoFocus
               style={inputStyle}
             />
@@ -1403,7 +1625,7 @@ function AddMemberModal({ onClose, onAdd, existing }: AddModalProps) {
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="mira@foliage.studio"
+              placeholder="mira.okafor@atriahealth.org"
               type="email"
               style={inputStyle}
             />
@@ -1416,15 +1638,14 @@ function AddMemberModal({ onClose, onAdd, existing }: AddModalProps) {
                 gap: 6,
               }}
             >
-              {ROLES.slice(0, 3).map((r) => (
+              {PROVIDER_ROLES.slice(0, 3).map((r) => (
                 <button
                   type="button"
                   key={r}
                   onClick={() => setRole(r)}
                   style={{
                     padding: "9px 10px",
-                    background:
-                      role === r ? "var(--ink)" : "var(--surface)",
+                    background: role === r ? "var(--ink)" : "var(--surface)",
                     color: role === r ? "var(--surface)" : "var(--ink-2)",
                     border: `1px solid ${role === r ? "var(--ink)" : "var(--line)"}`,
                     borderRadius: 8,
@@ -1438,15 +1659,28 @@ function AddMemberModal({ onClose, onAdd, existing }: AddModalProps) {
                     style={{ fontSize: 10.5, opacity: 0.7, marginTop: 2 }}
                     className="mono"
                   >
-                    {r === "Editor"
-                      ? "Edit + publish"
-                      : r === "Contributor"
-                        ? "Edit drafts"
-                        : "Read only"}
+                    {PROVIDER_ROLE_BLURBS[r]}
                   </div>
                 </button>
               ))}
             </div>
+          </Field>
+          <Field label="Primary specialty">
+            <select
+              value={specialty}
+              onChange={(e) => setSpecialty(e.target.value)}
+              style={inputStyle}
+            >
+              <option>Cardiology</option>
+              <option>Neurology</option>
+              <option>Emergency medicine</option>
+              <option>Internal medicine</option>
+              <option>Anesthesiology</option>
+              <option>Orthopedics</option>
+              <option>Pediatrics</option>
+              <option>General surgery</option>
+              <option>Psychiatry</option>
+            </select>
           </Field>
         </div>
         <div
@@ -1463,7 +1697,7 @@ function AddMemberModal({ onClose, onAdd, existing }: AddModalProps) {
             style={{ fontSize: 11.5, color: "var(--muted)" }}
             className="mono"
           >
-            {existing.length} / 32 seats used
+            {existing.length} of 312 active providers
           </div>
           <div style={{ display: "flex", gap: 8 }}>
             <button
@@ -1485,7 +1719,7 @@ function AddMemberModal({ onClose, onAdd, existing }: AddModalProps) {
               style={{
                 padding: "8px 16px",
                 background: "var(--ink)",
-                color: "var(--surface)",
+                color: "var(--accent)",
                 borderRadius: 8,
                 fontSize: 13,
                 fontWeight: 500,
@@ -1494,7 +1728,7 @@ function AddMemberModal({ onClose, onAdd, existing }: AddModalProps) {
                 gap: 7,
               }}
             >
-              Send invite <Icon name="arrow-right" size={13} />
+              Send credentialing checklist <Icon name="arrow-right" size={13} />
             </button>
           </div>
         </div>

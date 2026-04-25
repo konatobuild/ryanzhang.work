@@ -1,24 +1,26 @@
 @import "tailwindcss";
 
 /* ============================================
-   FOLIAGE STUDIO — Members workspace
-   Warm off-white canvas, hairline rules,
-   muted moss-green accent (oklch).
+   ATRIA — Provider operations platform
+   Cool off-white canvas, hairline rules,
+   single fluorescent-lime accent + frosted layer.
    ============================================ */
 :root {
-  --bg: #f6f4ee;
+  --bg: #f5f5f4;
   --surface: #ffffff;
-  --surface-2: #fafaf7;
-  --ink: #0f0f0e;
-  --ink-2: #2a2a26;
-  --muted: #6b6a63;
-  --muted-2: #9b9a93;
-  --line: #e8e5dc;
-  --line-2: #efede5;
-  --chip: #f0eee5;
-  --accent: oklch(0.62 0.13 145);
-  --accent-soft: oklch(0.95 0.04 145);
-  --danger: oklch(0.55 0.16 25);
+  --surface-2: #fafafa;
+  --ink: #0a0a0a;
+  --ink-2: #1f1f1f;
+  --muted: #6b6b6b;
+  --muted-2: #a3a3a3;
+  --line: #e7e7e5;
+  --line-2: #efefee;
+  --chip: #f0f0ee;
+  --accent: #b5f26a;
+  --accent-ink: #0a0a0a;
+  --accent-soft: rgba(181, 242, 106, 0.42);
+  --accent-glow: rgba(181, 242, 106, 0.85);
+  --danger: #e5484d;
   --radius: 12px;
   --radius-sm: 8px;
 }
