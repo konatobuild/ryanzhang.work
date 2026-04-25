@@ -58,9 +58,9 @@ export const cases: CaseEntry[] = [
     status: "placeholder",
   },
   {
-    slug: "d2c-landing",
-    title: "Product story, sold",
-    scenario: "Direct-to-consumer brand",
+    slug: "commerce-landing",
+    title: "Commerce platform, fully briefed",
+    scenario: "Payments / commerce platform",
     category: "landing",
     status: "placeholder",
   },
