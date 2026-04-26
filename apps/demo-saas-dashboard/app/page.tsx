@@ -5,13 +5,11 @@ import { Header } from "../components/header";
 import { Sidebar } from "../components/sidebar";
 import { ProvidersPage } from "../components/users-page";
 import { SchedulePage } from "../components/schedule-page";
-import { AssistantPanel } from "../components/assistant-panel";
 import { ALL_PROVIDERS, type Provider } from "../lib/data";
 
 export default function Page() {
   const [activeNav, setActiveNav] = useState<string>("schedule");
   const [collapsed, setCollapsed] = useState(false);
-  const [assistantOpen, setAssistantOpen] = useState(true);
   const [providers, setProviders] = useState<Provider[]>(ALL_PROVIDERS);
 
   return (
@@ -32,10 +30,7 @@ export default function Page() {
           flexDirection: "column",
         }}
       >
-        <Header
-          assistantOpen={assistantOpen}
-          onToggleAssistant={() => setAssistantOpen((o) => !o)}
-        />
+        <Header />
         <div style={{ flex: 1 }}>
           {activeNav === "providers" ? (
             <ProvidersPage providers={providers} setProviders={setProviders} />
@@ -44,10 +39,6 @@ export default function Page() {
           )}
         </div>
       </main>
-      <AssistantPanel
-        open={assistantOpen}
-        onClose={() => setAssistantOpen(false)}
-      />
     </div>
   );
 }

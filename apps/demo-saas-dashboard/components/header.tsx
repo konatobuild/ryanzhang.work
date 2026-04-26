@@ -1,35 +1,16 @@
 "use client";
 
-import type { CSSProperties } from "react";
 import { Icon } from "./icons";
 
-const NAV_TABS = ["Overview", "Activity", "Reports", "Audit log"] as const;
-
-const iconBtn: CSSProperties = {
-  position: "relative",
-  width: 34,
-  height: 34,
-  borderRadius: 8,
-  color: "var(--ink-2)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-};
-
-interface HeaderProps {
-  assistantOpen?: boolean;
-  onToggleAssistant?: () => void;
-}
-
-export function Header({ assistantOpen, onToggleAssistant }: HeaderProps = {}) {
+export function Header() {
   return (
     <header
       style={{
         display: "flex",
         alignItems: "center",
         gap: 16,
-        padding: "0 28px",
-        height: 64,
+        padding: "0 32px",
+        height: 56,
         borderBottom: "1px solid var(--line)",
         background: "var(--surface)",
         position: "sticky",
@@ -43,31 +24,27 @@ export function Header({ assistantOpen, onToggleAssistant }: HeaderProps = {}) {
           alignItems: "center",
           gap: 10,
           flex: 1,
-          maxWidth: 420,
-          background: "var(--surface-2)",
-          border: "1px solid var(--line)",
-          borderRadius: 10,
-          padding: "8px 12px",
+          maxWidth: 360,
+          color: "var(--muted)",
         }}
       >
-        <Icon name="search" size={15} style={{ color: "var(--muted)" }} />
+        <Icon name="search" size={14} />
         <input
-          placeholder="Search anything across the workspace…"
+          placeholder="Search providers, shifts, credentials…"
           style={{
             flex: 1,
             background: "transparent",
             border: "none",
-            fontSize: 13.5,
+            fontSize: 13,
             color: "var(--ink)",
           }}
         />
         <span
           className="mono"
           style={{
-            fontSize: 10.5,
-            padding: "2px 6px",
-            background: "var(--chip)",
-            color: "var(--muted)",
+            fontSize: 10,
+            padding: "1px 5px",
+            border: "1px solid var(--line)",
             borderRadius: 4,
             letterSpacing: ".04em",
           }}
@@ -76,98 +53,34 @@ export function Header({ assistantOpen, onToggleAssistant }: HeaderProps = {}) {
         </span>
       </div>
 
-      <nav style={{ display: "flex", gap: 4, marginLeft: "auto" }}>
-        {NAV_TABS.map((label, i) => (
-          <button
-            key={label}
-            type="button"
-            style={{
-              padding: "7px 12px",
-              background: i === 0 ? "var(--chip)" : "transparent",
-              borderRadius: 8,
-              fontSize: 13,
-              color: i === 0 ? "var(--ink)" : "var(--muted)",
-              fontWeight: i === 0 ? 500 : 450,
-            }}
-          >
-            {label}
-          </button>
-        ))}
-      </nav>
-
-      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-        <button type="button" title="Notifications" style={iconBtn}>
-          <Icon name="bell" size={16} />
-          <span
-            style={{
-              position: "absolute",
-              top: 6,
-              right: 6,
-              width: 6,
-              height: 6,
-              borderRadius: 99,
-              background: "var(--accent)",
-            }}
-          />
-        </button>
-        <button type="button" title="Help" style={iconBtn}>
-          <Icon name="help" size={16} />
-        </button>
-        <button type="button" title="Settings" style={iconBtn}>
-          <Icon name="gear" size={16} />
-        </button>
-        <button
-          type="button"
-          title={assistantOpen ? "Hide assistant" : "Open assistant"}
-          onClick={onToggleAssistant}
+      <div
+        style={{
+          marginLeft: "auto",
+          display: "flex",
+          alignItems: "center",
+          gap: 16,
+        }}
+      >
+        <span
+          className="mono"
           style={{
-            ...iconBtn,
-            background: assistantOpen ? "var(--ink)" : "transparent",
-            color: assistantOpen ? "var(--accent)" : "var(--ink-2)",
+            fontSize: 11,
+            color: "var(--muted)",
+            letterSpacing: ".06em",
           }}
         >
-          <Icon name="sparkle" size={16} />
-        </button>
-
-        <div
-          style={{
-            width: 1,
-            height: 24,
-            background: "var(--line)",
-            margin: "0 8px",
-          }}
-        />
-
+          SAT · APR 25 · 14:32 ET
+        </span>
         <button
           type="button"
           style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            padding: "7px 12px 7px 10px",
-            background: "var(--ink)",
-            color: "var(--surface)",
-            borderRadius: 999,
-            fontSize: 12.5,
-            fontWeight: 500,
-          }}
-        >
-          <Icon name="bolt" size={13} />
-          Upgrade plan
-        </button>
-
-        <button
-          type="button"
-          style={{
-            marginLeft: 4,
-            width: 34,
-            height: 34,
+            width: 32,
+            height: 32,
             borderRadius: 99,
-            border: "2px solid var(--line)",
-            background: "var(--ink)",
-            color: "var(--accent)",
+            background: "var(--chip)",
+            color: "var(--ink)",
             fontWeight: 600,
-            fontSize: 12,
+            fontSize: 11.5,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
