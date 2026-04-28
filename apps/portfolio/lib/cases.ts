@@ -1,5 +1,14 @@
-export type CaseCategory = "landing" | "web-app" | "mobile";
+export type CaseCategory = "landing" | "web-app" | "mobile" | "ai-system";
 export type CaseStatus = "placeholder" | "live";
+
+/**
+ * Tier governs where a case appears.
+ * - "feature" — surfaces in the home-page vertical deck (strategic work).
+ * - "study"   — surfaces only in /studies (interface explorations / range).
+ *
+ * See apps/portfolio/STRATEGY.md §5.3 for the rationale.
+ */
+export type CaseTier = "feature" | "study";
 
 export interface CaseEntry {
   slug: string;
@@ -11,10 +20,13 @@ export interface CaseEntry {
   scenario: string;
   category: CaseCategory;
   status: CaseStatus;
+  tier: CaseTier;
   /** Subdomain like `saas-demo` → https://saas-demo.ryanzhang.work */
   subdomain?: string;
   /** Full external URL — takes precedence over `subdomain` if present. */
   liveUrl?: string;
+  /** GitHub repo URL for cases where the source is the artifact. */
+  repoUrl?: string;
   /** Path under /public for the card cover, eg `/covers/saas-landing.jpg`. */
   coverImage?: string;
   /**
@@ -24,31 +36,71 @@ export interface CaseEntry {
   accent?: string;
   /** Plain-English one-liner used in Featured Work and case study hero. */
   summary?: string;
+  /** Display year (string for flexibility, e.g. "2026" or "2025–26"). */
+  year?: string;
+  /** Build metadata shown inline on the case card. Keep terse. */
+  buildMeta?: {
+    framework?: string;
+    notes?: string;
+  };
 }
 
 export const CATEGORY_LABELS: Record<CaseCategory, string> = {
   landing: "Landing page",
   "web-app": "Web application",
   mobile: "Mobile",
+  "ai-system": "AI system",
 };
 
 /**
- * Single source of truth for the Featured Work grid on `/`.
+ * Single source of truth for every case. The home-page deck filters to
+ * `tier === "feature"`; /studies filters to `tier === "study"`.
  *
- * To surface a new case:
- * 1. Flip `status` from "placeholder" to "live".
- * 2. Fill `summary`, `subdomain` (or `liveUrl`), `coverImage`, and optional `accent`.
- * 3. Create the corresponding `/work/[slug]` route in `app/work/`.
- *
- * Do NOT batch-edit all nine at once — see root README §"Adding a new demo".
+ * To promote a study to a feature: flip its `tier`, fill in `summary`,
+ * `coverImage`, `liveUrl` (or `subdomain`), and create the matching
+ * `/work/[slug]` route.
  */
 export const cases: CaseEntry[] = [
+  // ── FEATURE TIER ─────────────────────────────────────────────────────
+  {
+    slug: "stash",
+    title: "Stash",
+    scenario: "macOS Taste Library · in development",
+    category: "ai-system",
+    status: "placeholder",
+    tier: "feature",
+    year: "2026",
+    summary:
+      "A macOS taste library with retrieval architecture — the things you save become queryable design infrastructure.",
+    buildMeta: {
+      framework: "macOS native · Retrieval-augmented",
+      notes: "Currently building · Solo",
+    },
+  },
+
+  // ── STUDY TIER (range / explorations) ────────────────────────────────
+  {
+    slug: "gnovi",
+    title: "AI chat with a draggable workspace",
+    scenario: "Desktop AI workspace · Electron",
+    category: "ai-system",
+    status: "live",
+    tier: "study",
+    year: "2026",
+    summary:
+      "A desktop AI chat where every surface is a drag source and the AI can drive an inline browser.",
+    buildMeta: {
+      framework: "Electron 34 · React 19 · Multi-provider",
+      notes: "Snapshot · Feb 2026 · Exploration",
+    },
+  },
   {
     slug: "saas-landing",
     title: "Seed-stage SaaS launch page",
     scenario: "Early-stage B2B SaaS",
     category: "landing",
     status: "placeholder",
+    tier: "study",
   },
   {
     slug: "legal-landing",
@@ -56,6 +108,7 @@ export const cases: CaseEntry[] = [
     scenario: "Boutique law firm",
     category: "landing",
     status: "placeholder",
+    tier: "study",
   },
   {
     slug: "commerce-landing",
@@ -63,6 +116,7 @@ export const cases: CaseEntry[] = [
     scenario: "Payments / commerce platform",
     category: "landing",
     status: "placeholder",
+    tier: "study",
   },
   {
     slug: "professional-landing",
@@ -70,6 +124,7 @@ export const cases: CaseEntry[] = [
     scenario: "Consulting / agency",
     category: "landing",
     status: "placeholder",
+    tier: "study",
   },
   {
     slug: "devtools-landing",
@@ -77,6 +132,7 @@ export const cases: CaseEntry[] = [
     scenario: "Developer-tools SaaS",
     category: "landing",
     status: "placeholder",
+    tier: "study",
   },
   {
     slug: "legal-intake",
@@ -84,6 +140,7 @@ export const cases: CaseEntry[] = [
     scenario: "Law firm / medical clinic",
     category: "web-app",
     status: "placeholder",
+    tier: "study",
   },
   {
     slug: "logistics-dashboard",
@@ -91,6 +148,7 @@ export const cases: CaseEntry[] = [
     scenario: "B2B ops — logistics & warehousing",
     category: "web-app",
     status: "placeholder",
+    tier: "study",
   },
   {
     slug: "analytics-tool",
@@ -98,6 +156,7 @@ export const cases: CaseEntry[] = [
     scenario: "Product-led growth tool",
     category: "web-app",
     status: "placeholder",
+    tier: "study",
   },
   {
     slug: "consumer-app",
@@ -105,6 +164,7 @@ export const cases: CaseEntry[] = [
     scenario: "Health & lifestyle",
     category: "mobile",
     status: "placeholder",
+    tier: "study",
   },
   {
     slug: "mobile-web",
@@ -112,6 +172,7 @@ export const cases: CaseEntry[] = [
     scenario: "D2C / editorial",
     category: "mobile",
     status: "placeholder",
+    tier: "study",
   },
   {
     slug: "saas-dashboard",
@@ -119,6 +180,7 @@ export const cases: CaseEntry[] = [
     scenario: "Customer success / accounts",
     category: "web-app",
     status: "placeholder",
+    tier: "study",
   },
   {
     slug: "finance-app",
@@ -126,6 +188,7 @@ export const cases: CaseEntry[] = [
     scenario: "Consumer fintech / goal planning",
     category: "mobile",
     status: "placeholder",
+    tier: "study",
   },
   {
     slug: "freelancer-app",
@@ -133,6 +196,7 @@ export const cases: CaseEntry[] = [
     scenario: "Two-sided marketplace — mobile",
     category: "mobile",
     status: "placeholder",
+    tier: "study",
   },
   {
     slug: "banking-app",
@@ -140,6 +204,7 @@ export const cases: CaseEntry[] = [
     scenario: "Consumer fintech — mobile",
     category: "mobile",
     status: "placeholder",
+    tier: "study",
   },
   {
     slug: "voice-recorder",
@@ -147,6 +212,7 @@ export const cases: CaseEntry[] = [
     scenario: "Creator / productivity utility — mobile",
     category: "mobile",
     status: "placeholder",
+    tier: "study",
   },
   {
     slug: "energy-app",
@@ -154,6 +220,7 @@ export const cases: CaseEntry[] = [
     scenario: "Consumer IoT — solar & battery",
     category: "mobile",
     status: "placeholder",
+    tier: "study",
   },
   {
     slug: "appointment-calendar",
@@ -161,6 +228,7 @@ export const cases: CaseEntry[] = [
     scenario: "Wellness & salon scheduling SaaS",
     category: "web-app",
     status: "placeholder",
+    tier: "study",
   },
   {
     slug: "contacts-app",
@@ -168,8 +236,15 @@ export const cases: CaseEntry[] = [
     scenario: "Relationship tracker — founder/exec",
     category: "web-app",
     status: "placeholder",
+    tier: "study",
   },
 ];
+
+/** Convenience: feature-tier cases, in declaration order. */
+export const featureCases = cases.filter((c) => c.tier === "feature");
+
+/** Convenience: study-tier cases, in declaration order. */
+export const studyCases = cases.filter((c) => c.tier === "study");
 
 export function getCaseHref(entry: CaseEntry): string | null {
   if (entry.status !== "live") return null;

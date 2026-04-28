@@ -1,9 +1,16 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { MetaLabel } from "./ui/MetaLabel";
 
 const CONTACT_EMAIL = "ryan.runsheng@gmail.com";
 
 export function Footer() {
+  const pathname = usePathname();
+  // Home is a fixed-positioned deck — footer is irrelevant there.
+  if (pathname === "/") return null;
+
   const year = new Date().getFullYear();
   return (
     <footer className="border-t border-[color:var(--color-hairline)] mt-24">
