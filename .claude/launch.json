@@ -25,7 +25,7 @@
     {
       "name": "demo-saas-dashboard",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "demo-saas-dashboard", "dev"],
+      "runtimeArgs": ["-C", "/Users/reyn/ryanzhang.work/.claude/worktrees/saas-dashboard", "--filter", "demo-saas-dashboard", "dev"],
       "port": 3003,
       "autoPort": true
     },
