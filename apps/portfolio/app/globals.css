@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  /* Brand + canvas — preserved from prior system for backward compatibility */
   --color-canvas: #ededed;
   --color-ink: #0a0a0a;
   --color-klein: #002fa7;
@@ -8,14 +9,94 @@
   --color-muted: #8e8e8e;
   --color-hairline: rgba(0, 0, 0, 0.14);
 
+  /* Radix Gray 12-step ramp — primary neutral system going forward.
+     Reference: https://www.radix-ui.com/colors. Values verified from
+     rauno.me production CSS. Do NOT use #000 / #fff for text or page bg. */
+  --color-gray-1: hsl(0 0% 99%);
+  --color-gray-2: hsl(0 0% 97.3%);
+  --color-gray-3: hsl(0 0% 95.1%);
+  --color-gray-4: hsl(0 0% 93%);
+  --color-gray-5: hsl(0 0% 90.9%);
+  --color-gray-6: hsl(0 0% 88.7%);
+  --color-gray-7: hsl(0 0% 85.8%);
+  --color-gray-8: hsl(0 0% 78%);
+  --color-gray-9: hsl(0 0% 56.1%);
+  --color-gray-10: hsl(0 0% 52.3%);
+  --color-gray-11: hsl(0 0% 43.5%);
+  --color-gray-12: hsl(0 0% 9%);
+
+  /* Fonts */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
+  /* Radii — strict short ladder, no large radii anywhere */
+  --radius-1: 4px;
+  --radius-2: 8px;
+  --radius-3: 12px;
   --radius-card: 32px;
   --radius-pill: 9999px;
 
   --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.06);
   --shadow-card-hover: 0 18px 44px rgba(0, 0, 0, 0.08);
+}
+
+/*
+ * Plain CSS variables (not Tailwind theme tokens) — for direct use in
+ * component CSS. Spacing / type / motion scale lives here so we can
+ * reference exact pixel values without Tailwind's utility scale flattening
+ * the editorial intent.
+ */
+:root {
+  /* Spacing — strict 8px grid. No 4px, no 12px, no 20px. */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-7: 56px;
+  --space-8: 64px;
+  --space-9: 72px;
+  --space-10: 80px;
+  --space-11: 88px;
+  --space-print: 128px;
+
+  /* Type scale — jumpy ladder, deliberately discontinuous. */
+  --fs-10: 10px;
+  --fs-12: 12px;
+  --fs-14: 14px;
+  --fs-16: 16px;
+  --fs-20: 20px;
+  --fs-24: 24px;
+  --fs-32: 32px;
+  --fs-40: 40px;
+  --fs-48: 48px;
+  --fs-display: clamp(56px, 8vw, 96px);
+
+  /* Line heights — 4px multiples, absolute px (never unitless). */
+  --lh-12: 12px;
+  --lh-16: 16px;
+  --lh-20: 20px;
+  --lh-24: 24px;
+  --lh-28: 28px;
+  --lh-32: 32px;
+  --lh-40: 40px;
+  --lh-48: 48px;
+  --lh-56: 56px;
+
+  /* Motion — one signature curve, one fallback. */
+  --ease-snappy: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-default: ease;
+
+  /* Italic — print convention: italics go to a contrasting serif. */
+  --font-italic: Georgia, "Times New Roman", serif;
+}
+
+/* Display-P3 saturation override — Mac Retina users see a fuller Klein blue. */
+@supports (color: color(display-p3 1 1 1)) {
+  :root {
+    --color-klein: color(display-p3 0 0.184 0.655);
+  }
 }
 
 @layer base {
@@ -26,11 +107,17 @@
 
   body {
     background: var(--color-canvas);
-    color: var(--color-ink);
+    color: var(--color-gray-12);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+
+  /* Italic in serif — the editorial print rule. */
+  em,
+  i {
+    font-family: var(--font-italic);
   }
 
   ::selection {
@@ -54,7 +141,7 @@
   button:focus-visible,
   input:focus-visible,
   [tabindex]:focus-visible {
-    outline: 1.5px solid var(--color-klein);
+    outline: 2px solid var(--color-gray-9);
     outline-offset: 2px;
     border-radius: 2px;
   }
@@ -80,11 +167,11 @@
   }
 
   .meta-text {
-    font-size: 10px;
+    font-size: var(--fs-10);
     font-family: var(--font-mono);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-muted);
+    letter-spacing: 0.18em;
+    color: var(--color-gray-11);
   }
 
   .btn {
@@ -93,15 +180,15 @@
     justify-content: center;
     gap: 0.5rem;
     height: 3rem;
-    padding-inline: 1.5rem;
+    padding-inline: var(--space-3);
     border-radius: var(--radius-pill);
-    background: var(--color-ink);
+    background: var(--color-gray-12);
     color: #ffffff;
     font-size: 0.9375rem;
     font-weight: 500;
     transition:
-      background-color 200ms ease,
-      transform 200ms ease;
+      background-color 200ms var(--ease-snappy),
+      transform 200ms var(--ease-snappy);
   }
 
   .btn:hover {
@@ -118,36 +205,553 @@
     justify-content: center;
     gap: 0.5rem;
     height: 3rem;
-    padding-inline: 1.5rem;
+    padding-inline: var(--space-3);
     border-radius: var(--radius-pill);
     background: transparent;
-    color: var(--color-ink);
+    color: var(--color-gray-12);
     border: 1px solid var(--color-hairline);
     font-size: 0.9375rem;
     font-weight: 500;
     transition:
-      background-color 200ms ease,
-      border-color 200ms ease;
+      background-color 200ms var(--ease-snappy),
+      border-color 200ms var(--ease-snappy);
   }
 
   .btn-ghost:hover {
-    border-color: var(--color-ink);
+    border-color: var(--color-gray-12);
     background: rgba(0, 0, 0, 0.02);
   }
 
   .link-klein {
-    color: var(--color-ink);
+    color: var(--color-gray-12);
     text-decoration: none;
     background-image: linear-gradient(var(--color-klein), var(--color-klein));
     background-repeat: no-repeat;
     background-position: 0 100%;
     background-size: 0% 1px;
-    transition: background-size 240ms ease;
+    transition: background-size 240ms var(--ease-snappy);
   }
 
   .link-klein:hover {
     background-size: 100% 1px;
     color: var(--color-klein);
+  }
+}
+
+/*
+ * Vertical deck — primary home-page surface.
+ *
+ * Motion model: ported from rauno.me's homepage.
+ *
+ * The deck is a fixed-position stage that fills the viewport. A hidden
+ * spacer in normal flow drives native scroll; JS reads scrollY and
+ * applies translateY + a velocity-driven scale-spring to the track.
+ * All frames are uniform cards on a single rigid track — when the track
+ * scales down during fast scroll, multiple frames become visible at
+ * once (the "you can see across sections" feel). At rest, scale springs
+ * back to 1 and a single card is centered.
+ *
+ * No scroll-snap. No per-frame entrance during scroll. Only motion is
+ * the page-load reveal (hero clip-reveal + cohort fade) and the global
+ * scale spring driven by scroll velocity.
+ */
+
+.deck-stage {
+  --card-w: min(1200px, calc(100vw - var(--space-8)));
+  --card-h: calc(var(--card-w) * 10 / 16);
+  --card-gap: clamp(40px, 8vh, 80px);
+  --card-step: calc(var(--card-h) + var(--card-gap));
+
+  position: fixed;
+  inset: 0;
+  background: var(--color-gray-3);
+  overflow: hidden;
+  contain: paint;
+}
+
+.deck-spacer {
+  /* Drives native scroll. The track itself is fixed — we just need
+     enough scrollable distance to step through every card.
+     Distance = (count - 1) * card-step + 100vh viewport room. */
+  pointer-events: none;
+}
+
+.deck-track {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: var(--card-w);
+  display: flex;
+  flex-direction: column;
+  gap: var(--card-gap);
+  padding-top: calc((100dvh - var(--card-h)) / 2);
+  padding-bottom: calc((100dvh - var(--card-h)) / 2);
+  /* JS sets transform: translate(-50%, ...) scale(...). The translate(-50%)
+     keeps the track centered horizontally; the rest is animated. */
+  transform: translateX(-50%);
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.deck-card {
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
+  background: #ffffff;
+  border: 1px solid var(--color-gray-5);
+  border-radius: var(--radius-3);
+  padding: clamp(var(--space-4), 4vw, var(--space-7));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  overflow: hidden;
+}
+
+.deck-card__label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gray-11);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.deck-card__body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-3);
+  overflow: hidden;
+}
+
+/* Top chrome — minimal index marker, sticky-ish at top of viewport.
+   This replaces the standard Nav on the home page. */
+.deck-chrome {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-5);
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  line-height: var(--lh-16);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gray-11);
+  pointer-events: none;
+}
+
+.deck-chrome > * {
+  pointer-events: auto;
+}
+
+/* Right-edge progress hairline. */
+.deck-progress {
+  position: absolute;
+  right: var(--space-5);
+  top: 12vh;
+  bottom: 12vh;
+  width: 1px;
+  background: var(--color-gray-5);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.deck-progress__marker {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background: var(--color-gray-3);
+  border: 1px solid var(--color-gray-9);
+  transform: translate(-50%, -50%);
+  transition:
+    background 200ms var(--ease-snappy),
+    border-color 200ms var(--ease-snappy);
+}
+
+.deck-progress__marker[data-active="true"] {
+  background: var(--color-klein);
+  border-color: var(--color-klein);
+}
+
+@media (max-width: 768px) {
+  .deck-stage {
+    --card-w: calc(100vw - var(--space-4));
+    --card-gap: clamp(24px, 5vh, 48px);
+  }
+
+  .deck-progress {
+    display: none;
+  }
+}
+
+/* Page-load reveal —
+   Hero clip-reveal lines (Card 01 only) + a cohort fade-in for cards 02–06
+   at 800ms. Fires once per session, never replays on scroll-back. */
+.deck-card[data-card-index]:not([data-card-index="0"]) {
+  opacity: 0;
+  animation: deck-card-load-fade 350ms var(--ease-default) 800ms forwards;
+}
+
+@keyframes deck-card-load-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.clip-line {
+  display: block;
+  overflow: hidden;
+}
+
+/* Generic line-level reveal (used by non-hero cards). Hero overrides
+   below with per-character cascade. */
+.clip-line:not(.hero-line) > * {
+  display: block;
+  transform: translateY(110%);
+  animation: clip-reveal-up 800ms var(--ease-snappy) forwards;
+  will-change: transform;
+}
+
+/*
+ * Non-hero cards: clip-line elements are static at rest. JS handles their
+ * replay on scroll-stop re-entry. Initial load is covered by the card-level
+ * cohort fade-in (.deck-card[data-card-index]:not([data-card-index="0"])).
+ */
+.deck-card:not([data-card-index="0"]) .clip-line > * {
+  transform: translateY(0);
+  animation: none;
+}
+
+.clip-line:not(.hero-line)[data-delay="0"] > * { animation-delay:   0ms; }
+.clip-line:not(.hero-line)[data-delay="1"] > * { animation-delay: 100ms; }
+.clip-line:not(.hero-line)[data-delay="2"] > * { animation-delay: 200ms; }
+.clip-line:not(.hero-line)[data-delay="3"] > * { animation-delay: 300ms; }
+.clip-line:not(.hero-line)[data-delay="4"] > * { animation-delay: 400ms; }
+.clip-line:not(.hero-line)[data-delay="5"] > * { animation-delay: 500ms; }
+.clip-line:not(.hero-line)[data-delay="6"] > * { animation-delay: 600ms; }
+.clip-line:not(.hero-line)[data-delay="7"] > * { animation-delay: 750ms; }
+
+@keyframes clip-reveal-up {
+  from { transform: translateY(110%); }
+  to   { transform: translateY(0); }
+}
+
+/*
+ * Hero manifesto — indented verse-style layout.
+ *
+ * Three semantic indent levels (set via [data-indent]):
+ *   0 → identity anchors (name, product punchline)
+ *   1 → primary action verbs (is, making, building)
+ *   2 → refinement / clarification (with X, that Y)
+ *
+ * Single typeface, single weight (400 — leaning print-editorial), single
+ * color. Hierarchy is purely indentation + position, not size or weight.
+ */
+/*
+ * Hero text block — display name + hairline rule + manifesto.
+ *
+ * Two-register typographic hierarchy (Vignelli/Brockmann grammar):
+ *   - Name sits in the display register (large, tight tracking)
+ *   - Hairline rule separates the registers
+ *   - Manifesto sits in the text register (smaller, four lines)
+ * Single weight (400) throughout — hierarchy comes from size + rule
+ * + indentation, never from font-weight.
+ */
+.hero-text {
+  display: block;
+  width: 100%;
+}
+
+.hero-name {
+  margin: 0 0 clamp(16px, 1.6vw, 22px) 0;
+  font-size: clamp(48px, 5.4vw, 72px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--color-gray-12);
+}
+
+/*
+ * 1px hairline rule between name and manifesto.
+ * Animates scaleX from 0→1 (origin left) shortly after the name's
+ * char cascade lands — see VerticalDeck replay logic + CSS @keyframes
+ * below for the matching first-load animation.
+ */
+.hero-rule {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--color-gray-7);
+  transform: scaleX(0);
+  transform-origin: left center;
+  margin: 0 0 clamp(20px, 2vw, 32px) 0;
+  animation: hero-rule-draw 600ms var(--ease-snappy) 700ms both;
+}
+
+@keyframes hero-rule-draw {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.hero-manifesto {
+  margin: 0;
+  font-size: clamp(20px, 1.9vw, 26px);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  color: var(--color-gray-12);
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+ * Bottom padding + matching negative margin extends the clip region
+ * below the natural baseline so descenders ("g", "y") aren't sliced
+ * by `overflow: hidden`. The negative margin keeps line spacing
+ * unchanged from the layout perspective.
+ */
+.hero-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.18em;
+  margin-bottom: -0.12em;
+}
+
+/* Indents are em-relative so they scale with the text register's
+   font-size (smaller manifesto = proportionally smaller indents). */
+.hero-line[data-indent="0"] {
+  padding-left: 0;
+}
+
+.hero-line[data-indent="1"] {
+  padding-left: 1.4em;
+}
+
+.hero-line[data-indent="2"] {
+  padding-left: 2.8em;
+}
+
+/*
+ * Per-character cascade reveal.
+ *
+ * Each .hero-char ships independently. Animation start time =
+ *   line base delay (set by [data-delay]) + i × 16ms char stagger.
+ *
+ * Three direction variants chosen by the line's [data-anim] attribute:
+ *   - rise   →  anchor lines (indent-0) push up from below
+ *   - drop   →  verb lines (indent-1) fall in from above
+ *   - drift  →  footnote lines (indent-2) fade-drift in from below
+ *
+ * Direction variety breaks the "everything from below" uniformity while
+ * staying inside the clip-reveal language (no per-letter deformation,
+ * no font-variation tricks, no mouse-tracking).
+ */
+.hero-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.hero-line .hero-char {
+  display: inline-block;
+  white-space: pre;
+  will-change: transform, opacity;
+}
+
+/* --hero-line-delay is set inline per line via the delayMs prop in
+   HeroLine (see VerticalDeck.tsx) so the timing schedule lives in one
+   place — no CSS/JSX delay-mapping drift. */
+
+/*
+ * All three from states use opacity: 0 — the translateY values aren't
+ * always large enough to push the glyph fully outside the line's
+ * overflow:hidden clip region (line-height 1.4 leaves ~5px of vertical
+ * slack), so opacity is what guarantees nothing leaks during the
+ * animation-delay window. `both` fill mode pins the from state until
+ * each char's delay elapses.
+ */
+.hero-line[data-anim="rise"] .hero-char {
+  opacity: 0;
+  transform: translateY(110%);
+  animation: hero-char-rise 700ms var(--ease-snappy) both;
+  animation-delay: calc(var(--hero-line-delay, 0ms) + var(--char-i, 0) * 16ms);
+}
+
+.hero-line[data-anim="drop"] .hero-char {
+  transform: translateY(-80%);
+  opacity: 0;
+  animation: hero-char-drop 750ms var(--ease-snappy) both;
+  animation-delay: calc(var(--hero-line-delay, 0ms) + var(--char-i, 0) * 16ms);
+}
+
+.hero-line[data-anim="drift"] .hero-char {
+  transform: translateY(25%);
+  opacity: 0;
+  animation: hero-char-drift 900ms var(--ease-snappy) both;
+  animation-delay: calc(var(--hero-line-delay, 0ms) + var(--char-i, 0) * 16ms);
+}
+
+@keyframes hero-char-rise {
+  from { transform: translateY(110%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes hero-char-drop {
+  from { transform: translateY(-80%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes hero-char-drift {
+  from { transform: translateY(25%); opacity: 0; }
+  to   { transform: translateY(0);   opacity: 1; }
+}
+
+/* Italic <em> inside the manifesto picks up the global Georgia rule
+   from the base layer; explicit color stays gray-12 to keep contrast. */
+.hero-manifesto em {
+  color: var(--color-gray-12);
+}
+
+/*
+ * Hero two-column layout — manifesto on left, Schmittel construction
+ * plate on right. Falls back to single column on narrow viewports so
+ * the manifesto stays the primary surface.
+ */
+.hero-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(var(--space-3), 3vw, var(--space-5));
+  align-items: center;
+  width: 100%;
+}
+
+.hero-plate-slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+/* Side-by-side only at desktop. Below 1024px the manifesto needs the full
+   card width to keep its line breaks intact. Plate column gets a fixed
+   width so manifesto claims all remaining horizontal space. */
+@media (min-width: 1024px) {
+  .hero-layout {
+    grid-template-columns: minmax(0, 1fr) clamp(280px, 24vw, 340px);
+    gap: clamp(var(--space-4), 4vw, var(--space-7));
+  }
+
+  .hero-plate-slot {
+    justify-content: flex-end;
+  }
+}
+
+/*
+ * Hero cycle plate (hero right column).
+ * See components/HeroCycle.tsx + lib/heroArchetypes.ts.
+ *
+ * Five Braun-grammar archetypes rotate through this slot every 1000ms
+ * (speaker → click-wheel → calculator → cassette → watch → loop).
+ * Each archetype is its own <g class="cycle-arch"> with a data-state
+ * attribute that drives the slide transition:
+ *
+ *   preset → active : slides in from off-stage right (transition fires
+ *                     on the active state)
+ *   active → exit   : slides out to off-stage left (transition fires
+ *                     on the exit state)
+ *   exit → preset   : instant snap back to off-stage right (preset has
+ *                     no transition, so this is a teleport — invisible
+ *                     because both endpoints are opacity 0)
+ *
+ * Per-dot --dot-phase (0 = rightmost, 1 = leftmost) feeds
+ * transition-delay so entry/exit reads as a wave matching the slide
+ * direction, not a synchronous block.
+ */
+.hero-cycle {
+  display: block;
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  overflow: hidden;
+}
+
+/*
+ * Cycle timing — must fit within CYCLE_MS (1000ms) per archetype.
+ *   entry: transform 350ms (slide from right) + per-shape opacity fade
+ *          with stagger up to 120ms.
+ *   hold:  ~530ms idle in active position.
+ *   exit:  per-shape opacity fade with reverse stagger; group does not
+ *          translate during exit — fading in place keeps each archetype
+ *          legible at its position.
+ */
+.cycle-arch {
+  transform: translateX(220px);
+  transform-origin: center;
+  transition: none;
+}
+
+.cycle-arch[data-state="active"] {
+  transform: translateX(0);
+  transition: transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.cycle-arch[data-state="exit"] {
+  transform: translateX(0);
+  transition: transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.cycle-arch[data-state="preset"] {
+  transform: translateX(220px);
+  transition: none;
+}
+
+.cycle-shape {
+  opacity: 0;
+  transition: opacity 250ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: calc(var(--shape-phase, 0) * 120ms);
+}
+
+.cycle-arch[data-state="active"] .cycle-shape {
+  opacity: 1;
+}
+
+.cycle-arch[data-state="exit"] .cycle-shape {
+  opacity: 0;
+  transition-delay: calc((1 - var(--shape-phase, 0)) * 120ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deck-card[data-card-index]:not([data-card-index="0"]),
+  .clip-line > span,
+  .hero-line .hero-char {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+  .hero-rule {
+    transform: scaleX(1);
+    animation: none;
+  }
+  .cycle-arch {
+    transform: none;
+    transition: none;
+  }
+  .cycle-arch:not([data-state="active"]) {
+    display: none;
+  }
+  .cycle-shape {
+    opacity: 1;
+    transition: none;
   }
 }
 

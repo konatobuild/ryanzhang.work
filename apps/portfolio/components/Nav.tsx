@@ -1,10 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { HamburgerMenu } from "./HamburgerMenu";
 
 export function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Home is a fixed-positioned deck and renders its own minimal chrome.
+  // Hide the standard nav there — the deck takes the whole viewport.
+  if (pathname === "/") return null;
 
   return (
     <>
