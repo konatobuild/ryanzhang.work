@@ -307,19 +307,6 @@
   overflow: hidden;
 }
 
-.deck-card__label {
-  font-family: var(--font-mono);
-  font-size: var(--fs-12);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--color-gray-11);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-3);
-  flex-shrink: 0;
-}
-
 .deck-card__body {
   flex: 1;
   min-height: 0;
@@ -657,77 +644,19 @@
 }
 
 /*
- * Hero cycle plate (hero right column).
- * See components/HeroCycle.tsx + lib/heroArchetypes.ts.
- *
- * Five Braun-grammar archetypes rotate through this slot every 1000ms
- * (speaker → click-wheel → calculator → cassette → watch → loop).
- * Each archetype is its own <g class="cycle-arch"> with a data-state
- * attribute that drives the slide transition:
- *
- *   preset → active : slides in from off-stage right (transition fires
- *                     on the active state)
- *   active → exit   : slides out to off-stage left (transition fires
- *                     on the exit state)
- *   exit → preset   : instant snap back to off-stage right (preset has
- *                     no transition, so this is a teleport — invisible
- *                     because both endpoints are opacity 0)
- *
- * Per-dot --dot-phase (0 = rightmost, 1 = leftmost) feeds
- * transition-delay so entry/exit reads as a wave matching the slide
- * direction, not a synchronous block.
+ * Hero morph (hero plate slot). 8 Braun-grammar archetypes from
+ * lib/heroArchetypes.ts cycle through this SVG. See HeroMorphPoc.tsx —
+ * each shape's transition is set inline (Lightning CSS strips this
+ * combination of properties on a bare class), this rule defines
+ * sizing only.
  */
-.hero-cycle {
+.hero-morph {
   display: block;
   width: 100%;
   max-width: 380px;
   height: auto;
-  overflow: hidden;
-}
-
-/*
- * Cycle timing — must fit within CYCLE_MS (1000ms) per archetype.
- *   entry: transform 350ms (slide from right) + per-shape opacity fade
- *          with stagger up to 120ms.
- *   hold:  ~530ms idle in active position.
- *   exit:  per-shape opacity fade with reverse stagger; group does not
- *          translate during exit — fading in place keeps each archetype
- *          legible at its position.
- */
-.cycle-arch {
-  transform: translateX(220px);
-  transform-origin: center;
-  transition: none;
-}
-
-.cycle-arch[data-state="active"] {
-  transform: translateX(0);
-  transition: transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.cycle-arch[data-state="exit"] {
-  transform: translateX(0);
-  transition: transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.cycle-arch[data-state="preset"] {
-  transform: translateX(220px);
-  transition: none;
-}
-
-.cycle-shape {
-  opacity: 0;
-  transition: opacity 250ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  transition-delay: calc(var(--shape-phase, 0) * 120ms);
-}
-
-.cycle-arch[data-state="active"] .cycle-shape {
-  opacity: 1;
-}
-
-.cycle-arch[data-state="exit"] .cycle-shape {
-  opacity: 0;
-  transition-delay: calc((1 - var(--shape-phase, 0)) * 120ms);
+  cursor: pointer;
+  user-select: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -742,17 +671,36 @@
     transform: scaleX(1);
     animation: none;
   }
-  .cycle-arch {
-    transform: none;
-    transition: none;
-  }
-  .cycle-arch:not([data-state="active"]) {
-    display: none;
-  }
-  .cycle-shape {
-    opacity: 1;
-    transition: none;
-  }
+}
+
+.hero-morph-lab {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+.hero-morph-lab header {
+  margin-bottom: 2rem;
+}
+
+.hero-morph-lab h1 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.hero-morph-lab p {
+  color: var(--color-gray-11);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.hero-morph-lab figure {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--color-gray-2);
+  border: 1px solid var(--color-gray-5);
+  border-radius: 12px;
 }
 
 @keyframes marquee-slow {

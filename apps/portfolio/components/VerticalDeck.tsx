@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { featureCases, type CaseEntry } from "@/lib/cases";
-import { HeroCycle } from "@/components/HeroCycle";
+import { HeroMorphPoc } from "@/components/HeroMorphPoc";
 
 /*
  * VerticalDeck — the home-page primary surface.
@@ -29,7 +29,6 @@ import { HeroCycle } from "@/components/HeroCycle";
 type CardMeta = {
   anchor: string;
   label: string;
-  meta?: string;
   variant: "identity" | "focus" | "work" | "contact";
 };
 
@@ -40,42 +39,12 @@ const HOME_SCALE = 1;
 const DECK_SCALE = 0.78;
 
 const CARD_DEFS: CardMeta[] = [
-  {
-    anchor: "01",
-    label: "Home",
-    meta: "Seq_001 / Indexed_2026",
-    variant: "identity",
-  },
-  {
-    anchor: "02",
-    label: "Focus · Stash",
-    meta: "In development · 2026",
-    variant: "focus",
-  },
-  {
-    anchor: "03",
-    label: "Work 01",
-    meta: "Slot · Awaiting promotion",
-    variant: "work",
-  },
-  {
-    anchor: "04",
-    label: "Work 02",
-    meta: "Slot · Awaiting promotion",
-    variant: "work",
-  },
-  {
-    anchor: "05",
-    label: "Work 03",
-    meta: "Slot · Awaiting promotion",
-    variant: "work",
-  },
-  {
-    anchor: "06",
-    label: "Make contact",
-    meta: "06 / 06",
-    variant: "contact",
-  },
+  { anchor: "01", label: "Home", variant: "identity" },
+  { anchor: "02", label: "Focus · Stash", variant: "focus" },
+  { anchor: "03", label: "Work 01", variant: "work" },
+  { anchor: "04", label: "Work 02", variant: "work" },
+  { anchor: "05", label: "Work 03", variant: "work" },
+  { anchor: "06", label: "Make contact", variant: "contact" },
 ];
 
 export function VerticalDeck() {
@@ -414,7 +383,6 @@ export function VerticalDeck() {
               className="deck-card"
               aria-label={meta.label}
             >
-              <CardLabel label={meta.label} meta={meta.meta} />
               <div className="deck-card__body">
                 {meta.variant === "identity" && <IdentityBody />}
                 {meta.variant === "focus" && <StashBody entry={stash} />}
@@ -510,17 +478,6 @@ function DeckProgress({
   );
 }
 
-/* ─── Card label row (shared header for every card) ─────────────────── */
-
-function CardLabel({ label, meta }: { label: string; meta?: string }) {
-  return (
-    <div className="deck-card__label">
-      <span>{label}</span>
-      {meta && <span style={{ color: "var(--color-gray-9)" }}>{meta}</span>}
-    </div>
-  );
-}
-
 /* ─── Card body: Identity (hero) ────────────────────────────────────── */
 
 /*
@@ -602,7 +559,7 @@ function IdentityBody() {
         </p>
       </div>
       <div className="hero-plate-slot" aria-hidden="true">
-        <HeroCycle />
+        <HeroMorphPoc />
       </div>
     </div>
   );
