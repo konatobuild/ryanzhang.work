@@ -491,7 +491,8 @@
 }
 
 .hero-name {
-  margin: 0 0 clamp(16px, 1.6vw, 22px) 0;
+  /* tight: name + hairline rule are one nameplate unit */
+  margin: 0 0 var(--stack-tight) 0;
   font-size: clamp(48px, 5.4vw, 72px);
   font-weight: 400;
   line-height: 1;
@@ -512,7 +513,8 @@
   background: var(--color-gray-7);
   transform: scaleX(0);
   transform-origin: left center;
-  margin: 0 0 clamp(20px, 2vw, 32px) 0;
+  /* block: nameplate ends, manifesto begins */
+  margin: 0 0 var(--stack-block) 0;
   animation: hero-rule-draw 600ms var(--ease-snappy) 700ms both;
 }
 
@@ -647,7 +649,7 @@
 .hero-layout {
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(var(--space-3), 3vw, var(--space-5));
+  gap: var(--stack-block);
   align-items: center;
   width: 100%;
 }
@@ -665,7 +667,7 @@
 @media (min-width: 1024px) {
   .hero-layout {
     grid-template-columns: minmax(0, 1fr) clamp(280px, 24vw, 340px);
-    gap: clamp(var(--space-4), 4vw, var(--space-7));
+    gap: var(--margin-card-gutter);
   }
 
   .hero-plate-slot {
