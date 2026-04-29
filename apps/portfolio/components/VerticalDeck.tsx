@@ -8,22 +8,21 @@ import { HeroMorphPoc } from "@/components/HeroMorphPoc";
 /*
  * VerticalDeck — the home-page primary surface.
  *
- * Motion model (ported from rauno.me homepage):
+ * Motion model:
  *   - The deck is a fixed-position stage. Native page scroll is used as
  *     a scrubber; nothing in the document flow except a hidden spacer
  *     that determines scrollable distance.
  *   - All cards live on a single rigid track. JS reads scrollY and
- *     applies a translateY to the track, plus a velocity-driven scale
- *     spring (1 ↔ ~0.7) that shrinks the deck during fast scroll and
- *     springs back to 1 when scroll stops. That's the "you can see
- *     across sections" feel.
+ *     applies a translateY to the track, plus a one-time scale ramp
+ *     (1 → 0.78) that compresses the deck once the user enters it.
  *   - Cards are uniform — same dimensions, same surface treatment.
- *     Hero is just card 0; gnovi is card 1; etc.
- *   - No scroll-snap. No per-card entrance during scroll. The only
- *     time-based motion is the page-load reveal (hero clip-reveal +
- *     cohort fade for the rest at 800ms).
- *
- * See STRATEGY.md §6 + the rauno.me motion deep-dive report.
+ *     Card contents stay still relative to their card frame: no
+ *     per-card parallax, no inertia simulation. Print-spec rule —
+ *     simulated motion would undercut the typographic register the
+ *     rest of the design holds to.
+ *   - No scroll-snap. The only time-based motion is the page-load
+ *     reveal (hero clip-reveal + cohort fade for the rest at 800ms)
+ *     and the hairline-rule scaleX-from-left.
  */
 
 type CardMeta = {
@@ -81,18 +80,7 @@ export function VerticalDeck() {
     scale: 1,
     cardStep: 0,
     effectiveStep: 0,
-    // Per-card parallax offsets — chase a target derived from scroll
-    // position. Each card body translates additionally on Y so its content
-    // "trails" the card frame as the deck scrolls. Mirrors rauno.me's
-    // per-frame slide spring (`k = useSpring(0, {stiffness:500, damping:40})`)
-    // applied to slide-variant frame contents.
-    parallax: [] as number[],
   });
-
-  // Cache references to each card's body element. Populated once after
-  // mount; the tick function reads from here to apply per-frame parallax
-  // without paying for repeated DOM queries.
-  const bodyRefsRef = useRef<HTMLElement[]>([]);
 
   // Recalculate spacer height + cardStep whenever viewport changes.
   // We read the actual rendered card dimensions (instead of resolving
@@ -121,15 +109,6 @@ export function VerticalDeck() {
 
       const totalScroll = (CARD_DEFS.length - 1) * effectiveStep;
       spacer.style.height = `${totalScroll + 8}px`;
-
-      // Cache body refs for the parallax loop in tick().
-      const bodies: HTMLElement[] = [];
-      cards.forEach((c) => {
-        const body = c.querySelector(".deck-card__body");
-        if (body instanceof HTMLElement) bodies.push(body);
-      });
-      bodyRefsRef.current = bodies;
-      motionRef.current.parallax = new Array(bodies.length).fill(0);
 
       return true;
     };
@@ -210,32 +189,11 @@ export function VerticalDeck() {
         setActiveIndex((prev) => (prev === clamped ? prev : clamped));
       }
 
-      // Per-card parallax. Each card body translates additionally on Y
-      // based on its distance from the current scroll center, so contents
-      // "trail" the card frame as the deck moves. Mirrors rauno.me's
-      // per-frame slide spring on slide-variant frames. Direction: positive
-      // distance (user has scrolled past card center) → content drifts down
-      // within its card → content lingers in viewport longer than card.
-      const bodies = bodyRefsRef.current;
-      if (effective > 0 && bodies.length > 0) {
-        const PARALLAX_FACTOR = 0.18;
-        const PARALLAX_MAX = 90;
-        for (let i = 0; i < bodies.length; i++) {
-          const body = bodies[i];
-          const cardCenter = i * effective;
-          const distance = window.scrollY - cardCenter;
-          const target = Math.max(
-            -PARALLAX_MAX,
-            Math.min(PARALLAX_MAX, distance * PARALLAX_FACTOR),
-          );
-          const current = m.parallax[i] ?? 0;
-          const next = current + (target - current) * 0.35;
-          m.parallax[i] = next;
-          body.style.transform = `translateY(${next.toFixed(2)}px)`;
-        }
-      }
-
-      // Suppress unused-var lint if step ends up unused after refactors.
+      // Print-spec rule: card contents do not parallax. The deck as a
+      // whole scrubs and scales; cards themselves stay still. Earlier
+      // versions imitated rauno.me's per-frame inertia spring here, but
+      // simulated inertia reads as motion-graphic and undermines the
+      // print register the rest of the design commits to.
       void step;
 
       raf = requestAnimationFrame(tick);
