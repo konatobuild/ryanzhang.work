@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { featureCases, type CaseEntry } from "@/lib/cases";
+import { facets, type FacetMeta, type FacetSlug } from "@/lib/facets";
 import { HeroMorphPoc } from "@/components/HeroMorphPoc";
 
 /*
@@ -29,7 +30,9 @@ import { HeroMorphPoc } from "@/components/HeroMorphPoc";
 type CardMeta = {
   anchor: string;
   label: string;
-  variant: "identity" | "focus" | "work" | "contact";
+  variant: "identity" | "focus" | "facet" | "contact";
+  /** Only set when variant === "facet". */
+  facetSlug?: FacetSlug;
 };
 
 // Sustained scale once the user is past the hero. Native scroll-pixel cost
@@ -41,9 +44,24 @@ const DECK_SCALE = 0.78;
 const CARD_DEFS: CardMeta[] = [
   { anchor: "01", label: "Home", variant: "identity" },
   { anchor: "02", label: "Focus · Stash", variant: "focus" },
-  { anchor: "03", label: "Work 01", variant: "work" },
-  { anchor: "04", label: "Work 02", variant: "work" },
-  { anchor: "05", label: "Work 03", variant: "work" },
+  {
+    anchor: "03",
+    label: "Facet · Interaction",
+    variant: "facet",
+    facetSlug: "interaction",
+  },
+  {
+    anchor: "04",
+    label: "Facet · AI systems",
+    variant: "facet",
+    facetSlug: "ai-systems",
+  },
+  {
+    anchor: "05",
+    label: "Facet · Taste formation",
+    variant: "facet",
+    facetSlug: "taste-formation",
+  },
   { anchor: "06", label: "Make contact", variant: "contact" },
 ];
 
@@ -389,7 +407,13 @@ export function VerticalDeck() {
               <div className="deck-card__body">
                 {meta.variant === "identity" && <IdentityBody />}
                 {meta.variant === "focus" && <StashBody entry={stash} />}
-                {meta.variant === "work" && <WorkSlotBody label={meta.label} />}
+                {meta.variant === "facet" && meta.facetSlug && (
+                  <FacetBody
+                    facet={
+                      facets.find((f) => f.slug === meta.facetSlug) ?? facets[0]
+                    }
+                  />
+                )}
                 {meta.variant === "contact" && <ContactBody />}
               </div>
             </article>
@@ -719,61 +743,172 @@ function StashBody({ entry }: { entry: CaseEntry | null }) {
   );
 }
 
-/* ─── Card body: Work slot (placeholder) ────────────────────────────── */
+/* ─── Card body: Facet (personal-quality narrative) ─────────────────── */
 
-function WorkSlotBody({ label }: { label: string }) {
+/*
+ * FacetBody — surface treatment for one of the three facet narratives.
+ *
+ * Layout intentionally mirrors StashBody (two-column grid, text left,
+ * calibrating slot right, CTA bottom) so the deck reads as one rhythm.
+ * Facet detail lives at /facets/[slug]; this card is the print-quality
+ * surface that links into it. Each block wears `.clip-line` so the
+ * deck's existing entry/replay animation language carries through.
+ *
+ * Calibrating slot is a typographic plate (giant facet ordinal) by
+ * default. When the user provides a real asset (video / diagram /
+ * image / collage), swap the plate body for the asset — same frame,
+ * different content.
+ */
+function FacetBody({ facet }: { facet: FacetMeta }) {
+  const ordinal = String(facet.index).padStart(2, "0");
+  const total = String(facet.total).padStart(2, "0");
+
   return (
     <>
       <div
         style={{
           flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          gap: "var(--space-3)",
+          display: "grid",
+          gridTemplateColumns: "minmax(0, 1.1fr) minmax(0, 1fr)",
+          gap: "clamp(var(--space-4), 4vw, var(--space-7))",
+          alignItems: "stretch",
+          minHeight: 0,
         }}
       >
-        <h2
-          className="clip-line"
+        <div
           style={{
-            fontSize: "clamp(28px, 3.4vw, 48px)",
-            lineHeight: 1.1,
-            fontWeight: 500,
-            letterSpacing: "-0.02em",
-            color: "var(--color-gray-12)",
-            margin: 0,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            gap: "var(--space-3)",
+            minWidth: 0,
           }}
         >
-          <span>Reserved for strategic work.</span>
-        </h2>
-        <p
-          className="clip-line"
+          <div
+            className="clip-line"
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: "var(--fs-12)",
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "var(--color-gray-11)",
+            }}
+          >
+            <span>
+              {ordinal}{" "}
+              <span style={{ color: "var(--color-gray-9)" }}>/ {total}</span>
+              {"  ·  "}
+              <span style={{ color: "var(--color-gray-11)" }}>Facet</span>
+            </span>
+          </div>
+
+          <h2
+            className="clip-line"
+            style={{
+              fontSize: "clamp(36px, 4.4vw, 64px)",
+              lineHeight: 1.05,
+              fontWeight: 400,
+              letterSpacing: "-0.03em",
+              color: "var(--color-gray-12)",
+              margin: 0,
+              maxWidth: "22ch",
+            }}
+          >
+            <span>{facet.title}</span>
+          </h2>
+
+          <p
+            className="clip-line"
+            style={{
+              fontSize: "clamp(18px, 1.6vw, 22px)",
+              lineHeight: 1.35,
+              fontWeight: 400,
+              letterSpacing: "-0.005em",
+              color: "var(--color-gray-11)",
+              margin: 0,
+              maxWidth: "22ch",
+            }}
+          >
+            <span>{facet.titleZh}</span>
+          </p>
+
+          <p
+            className="clip-line"
+            style={{
+              fontSize: "clamp(15px, 1.25vw, 17px)",
+              lineHeight: 1.5,
+              color: "var(--color-gray-11)",
+              margin: "var(--space-2) 0 0",
+              maxWidth: "44ch",
+            }}
+          >
+            <span>{facet.subhead}</span>
+          </p>
+        </div>
+
+        {/*
+         * Calibrating plate. Placeholder: oversized ordinal in display
+         * type, on the same gray-2/4 gradient as the Stash preview slot.
+         * Replace contents (not the frame) when a real asset arrives.
+         */}
+        <div
+          aria-label={facet.calibratingAsset?.alt ?? `${facet.title} (placeholder)`}
           style={{
-            fontSize: "clamp(15px, 1.3vw, 18px)",
-            lineHeight: 1.5,
-            color: "var(--color-gray-11)",
-            margin: 0,
-            maxWidth: "56ch",
+            background:
+              "linear-gradient(135deg, var(--color-gray-2), var(--color-gray-4))",
+            border: "1px solid var(--color-gray-5)",
+            borderRadius: "var(--radius-2)",
+            display: "grid",
+            placeItems: "center",
+            minHeight: 0,
+            position: "relative",
+            overflow: "hidden",
           }}
         >
-          <span>
-            This slot is held for an AI/system or award-winning industrial
-            design project — the kind that earns its place beside{" "}
-            <em>Stash</em>.
+          <span
+            aria-hidden="true"
+            style={{
+              fontSize: "clamp(120px, 22vw, 280px)",
+              lineHeight: 0.85,
+              fontWeight: 300,
+              letterSpacing: "-0.06em",
+              color: "var(--color-gray-6)",
+              fontVariantNumeric: "tabular-nums",
+              userSelect: "none",
+            }}
+          >
+            {ordinal}
           </span>
-        </p>
+          <span
+            style={{
+              position: "absolute",
+              bottom: "var(--space-3)",
+              left: "var(--space-3)",
+              fontFamily: "var(--font-mono)",
+              fontSize: "var(--fs-12)",
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "var(--color-gray-9)",
+            }}
+          >
+            Calibrating · TBD
+          </span>
+        </div>
       </div>
+
       <div className="clip-line" style={{ flexShrink: 0 }}>
         <div
           style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: "var(--fs-12)",
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            color: "var(--color-gray-9)",
+            display: "flex",
+            gap: "var(--space-3)",
+            flexWrap: "wrap",
+            alignItems: "center",
+            marginTop: "var(--space-2)",
           }}
         >
-          {label} · Awaiting promotion from study tier
+          <Link href={`/facets/${facet.slug}`} className="btn">
+            {facet.cta}
+          </Link>
         </div>
       </div>
     </>
