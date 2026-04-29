@@ -1,3 +1,7 @@
+// Type-only import — facets.ts depends on cases.ts at runtime, so this
+// import must stay type-only to avoid a runtime circular reference.
+import type { FacetSlug, FacetRole } from "./facets";
+
 export type CaseCategory = "landing" | "web-app" | "mobile" | "ai-system";
 export type CaseStatus = "placeholder" | "live";
 
@@ -43,6 +47,14 @@ export interface CaseEntry {
     framework?: string;
     notes?: string;
   };
+  /**
+   * Facet membership — which personal-quality narrative this case is
+   * evidence for. See lib/facets.ts. Study-tier cases without an explicit
+   * facet are auto-assigned to "taste-formation" / "supporting" at the
+   * bottom of this file.
+   */
+  facet?: FacetSlug;
+  facetRole?: FacetRole;
 }
 
 export const CATEGORY_LABELS: Record<CaseCategory, string> = {
@@ -76,6 +88,8 @@ export const cases: CaseEntry[] = [
       framework: "macOS native · Retrieval-augmented",
       notes: "Currently building · Solo",
     },
+    facet: "ai-systems",
+    facetRole: "primary",
   },
 
   // ── STUDY TIER (range / explorations) ────────────────────────────────
@@ -93,6 +107,8 @@ export const cases: CaseEntry[] = [
       framework: "Electron 34 · React 19 · Multi-provider",
       notes: "Snapshot · Feb 2026 · Exploration",
     },
+    facet: "interaction",
+    facetRole: "primary",
   },
   {
     slug: "saas-landing",
@@ -239,6 +255,17 @@ export const cases: CaseEntry[] = [
     tier: "study",
   },
 ];
+
+// Default facet membership: any study-tier case that hasn't declared a
+// facet explicitly is treated as evidence under "taste-formation" (the
+// "consistent aesthetic across many briefs" thesis). Mutates the shared
+// `cases` array once at module load — there is exactly one writer.
+for (const c of cases) {
+  if (c.tier === "study" && !c.facet) {
+    c.facet = "taste-formation";
+    c.facetRole = "supporting";
+  }
+}
 
 /** Convenience: feature-tier cases, in declaration order. */
 export const featureCases = cases.filter((c) => c.tier === "feature");
