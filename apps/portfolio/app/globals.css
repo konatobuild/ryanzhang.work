@@ -914,6 +914,103 @@
   color: var(--color-gray-12);
 }
 
+/*
+ * Specimen layout — Braun catalog spread composition. Photo dominates
+ * the page; caption sits underneath, left-flush, smaller than display
+ * register. Hairline rule above the caption marks the photo / caption
+ * boundary (Schmittel convention).
+ *
+ *   ┌──────────────────────────────────────────────┐
+ *   │ eyebrow                                      │
+ *   │                                              │
+ *   │   [ landscape diagram, dominant ]            │
+ *   │                                              │
+ *   │   ─────────────                              │
+ *   │   Title                                      │
+ *   │   中文                                        │
+ *   └──────────────────────────────────────────────┘
+ *
+ * Deliberately *not* a 2-column layout — that's the hero's gesture and
+ * the placeholder facets'. Specimen is vertical, photo-led, captioned.
+ */
+.facet-specimen {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  width: 100%;
+}
+
+.facet-specimen__eyebrow {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gray-11);
+  margin: 0;
+}
+
+.facet-specimen__plate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+  padding: clamp(var(--space-2), 2vw, var(--space-4)) 0;
+}
+
+.facet-specimen__svg {
+  display: block;
+  width: 100%;
+  max-width: min(880px, 92%);
+  height: auto;
+  color: var(--color-gray-12);
+}
+
+.facet-specimen__caption {
+  display: block;
+  max-width: 56ch;
+}
+
+.facet-specimen__rule {
+  display: block;
+  width: clamp(120px, 18vw, 240px);
+  height: 1px;
+  background: var(--color-gray-7);
+  transform: scaleX(0);
+  transform-origin: left center;
+  margin: 0 0 clamp(16px, 1.6vw, 24px) 0;
+  animation: hero-rule-draw 600ms var(--ease-snappy) 700ms both;
+}
+
+.facet-specimen__title {
+  /*
+   * Caption-grade display — smaller than facet-title (40-56) and hero
+   * (48-72), endpoints 24/32 still on the 8-grid. This is the catalog
+   * caption register: under the photograph, Schmittel-tight tracking,
+   * but typographically subordinate to the photo above.
+   */
+  margin: 0 0 clamp(8px, 0.8vw, 16px) 0;
+  font-size: clamp(24px, 2.4vw, 32px);
+  font-weight: 400;
+  line-height: clamp(32px, 2.8vw, 40px);
+  letter-spacing: -0.025em;
+  color: var(--color-gray-12);
+  max-width: 32ch;
+}
+
+.facet-specimen__zh {
+  margin: 0;
+  font-size: var(--fs-16);
+  font-weight: 400;
+  line-height: var(--lh-24);
+  letter-spacing: -0.01em;
+  color: var(--color-gray-11);
+  max-width: 28ch;
+}
+
 .facet-plate-caption {
   position: absolute;
   bottom: var(--space-3);

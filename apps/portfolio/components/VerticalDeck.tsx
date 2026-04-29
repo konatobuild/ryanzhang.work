@@ -561,9 +561,75 @@ function IdentityBody() {
  * size + position + hairline rule, never from weight.
  */
 function FacetBody({ facet }: { facet: FacetMeta }) {
+  // Cards with a real plate get the catalog-spread composition: photo on
+  // top, caption beneath. Cards still on the placeholder keep the side-by-
+  // side 2-column layout so the void box sits where it belongs.
+  if (facet.slug === "interaction") {
+    return <SpecimenFacetBody facet={facet} />;
+  }
+  return <PlaceholderFacetBody facet={facet} />;
+}
+
+/*
+ * SpecimenFacetBody — Braun catalog-spread composition.
+ *
+ *   ┌──────────────────────────────────────────────────────────┐
+ *   │ 01 / 03 · FACET                                          │
+ *   │                                                          │
+ *   │                                                          │
+ *   │              [ landscape diagram fills here ]            │
+ *   │                                                          │
+ *   │                                                          │
+ *   │  ────────────────────────────                            │
+ *   │  I keep refusing the default interaction.                │
+ *   │  我对交互形式不安分。                                       │
+ *   └──────────────────────────────────────────────────────────┘
+ *
+ * Photo dominates the page; caption sits underneath, left-flush, smaller
+ * than a hero-register title (this is caption typography, not display).
+ * Hairline rule sits ABOVE the caption — Schmittel convention is to mark
+ * the photo/caption boundary with a thin rule.
+ */
+function SpecimenFacetBody({ facet }: { facet: FacetMeta }) {
   const ordinal = String(facet.index).padStart(2, "0");
   const total = String(facet.total).padStart(2, "0");
-  const plate = renderFacetPlate(facet);
+
+  return (
+    <div className="facet-specimen">
+      <span className="facet-specimen__eyebrow clip-line">
+        <span>
+          {ordinal}
+          <span className="facet-eyebrow__total"> / {total}</span>
+          <span className="facet-eyebrow__separator">·</span>
+          Facet
+        </span>
+      </span>
+
+      <div className="facet-specimen__plate" aria-hidden="true">
+        <InteractionPlate className="facet-specimen__svg" />
+      </div>
+
+      <div className="facet-specimen__caption">
+        <span className="facet-specimen__rule" aria-hidden="true" />
+        <h2 className="facet-specimen__title clip-line">
+          <span>{facet.title}</span>
+        </h2>
+        <p className="facet-specimen__zh clip-line">
+          <span>{facet.titleZh}</span>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/*
+ * PlaceholderFacetBody — interim 2-column layout used until each facet
+ * gets its own real plate + composition. Will be deleted once all three
+ * facets are on their own variant.
+ */
+function PlaceholderFacetBody({ facet }: { facet: FacetMeta }) {
+  const ordinal = String(facet.index).padStart(2, "0");
+  const total = String(facet.total).padStart(2, "0");
 
   return (
     <div className="facet-layout" style={{ flex: 1, minHeight: 0 }}>
@@ -588,37 +654,14 @@ function FacetBody({ facet }: { facet: FacetMeta }) {
         </p>
       </div>
 
-      {plate}
-    </div>
-  );
-}
-
-/*
- * renderFacetPlate — picks the right Schmittel-grammar plate for the
- * facet. Cards without a real plate yet fall back to the framed
- * "Calibrating · pending" placeholder so we can roll plates in one at
- * a time without breaking the rest of the deck.
- */
-function renderFacetPlate(facet: FacetMeta) {
-  if (facet.slug === "interaction") {
-    return (
       <div
-        className="facet-plate-slot facet-plate-slot--filled"
-        aria-label="Interaction — drag from a card-source into a canvas-target"
+        className="facet-plate-slot"
+        aria-label={
+          facet.calibratingAsset?.alt ?? `${facet.title} — pending visual`
+        }
       >
-        <InteractionPlate className="facet-plate-svg" />
+        <span className="facet-plate-caption">Calibrating · pending</span>
       </div>
-    );
-  }
-
-  return (
-    <div
-      className="facet-plate-slot"
-      aria-label={
-        facet.calibratingAsset?.alt ?? `${facet.title} — pending visual`
-      }
-    >
-      <span className="facet-plate-caption">Calibrating · pending</span>
     </div>
   );
 }
