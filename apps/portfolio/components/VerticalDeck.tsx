@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { facets, type FacetMeta, type FacetSlug } from "@/lib/facets";
 import { HeroMorphPoc } from "@/components/HeroMorphPoc";
@@ -567,47 +566,39 @@ function FacetBody({ facet }: { facet: FacetMeta }) {
   const total = String(facet.total).padStart(2, "0");
 
   return (
-    <>
-      <div className="facet-layout" style={{ flex: 1, minHeight: 0 }}>
-        <div className="facet-text">
-          <span className="facet-eyebrow clip-line">
-            <span>
-              {ordinal}
-              <span className="facet-eyebrow__total"> / {total}</span>
-              <span className="facet-eyebrow__separator">·</span>
-              Facet
-            </span>
+    <div className="facet-layout" style={{ flex: 1, minHeight: 0 }}>
+      <div className="facet-text">
+        <span className="facet-eyebrow clip-line">
+          <span>
+            {ordinal}
+            <span className="facet-eyebrow__total"> / {total}</span>
+            <span className="facet-eyebrow__separator">·</span>
+            Facet
           </span>
+        </span>
 
-          <h2 className="facet-title clip-line">
-            <span>{facet.title}</span>
-          </h2>
+        <h2 className="facet-title clip-line">
+          <span>{facet.title}</span>
+        </h2>
 
-          <span className="facet-rule" aria-hidden="true" />
+        <span className="facet-rule" aria-hidden="true" />
 
-          <p className="facet-subtitle clip-line">
-            <span>{facet.titleZh}</span>
-          </p>
+        <p className="facet-subtitle clip-line">
+          <span>{facet.titleZh}</span>
+        </p>
 
-          <p className="facet-body clip-line">
-            <span>{facet.subhead}</span>
-          </p>
-        </div>
-
-        <div
-          className="facet-plate-slot"
-          aria-label={facet.calibratingAsset?.alt ?? `${facet.title} — pending visual`}
-        >
-          <span className="facet-plate-caption">Calibrating · pending</span>
-        </div>
+        <p className="facet-body clip-line">
+          <span>{facet.subhead}</span>
+        </p>
       </div>
 
-      <div className="facet-cta-row clip-line">
-        <Link href={`/facets/${facet.slug}`} className="btn">
-          {facet.cta}
-        </Link>
+      <div
+        className="facet-plate-slot"
+        aria-label={facet.calibratingAsset?.alt ?? `${facet.title} — pending visual`}
+      >
+        <span className="facet-plate-caption">Calibrating · pending</span>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -615,72 +606,46 @@ function FacetBody({ facet }: { facet: FacetMeta }) {
 
 function ContactBody() {
   return (
-    <>
-      <div
+    <div
+      style={{
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        gap: "var(--space-4)",
+      }}
+    >
+      <h2
+        className="clip-line"
         style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          gap: "var(--space-4)",
+          fontSize: "clamp(40px, 5.2vw, 80px)",
+          lineHeight: 1.05,
+          fontWeight: 500,
+          letterSpacing: "-0.04em",
+          color: "var(--color-gray-12)",
+          margin: 0,
+          maxWidth: "20ch",
         }}
       >
-        <h2
-          className="clip-line"
-          style={{
-            fontSize: "clamp(40px, 5.2vw, 80px)",
-            lineHeight: 1.05,
-            fontWeight: 500,
-            letterSpacing: "-0.04em",
-            color: "var(--color-gray-12)",
-            margin: 0,
-            maxWidth: "20ch",
-          }}
-        >
-          <span>
-            Working on something <em>AI-native</em>?
-          </span>
-        </h2>
-        <p
-          className="clip-line"
-          style={{
-            fontSize: "clamp(16px, 1.5vw, 20px)",
-            lineHeight: 1.45,
-            color: "var(--color-gray-11)",
-            margin: 0,
-            maxWidth: "48ch",
-          }}
-        >
-          <span>
-            Open to design-engineer roles at AI-product teams, and to a small
-            number of carefully chosen consulting projects.
-          </span>
-        </p>
-      </div>
-      <div className="clip-line" style={{ flexShrink: 0 }}>
-        <div
-          style={{
-            display: "flex",
-            gap: "var(--space-3)",
-            flexWrap: "wrap",
-          }}
-        >
-          <a href="mailto:ryan.runsheng@gmail.com" className="btn">
-            ryan.runsheng@gmail.com
-          </a>
-          <a
-            href="https://github.com/konatobuild"
-            target="_blank"
-            rel="noreferrer"
-            className="btn-ghost"
-          >
-            GitHub ↗
-          </a>
-          <Link href="/about" className="btn-ghost">
-            About →
-          </Link>
-        </div>
-      </div>
-    </>
+        <span>
+          Working on something <em>AI-native</em>?
+        </span>
+      </h2>
+      <p
+        className="clip-line"
+        style={{
+          fontSize: "clamp(16px, 1.5vw, 20px)",
+          lineHeight: 1.45,
+          color: "var(--color-gray-11)",
+          margin: 0,
+          maxWidth: "48ch",
+        }}
+      >
+        <span>
+          Open to design-engineer roles at AI-product teams, and to a small
+          number of carefully chosen consulting projects.
+        </span>
+      </p>
+    </div>
   );
 }
