@@ -592,16 +592,17 @@ function IdentityBody() {
 /*
  * FacetBody — surface treatment for one of the three facet narratives.
  *
- * Layout intentionally mirrors StashBody (two-column grid, text left,
- * calibrating slot right, CTA bottom) so the deck reads as one rhythm.
- * Facet detail lives at /facets/[slug]; this card is the print-quality
- * surface that links into it. Each block wears `.clip-line` so the
- * deck's existing entry/replay animation language carries through.
+ * Inherits the hero's two-register print spec via `.facet-*` classes
+ * defined in globals.css:
+ *   - eyebrow (mono caps)
+ *   - display register: facet.title (single weight, baseline-grid lock)
+ *   - hairline rule between registers (matches .hero-rule cadence)
+ *   - text register: facet.titleZh + body subhead
+ *   - intentional-void plate slot on the right (no fill until real
+ *     asset arrives — the framing alone is the composition)
  *
- * Calibrating slot is a typographic plate (giant facet ordinal) by
- * default. When the user provides a real asset (video / diagram /
- * image / collage), swap the plate body for the asset — same frame,
- * different content.
+ * No mixed font-weights, no off-grid sizes, no new typographic
+ * inventions. The card is a smaller-register echo of the hero card.
  */
 function FacetBody({ facet }: { facet: FacetMeta }) {
   const ordinal = String(facet.index).padStart(2, "0");
@@ -609,151 +610,44 @@ function FacetBody({ facet }: { facet: FacetMeta }) {
 
   return (
     <>
-      <div
-        style={{
-          flex: 1,
-          display: "grid",
-          gridTemplateColumns: "minmax(0, 1.1fr) minmax(0, 1fr)",
-          gap: "clamp(var(--space-4), 4vw, var(--space-7))",
-          alignItems: "stretch",
-          minHeight: 0,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            gap: "var(--space-3)",
-            minWidth: 0,
-          }}
-        >
-          <div
-            className="clip-line"
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "var(--fs-12)",
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "var(--color-gray-11)",
-            }}
-          >
+      <div className="facet-layout" style={{ flex: 1, minHeight: 0 }}>
+        <div className="facet-text">
+          <span className="facet-eyebrow clip-line">
             <span>
-              {ordinal}{" "}
-              <span style={{ color: "var(--color-gray-9)" }}>/ {total}</span>
-              {"  ·  "}
-              <span style={{ color: "var(--color-gray-11)" }}>Facet</span>
+              {ordinal}
+              <span className="facet-eyebrow__total"> / {total}</span>
+              <span className="facet-eyebrow__separator">·</span>
+              Facet
             </span>
-          </div>
+          </span>
 
-          <h2
-            className="clip-line"
-            style={{
-              fontSize: "clamp(36px, 4.4vw, 64px)",
-              lineHeight: 1.05,
-              fontWeight: 400,
-              letterSpacing: "-0.03em",
-              color: "var(--color-gray-12)",
-              margin: 0,
-              maxWidth: "22ch",
-            }}
-          >
+          <h2 className="facet-title clip-line">
             <span>{facet.title}</span>
           </h2>
 
-          <p
-            className="clip-line"
-            style={{
-              fontSize: "clamp(18px, 1.6vw, 22px)",
-              lineHeight: 1.35,
-              fontWeight: 400,
-              letterSpacing: "-0.005em",
-              color: "var(--color-gray-11)",
-              margin: 0,
-              maxWidth: "22ch",
-            }}
-          >
+          <span className="facet-rule" aria-hidden="true" />
+
+          <p className="facet-subtitle clip-line">
             <span>{facet.titleZh}</span>
           </p>
 
-          <p
-            className="clip-line"
-            style={{
-              fontSize: "clamp(15px, 1.25vw, 17px)",
-              lineHeight: 1.5,
-              color: "var(--color-gray-11)",
-              margin: "var(--space-2) 0 0",
-              maxWidth: "44ch",
-            }}
-          >
+          <p className="facet-body clip-line">
             <span>{facet.subhead}</span>
           </p>
         </div>
 
-        {/*
-         * Calibrating plate. Placeholder: oversized ordinal in display
-         * type, on the same gray-2/4 gradient as the Stash preview slot.
-         * Replace contents (not the frame) when a real asset arrives.
-         */}
         <div
-          aria-label={facet.calibratingAsset?.alt ?? `${facet.title} (placeholder)`}
-          style={{
-            background:
-              "linear-gradient(135deg, var(--color-gray-2), var(--color-gray-4))",
-            border: "1px solid var(--color-gray-5)",
-            borderRadius: "var(--radius-2)",
-            display: "grid",
-            placeItems: "center",
-            minHeight: 0,
-            position: "relative",
-            overflow: "hidden",
-          }}
+          className="facet-plate-slot"
+          aria-label={facet.calibratingAsset?.alt ?? `${facet.title} — pending visual`}
         >
-          <span
-            aria-hidden="true"
-            style={{
-              fontSize: "clamp(120px, 22vw, 280px)",
-              lineHeight: 0.85,
-              fontWeight: 300,
-              letterSpacing: "-0.06em",
-              color: "var(--color-gray-6)",
-              fontVariantNumeric: "tabular-nums",
-              userSelect: "none",
-            }}
-          >
-            {ordinal}
-          </span>
-          <span
-            style={{
-              position: "absolute",
-              bottom: "var(--space-3)",
-              left: "var(--space-3)",
-              fontFamily: "var(--font-mono)",
-              fontSize: "var(--fs-12)",
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "var(--color-gray-9)",
-            }}
-          >
-            Calibrating · TBD
-          </span>
+          <span className="facet-plate-caption">Calibrating · pending</span>
         </div>
       </div>
 
-      <div className="clip-line" style={{ flexShrink: 0 }}>
-        <div
-          style={{
-            display: "flex",
-            gap: "var(--space-3)",
-            flexWrap: "wrap",
-            alignItems: "center",
-            marginTop: "var(--space-2)",
-          }}
-        >
-          <Link href={`/facets/${facet.slug}`} className="btn">
-            {facet.cta}
-          </Link>
-        </div>
+      <div className="facet-cta-row clip-line">
+        <Link href={`/facets/${facet.slug}`} className="btn">
+          {facet.cta}
+        </Link>
       </div>
     </>
   );

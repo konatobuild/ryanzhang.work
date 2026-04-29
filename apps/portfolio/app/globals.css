@@ -746,10 +746,162 @@
     transform: none;
     animation: none;
   }
-  .hero-rule {
+  .hero-rule,
+  .facet-rule {
     transform: scaleX(1);
     animation: none;
   }
+}
+
+/*
+ * Facet card grammar — inherits the hero's two-register print spec.
+ *
+ *   ┌─ eyebrow (mono caps) ─────────────────────────────────────────┐
+ *   │                                                                │
+ *   │  facet.title          ← display register                       │
+ *   │  ─────────────────    ← hairline rule                          │
+ *   │  facet.titleZh        ← text register                          │
+ *   │  facet.subhead        ← text register                          │
+ *   │                                                                │
+ *   │  CTA                                                           │
+ *   └────────────────────────────────────────────────────────────────┘
+ *
+ * Single weight (400) throughout — hierarchy comes from size + rule
+ * + register, never from font-weight. Sizes locked to the 8px grid.
+ * Tracking matches hero: -0.045em on display, -0.02em on text.
+ */
+.facet-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(var(--space-3), 3vw, var(--space-5));
+  align-items: stretch;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .facet-layout {
+    grid-template-columns: minmax(0, 1fr) clamp(280px, 24vw, 340px);
+    gap: clamp(var(--space-4), 4vw, var(--space-7));
+  }
+}
+
+.facet-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.facet-eyebrow {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gray-11);
+  /* baseline-grid lock: 24 / 32 endpoints both 8-multiples */
+  margin: 0 0 clamp(24px, 2vw, 32px) 0;
+}
+
+.facet-eyebrow__total {
+  color: var(--color-gray-9);
+}
+
+.facet-eyebrow__separator {
+  color: var(--color-gray-9);
+  margin: 0 0.6em;
+}
+
+.facet-title {
+  /*
+   * Display register. Slightly smaller than hero name (48–72) so the
+   * facet titles defer to the hero on the deck. Endpoints 40 / 56 are
+   * both 8-multiples. Tracking and weight match hero exactly.
+   */
+  margin: 0 0 clamp(16px, 1.6vw, 24px) 0;
+  font-size: clamp(40px, 4vw, 56px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--color-gray-12);
+  max-width: 22ch;
+}
+
+.facet-rule {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--color-gray-7);
+  transform: scaleX(0);
+  transform-origin: left center;
+  /* same rhythm as hero-rule */
+  margin: 0 0 clamp(24px, 2vw, 32px) 0;
+  animation: hero-rule-draw 600ms var(--ease-snappy) 700ms both;
+}
+
+.facet-subtitle {
+  /*
+   * Text register, primary. Same line-height / size / tracking as the
+   * hero manifesto so the two registers carry across the deck.
+   */
+  margin: 0;
+  font-size: clamp(20px, 1.9vw, 24px);
+  font-weight: 400;
+  line-height: 32px;
+  letter-spacing: -0.02em;
+  color: var(--color-gray-12);
+  max-width: 22ch;
+}
+
+.facet-body {
+  /* Text register, secondary. One register down: 16 absolute, lh 24. */
+  margin: clamp(16px, 1.6vw, 24px) 0 0 0;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: -0.005em;
+  color: var(--color-gray-11);
+  max-width: 44ch;
+}
+
+.facet-cta-row {
+  flex-shrink: 0;
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+  /* baseline lock: 32 = 4 grid units */
+  margin: clamp(24px, 2.4vw, 32px) 0 0 0;
+}
+
+/*
+ * Plate slot — mirror of .hero-plate-slot. Until a real calibrating
+ * asset lands, the slot is an intentional void: hairline frame, no
+ * fill, a mono caption in the corner. Reads as "pending" rather than
+ * "broken" because the framing alone is composed.
+ */
+.facet-plate-slot {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  border: 1px solid var(--color-gray-6);
+  border-radius: var(--radius-2);
+  min-height: clamp(180px, 24vw, 280px);
+}
+
+.facet-plate-caption {
+  position: absolute;
+  bottom: var(--space-3);
+  left: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gray-9);
 }
 
 .hero-morph-lab {
