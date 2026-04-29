@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { featureCases, type CaseEntry } from "@/lib/cases";
 import { facets, type FacetMeta, type FacetSlug } from "@/lib/facets";
 import { HeroMorphPoc } from "@/components/HeroMorphPoc";
 
@@ -30,7 +29,7 @@ import { HeroMorphPoc } from "@/components/HeroMorphPoc";
 type CardMeta = {
   anchor: string;
   label: string;
-  variant: "identity" | "focus" | "facet" | "contact";
+  variant: "identity" | "facet" | "contact";
   /** Only set when variant === "facet". */
   facetSlug?: FacetSlug;
 };
@@ -43,31 +42,28 @@ const DECK_SCALE = 0.78;
 
 const CARD_DEFS: CardMeta[] = [
   { anchor: "01", label: "Home", variant: "identity" },
-  { anchor: "02", label: "Focus · Stash", variant: "focus" },
   {
-    anchor: "03",
+    anchor: "02",
     label: "Facet · Interaction",
     variant: "facet",
     facetSlug: "interaction",
   },
   {
-    anchor: "04",
+    anchor: "03",
     label: "Facet · AI systems",
     variant: "facet",
     facetSlug: "ai-systems",
   },
   {
-    anchor: "05",
+    anchor: "04",
     label: "Facet · Taste formation",
     variant: "facet",
     facetSlug: "taste-formation",
   },
-  { anchor: "06", label: "Make contact", variant: "contact" },
+  { anchor: "05", label: "Make contact", variant: "contact" },
 ];
 
 export function VerticalDeck() {
-  const stash = featureCases.find((c) => c.slug === "stash") ?? null;
-
   const stageRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const spacerRef = useRef<HTMLDivElement>(null);
@@ -406,7 +402,6 @@ export function VerticalDeck() {
             >
               <div className="deck-card__body">
                 {meta.variant === "identity" && <IdentityBody />}
-                {meta.variant === "focus" && <StashBody entry={stash} />}
                 {meta.variant === "facet" && meta.facetSlug && (
                   <FacetBody
                     facet={
@@ -589,157 +584,6 @@ function IdentityBody() {
         <HeroMorphPoc />
       </div>
     </div>
-  );
-}
-
-/* ─── Card body: Stash (current focus) ──────────────────────────────── */
-
-function StashBody({ entry }: { entry: CaseEntry | null }) {
-  return (
-    <>
-      <div
-        style={{
-          flex: 1,
-          display: "grid",
-          gridTemplateColumns: "minmax(0, 1.1fr) minmax(0, 1fr)",
-          gap: "clamp(var(--space-4), 4vw, var(--space-7))",
-          alignItems: "stretch",
-          minHeight: 0,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            gap: "var(--space-3)",
-            minWidth: 0,
-          }}
-        >
-          <h2
-            className="clip-line"
-            style={{
-              fontSize: "clamp(48px, 6vw, 88px)",
-              lineHeight: 1.02,
-              fontWeight: 400,
-              letterSpacing: "-0.04em",
-              color: "var(--color-gray-12)",
-              margin: 0,
-            }}
-          >
-            <span>Stash</span>
-          </h2>
-          <p
-            className="clip-line"
-            style={{
-              fontSize: "clamp(16px, 1.5vw, 20px)",
-              lineHeight: 1.45,
-              color: "var(--color-gray-12)",
-              margin: 0,
-              maxWidth: "42ch",
-            }}
-          >
-            <span>
-              A macOS taste library — built with retrieval architecture so
-              the things you save become queryable design infrastructure.
-            </span>
-          </p>
-
-          <div className="clip-line">
-            <ul
-              style={{
-                listStyle: "none",
-                padding: 0,
-                margin: 0,
-                display: "grid",
-                gap: "var(--space-1)",
-                fontSize: "clamp(13px, 1.15vw, 15px)",
-                lineHeight: 1.4,
-                color: "var(--color-gray-12)",
-                marginTop: "var(--space-2)",
-              }}
-            >
-              <li>
-                <strong style={{ fontWeight: 500 }}>Native macOS</strong>{" "}
-                <span style={{ color: "var(--color-gray-11)" }}>
-                  — system-integrated, not a browser tab.
-                </span>
-              </li>
-              <li>
-                <strong style={{ fontWeight: 500 }}>Retrieval first</strong>{" "}
-                <span style={{ color: "var(--color-gray-11)" }}>
-                  — saved work returns when you&rsquo;re working, not when you
-                  search.
-                </span>
-              </li>
-              <li>
-                <strong style={{ fontWeight: 500 }}>Designed in code</strong>{" "}
-                <span style={{ color: "var(--color-gray-11)" }}>
-                  — every interaction shipped as it was sketched.
-                </span>
-              </li>
-              <li>
-                <strong style={{ fontWeight: 500 }}>Solo build</strong>{" "}
-                <span style={{ color: "var(--color-gray-11)" }}>
-                  — design, system, and code in one pair of hands.
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div
-          aria-label="Stash preview (placeholder)"
-          style={{
-            background:
-              "linear-gradient(135deg, var(--color-gray-2), var(--color-gray-4))",
-            border: "1px solid var(--color-gray-5)",
-            borderRadius: "var(--radius-2)",
-            display: "grid",
-            placeItems: "center",
-            color: "var(--color-gray-9)",
-            fontFamily: "var(--font-mono)",
-            fontSize: "var(--fs-12)",
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            minHeight: 0,
-          }}
-        >
-          Preview · TBD
-        </div>
-      </div>
-
-      <div className="clip-line" style={{ flexShrink: 0 }}>
-        <div
-          style={{
-            display: "flex",
-            gap: "var(--space-3)",
-            flexWrap: "wrap",
-            alignItems: "center",
-            marginTop: "var(--space-2)",
-          }}
-        >
-          <a
-            href="mailto:ryan.runsheng@gmail.com?subject=Stash%20%E2%80%94%20early%20access"
-            className="btn"
-          >
-            Get early access →
-          </a>
-          <span
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "var(--fs-12)",
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "var(--color-gray-11)",
-            }}
-          >
-            {entry?.buildMeta?.framework ??
-              "macOS native · Retrieval-augmented"}
-          </span>
-        </div>
-      </div>
-    </>
   );
 }
 
