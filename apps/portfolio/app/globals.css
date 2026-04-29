@@ -112,6 +112,22 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    /*
+     * Microtypography — the print-blood layer.
+     *
+     * font-feature-settings: explicit OpenType — kerning, standard ligatures,
+     *   contextual alternates. Inter ships these but most engines leave them
+     *   off by default; turning them on gives the page a typeset feel
+     *   instead of a rendered feel.
+     * font-optical-sizing: large display sizes get tighter sidebearings,
+     *   small sizes get looser ones (Inter's variable axes).
+     * hanging-punctuation: opening quotes / em-dashes hang outside the text
+     *   block so vertical edges read as straight (Bringhurst rule, Safari only,
+     *   no-op elsewhere — progressive enhancement).
+     */
+    font-feature-settings: "kern", "liga", "calt";
+    font-optical-sizing: auto;
+    hanging-punctuation: first last;
   }
 
   /* Italic in serif — the editorial print rule. */
@@ -129,12 +145,22 @@
   h2,
   h3 {
     letter-spacing: -0.03em;
+    /* Headings: balance line breaks so the last line isn't a one-word widow.
+       Cheap, modern, and exactly what a print typesetter would do by hand. */
+    text-wrap: balance;
   }
 
   h4,
   h5,
   h6 {
     letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    /* Body: prevent single-word widows at paragraph ends.
+       More expensive than `balance` so reserved for paragraph-level text. */
+    text-wrap: pretty;
   }
 
   a:focus-visible,
@@ -461,7 +487,14 @@
 }
 
 .hero-name {
-  margin: 0 0 clamp(16px, 1.6vw, 22px) 0;
+  /*
+   * Locked to 8px baseline grid:
+   *   - margin-bottom endpoints 16 / 24 (was 16 / 22 — 22 is off-grid)
+   *   - font-size endpoints 48 / 72 (already 8-multiples)
+   *   - line-height: 1 → at exact endpoints lh = font-size = 48 or 72,
+   *     both 8-multiples. The whole name occupies one grid row of its own.
+   */
+  margin: 0 0 clamp(16px, 1.6vw, 24px) 0;
   font-size: clamp(48px, 5.4vw, 72px);
   font-weight: 400;
   line-height: 1;
@@ -482,7 +515,8 @@
   background: var(--color-gray-7);
   transform: scaleX(0);
   transform-origin: left center;
-  margin: 0 0 clamp(20px, 2vw, 32px) 0;
+  /* margin-bottom on the 8px grid (was 20-32, 20 is off-grid). */
+  margin: 0 0 clamp(24px, 2vw, 32px) 0;
   animation: hero-rule-draw 600ms var(--ease-snappy) 700ms both;
 }
 
@@ -493,9 +527,21 @@
 
 .hero-manifesto {
   margin: 0;
-  font-size: clamp(20px, 1.9vw, 26px);
+  /*
+   * 8px baseline grid lock for the manifesto block.
+   *
+   *   font-size endpoints 20 / 24 (was 20 / 26 — 26 is off-grid).
+   *   line-height absolute 32px (was unitless 1.4 — produced 28px @ 20 fs and
+   *     ~36.4px @ 26 fs, neither on grid).
+   *
+   * With four manifesto lines at 32px each, the manifesto block is exactly
+   * 128px tall (16 × 8 grid units) — every line baseline lands on the
+   * shared lattice with the name and rule. This is the print-blood lock:
+   * the whole hero stack is now baseline-grid honest.
+   */
+  font-size: clamp(20px, 1.9vw, 24px);
   font-weight: 400;
-  line-height: 1.4;
+  line-height: 32px;
   letter-spacing: -0.02em;
   color: var(--color-gray-12);
   display: flex;
@@ -575,14 +621,21 @@
 }
 
 .hero-line[data-anim="drop"] .hero-char {
-  transform: translateY(-80%);
+  /*
+   * Manifesto-only direction. Percentage compensated for the manifesto's
+   * absolute 32px line-height: original -80% of lh=36.4 ≈ -29px swing;
+   * to keep the same absolute swing on lh=32, scale to -91% ≈ -29px.
+   * Same intent as before, decoupled from the manifesto type-size change.
+   */
+  transform: translateY(-91%);
   opacity: 0;
   animation: hero-char-drop 750ms var(--ease-snappy) both;
   animation-delay: calc(var(--hero-line-delay, 0ms) + var(--char-i, 0) * 16ms);
 }
 
 .hero-line[data-anim="drift"] .hero-char {
-  transform: translateY(25%);
+  /* Manifesto-only. 25% of old 36.4 ≈ 9.1px → 28% of new 32 ≈ 9.0px. */
+  transform: translateY(28%);
   opacity: 0;
   animation: hero-char-drift 900ms var(--ease-snappy) both;
   animation-delay: calc(var(--hero-line-delay, 0ms) + var(--char-i, 0) * 16ms);
@@ -594,12 +647,12 @@
 }
 
 @keyframes hero-char-drop {
-  from { transform: translateY(-80%); opacity: 0; }
+  from { transform: translateY(-91%); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
 }
 
 @keyframes hero-char-drift {
-  from { transform: translateY(25%); opacity: 0; }
+  from { transform: translateY(28%); opacity: 0; }
   to   { transform: translateY(0);   opacity: 1; }
 }
 

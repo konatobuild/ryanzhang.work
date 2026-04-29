@@ -271,10 +271,13 @@ export function VerticalDeck() {
         const heroLines = card.querySelectorAll<HTMLElement>(".hero-line");
         if (heroLines.length === 0) return;
 
+        // Must mirror the CSS @keyframes hero-char-* values in globals.css.
+        // drop/drift compensated for the manifesto's lh=32px lock so absolute
+        // swing matches the previous lh=36.4 baseline (-29px / +9px).
         const ANIM_FROM = {
           rise: { transform: "translateY(110%)", opacity: "0" },
-          drop: { transform: "translateY(-80%)", opacity: "0" },
-          drift: { transform: "translateY(25%)", opacity: "0" },
+          drop: { transform: "translateY(-91%)", opacity: "0" },
+          drift: { transform: "translateY(28%)", opacity: "0" },
         } as const;
         const ANIM_DURATION = { rise: 700, drop: 750, drift: 900 } as const;
         const TO = { transform: "translateY(0)", opacity: "1" };
