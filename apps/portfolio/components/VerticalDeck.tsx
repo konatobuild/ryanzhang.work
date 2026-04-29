@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { facets, type FacetMeta, type FacetSlug } from "@/lib/facets";
 import { HeroMorphPoc } from "@/components/HeroMorphPoc";
+import { InteractionPlate } from "@/components/facets/InteractionPlate";
 
 /*
  * VerticalDeck — the home-page primary surface.
@@ -549,21 +550,20 @@ function IdentityBody() {
 /*
  * FacetBody — surface treatment for one of the three facet narratives.
  *
- * Inherits the hero's two-register print spec via `.facet-*` classes
- * defined in globals.css:
- *   - eyebrow (mono caps)
- *   - display register: facet.title (single weight, baseline-grid lock)
- *   - hairline rule between registers (matches .hero-rule cadence)
- *   - text register: facet.titleZh + body subhead
- *   - intentional-void plate slot on the right (no fill until real
- *     asset arrives — the framing alone is the composition)
+ * Minimal-register print formula (Braun ad / cover lineage, post-research):
+ *   one-graphic + minimal-type. No body paragraph on the surface card —
+ *   the supporting prose lives on /facets/[slug]. The card carries only
+ *   the claim (English title), the Chinese subhead, the model-number
+ *   eyebrow, and one Schmittel-grammar plate. Reader fills in the rest.
  *
- * No mixed font-weights, no off-grid sizes, no new typographic
- * inventions. The card is a smaller-register echo of the hero card.
+ * Inherits the hero's two-register print spec via `.facet-*` classes
+ * defined in globals.css. Single weight throughout; hierarchy comes from
+ * size + position + hairline rule, never from weight.
  */
 function FacetBody({ facet }: { facet: FacetMeta }) {
   const ordinal = String(facet.index).padStart(2, "0");
   const total = String(facet.total).padStart(2, "0");
+  const plate = renderFacetPlate(facet);
 
   return (
     <div className="facet-layout" style={{ flex: 1, minHeight: 0 }}>
@@ -586,18 +586,39 @@ function FacetBody({ facet }: { facet: FacetMeta }) {
         <p className="facet-subtitle clip-line">
           <span>{facet.titleZh}</span>
         </p>
-
-        <p className="facet-body clip-line">
-          <span>{facet.subhead}</span>
-        </p>
       </div>
 
+      {plate}
+    </div>
+  );
+}
+
+/*
+ * renderFacetPlate — picks the right Schmittel-grammar plate for the
+ * facet. Cards without a real plate yet fall back to the framed
+ * "Calibrating · pending" placeholder so we can roll plates in one at
+ * a time without breaking the rest of the deck.
+ */
+function renderFacetPlate(facet: FacetMeta) {
+  if (facet.slug === "interaction") {
+    return (
       <div
-        className="facet-plate-slot"
-        aria-label={facet.calibratingAsset?.alt ?? `${facet.title} — pending visual`}
+        className="facet-plate-slot facet-plate-slot--filled"
+        aria-label="Interaction — drag from a card-source into a canvas-target"
       >
-        <span className="facet-plate-caption">Calibrating · pending</span>
+        <InteractionPlate className="facet-plate-svg" />
       </div>
+    );
+  }
+
+  return (
+    <div
+      className="facet-plate-slot"
+      aria-label={
+        facet.calibratingAsset?.alt ?? `${facet.title} — pending visual`
+      }
+    >
+      <span className="facet-plate-caption">Calibrating · pending</span>
     </div>
   );
 }

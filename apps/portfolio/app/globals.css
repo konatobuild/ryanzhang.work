@@ -892,6 +892,28 @@
   min-height: clamp(180px, 24vw, 280px);
 }
 
+/*
+ * Populated plate variant — drops the hairline frame so the Schmittel
+ * graphic sits silhouetted on the card's white surface (Braun catalog
+ * convention: product photos are never boxed). The slot still claims
+ * the same grid column so the type block on the left keeps its rhythm.
+ */
+.facet-plate-slot--filled {
+  border: 0;
+  border-radius: 0;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3);
+}
+
+.facet-plate-svg {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  color: var(--color-gray-12);
+}
+
 .facet-plate-caption {
   position: absolute;
   bottom: var(--space-3);
