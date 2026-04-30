@@ -351,7 +351,11 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  overflow: hidden;
+  /* Default cards (facets, contact) allow content to extend past their
+     own boundary — facet device mockups deliberately break out of the
+     card frame to read at near-viewport scale. Hero overrides back to
+     hidden so its calling-card silhouette stays sharp. */
+  overflow: visible;
 }
 
 /*
@@ -369,6 +373,8 @@
   /* Hero keeps its original print-discipline padding — facets dropped
      down to make room for the device mockup, hero doesn't need that. */
   padding: clamp(var(--space-4), 4vw, var(--space-7));
+  /* Hero clips content to its silhouette; facets allow break-out. */
+  overflow: hidden;
 }
 
 /*
@@ -1005,6 +1011,91 @@
   grid-template-rows: auto 1fr auto;
   gap: clamp(var(--space-2), 1.2vw, var(--space-3));
   width: 100%;
+}
+
+/*
+ * Facet bigshow — text block at top, device that breaks out of the
+ * card boundary to render at near-viewport scale. The device is the
+ * dominant element; text is a small block above it (NOT below).
+ *
+ *   ┌─ card boundary (1200x750) ────────────────────────────┐
+ *   │ 02 / FACET                                            │
+ *   │ I keep refusing the default interaction.              │
+ *   │ 我对交互形式不安分。                                       │
+ *   │                                                       │
+ *   │   ╔══════════════════════════════════════════╗        │
+ *   │   ║                                          ║        │
+ *   │   ║  [Pro Display XDR — fills 90vw]          ║        │
+ *   │   ║   …extends past card boundary…           ║        │
+ *   │   ║                                          ║        │
+ *   └───╠══════════════════════════════════════════╣────────┘
+ *       ║                                          ║   ← break-out!
+ *       ╚══════════════════════════════════════════╝
+ */
+.facet-bigshow {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+}
+
+.facet-bigshow__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  margin-bottom: clamp(var(--space-3), 2vw, var(--space-5));
+}
+
+.facet-bigshow__title {
+  margin: 0;
+  font-size: clamp(28px, 2.6vw, 36px);
+  font-weight: 400;
+  line-height: clamp(36px, 2.8vw, 44px);
+  letter-spacing: -0.025em;
+  color: var(--color-gray-12);
+  max-width: 36ch;
+}
+
+.facet-bigshow__zh {
+  margin: 0;
+  font-size: var(--fs-16);
+  font-weight: 400;
+  line-height: var(--lh-24);
+  letter-spacing: -0.005em;
+  color: var(--color-gray-11);
+  max-width: 32ch;
+}
+
+.facet-bigshow__device-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Allow device to extend past this wrapper, past the card, all the
+     way out to deck-stage clip boundary. */
+  overflow: visible;
+  position: relative;
+}
+
+/* Device override for bigshow: dominant scale that breaks out of card.
+   Position: absolute escapes the parent flex context — without this,
+   flex parents squash the device down to wrap width regardless of the
+   95vw declaration. left: 50% + translate(-50%) centers the (wider-
+   than-card) device on the card's horizontal center. */
+.facet-bigshow .facet-device {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 95vw;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  aspect-ratio: 7500 / 5000;
 }
 
 .facet-poster__hook {

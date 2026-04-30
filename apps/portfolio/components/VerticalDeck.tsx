@@ -604,18 +604,26 @@ function SpecimenFacetBody({ facet }: { facet: FacetMeta }) {
   const total = String(facet.total).padStart(2, "0");
 
   return (
-    <div className="facet-poster">
-      <span className="facet-eyebrow clip-line">
-        <span>
-          {ordinal}
-          <span className="facet-eyebrow__total"> / {total}</span>
-          <span className="facet-eyebrow__separator">·</span>
-          Facet
+    <div className="facet-bigshow">
+      <div className="facet-bigshow__text">
+        <span className="facet-eyebrow clip-line">
+          <span>
+            {ordinal}
+            <span className="facet-eyebrow__total"> / {total}</span>
+            <span className="facet-eyebrow__separator">·</span>
+            Facet
+          </span>
         </span>
-      </span>
+        <p className="facet-bigshow__title clip-line">
+          <span>{facet.title}</span>
+        </p>
+        <p className="facet-bigshow__zh clip-line">
+          <span>{facet.titleZh}</span>
+        </p>
+      </div>
 
-      <div className="facet-poster__plate">
-        <div className="facet-device" aria-label="Laptop displaying interaction work">
+      <div className="facet-bigshow__device-wrap">
+        <div className="facet-device" aria-label="Pro Display XDR showing interaction work">
           <InteractionPlate className="facet-device__frame" />
           <div
             className="facet-device__screen"
@@ -629,15 +637,6 @@ function SpecimenFacetBody({ facet }: { facet: FacetMeta }) {
             <span className="facet-device__placeholder">demo · pending</span>
           </div>
         </div>
-      </div>
-
-      <div className="facet-poster__caption">
-        <p className="facet-poster__title clip-line">
-          <span>{facet.title}</span>
-        </p>
-        <p className="facet-poster__zh clip-line">
-          <span>{facet.titleZh}</span>
-        </p>
       </div>
     </div>
   );
