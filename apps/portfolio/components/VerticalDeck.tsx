@@ -561,13 +561,19 @@ function IdentityBody() {
  * size + position + hairline rule, never from weight.
  */
 function FacetBody({ facet }: { facet: FacetMeta }) {
-  // Cards with a real plate get the catalog-spread composition: photo on
-  // top, caption beneath. Cards still on the placeholder keep the side-by-
-  // side 2-column layout so the void box sits where it belongs.
+  // Each facet picks the composition that lets its content speak. None of
+  // them inherit the hero's left/right name-card layout — that grammar is
+  // reserved for the calling card itself.
   if (facet.slug === "interaction") {
     return <SpecimenFacetBody facet={facet} />;
   }
-  return <PlaceholderFacetBody facet={facet} />;
+  if (facet.slug === "ai-systems") {
+    return <StackedFacetBody facet={facet} />;
+  }
+  if (facet.slug === "taste-formation") {
+    return <TriadicFacetBody facet={facet} />;
+  }
+  return <SpecimenFacetBody facet={facet} />;
 }
 
 /*
@@ -623,44 +629,128 @@ function SpecimenFacetBody({ facet }: { facet: FacetMeta }) {
 }
 
 /*
- * PlaceholderFacetBody — interim 2-column layout used until each facet
- * gets its own real plate + composition. Will be deleted once all three
- * facets are on their own variant.
+ * StackedFacetBody — Bauhaus engineering-page composition.
+ *
+ *   ┌──────────────────────────────────────────────────────────┐
+ *   │ 02 / 03 · Facet                                          │
+ *   │ ─────────────────────────────────────────────────────────│
+ *   │  Layer 01 · UI                                           │
+ *   │ ─────────────────────────────────────────────────────────│
+ *   │  Layer 02 · Middle layer                                 │
+ *   │ ─────────────────────────────────────────────────────────│
+ *   │  Layer 03 · Model                                        │
+ *   │ ─────────────────────────────────────────────────────────│
+ *   │  I design AI as a system, not as a skin.                 │
+ *   │  我把 AI 当系统设计，不是当皮肤贴。                            │
+ *   └──────────────────────────────────────────────────────────┘
+ *
+ * Three horizontal zones separated by hairlines = the architecture
+ * itself, drawn with type. The version reads top-to-bottom from
+ * surface (UI) to ground (model). Caption sits underneath, repeating
+ * the SpecimenFacetBody convention so all facets share the same
+ * caption register.
  */
-function PlaceholderFacetBody({ facet }: { facet: FacetMeta }) {
+function StackedFacetBody({ facet }: { facet: FacetMeta }) {
   const ordinal = String(facet.index).padStart(2, "0");
   const total = String(facet.total).padStart(2, "0");
 
   return (
-    <div className="facet-layout" style={{ flex: 1, minHeight: 0 }}>
-      <div className="facet-text">
-        <span className="facet-eyebrow clip-line">
-          <span>
-            {ordinal}
-            <span className="facet-eyebrow__total"> / {total}</span>
-            <span className="facet-eyebrow__separator">·</span>
-            Facet
-          </span>
+    <div className="facet-stacked">
+      <span className="facet-eyebrow clip-line">
+        <span>
+          {ordinal}
+          <span className="facet-eyebrow__total"> / {total}</span>
+          <span className="facet-eyebrow__separator">·</span>
+          Facet
         </span>
+      </span>
 
-        <h2 className="facet-title clip-line">
+      <div className="facet-stacked__layers">
+        <div className="facet-stacked__layer">
+          <span className="facet-stacked__layer-label clip-line">
+            <span>Layer 01 · UI</span>
+          </span>
+        </div>
+        <div className="facet-stacked__layer">
+          <span className="facet-stacked__layer-label clip-line">
+            <span>Layer 02 · Middle layer</span>
+          </span>
+        </div>
+        <div className="facet-stacked__layer">
+          <span className="facet-stacked__layer-label clip-line">
+            <span>Layer 03 · Model</span>
+          </span>
+        </div>
+      </div>
+
+      <div className="facet-caption">
+        <h2 className="facet-caption__title clip-line">
           <span>{facet.title}</span>
         </h2>
-
-        <span className="facet-rule" aria-hidden="true" />
-
-        <p className="facet-subtitle clip-line">
+        <p className="facet-caption__zh clip-line">
           <span>{facet.titleZh}</span>
         </p>
       </div>
+    </div>
+  );
+}
 
-      <div
-        className="facet-plate-slot"
-        aria-label={
-          facet.calibratingAsset?.alt ?? `${facet.title} — pending visual`
-        }
-      >
-        <span className="facet-plate-caption">Calibrating · pending</span>
+/*
+ * TriadicFacetBody — three-column index composition.
+ *
+ *   ┌──────────────────────────────────────────────────────────┐
+ *   │ 03 / 03 · Facet                                          │
+ *   │                                                          │
+ *   │  Industrial   │   Graphic   │   Code                     │
+ *   │ ─────────────────────────────────────────────────────────│
+ *   │  My taste was formed across three disciplines.           │
+ *   │  我的审美是在三个学科里长出来的。                              │
+ *   └──────────────────────────────────────────────────────────┘
+ *
+ * Three vertical columns at the top become the three disciplines, each
+ * with its own mono-caps label. Hairline rule below the columns marks
+ * the boundary between the index and the manifesto caption.
+ */
+function TriadicFacetBody({ facet }: { facet: FacetMeta }) {
+  const ordinal = String(facet.index).padStart(2, "0");
+  const total = String(facet.total).padStart(2, "0");
+
+  return (
+    <div className="facet-triadic">
+      <span className="facet-eyebrow clip-line">
+        <span>
+          {ordinal}
+          <span className="facet-eyebrow__total"> / {total}</span>
+          <span className="facet-eyebrow__separator">·</span>
+          Facet
+        </span>
+      </span>
+
+      <div className="facet-triadic__columns">
+        <div className="facet-triadic__column">
+          <span className="facet-triadic__column-label clip-line">
+            <span>Industrial</span>
+          </span>
+        </div>
+        <div className="facet-triadic__column">
+          <span className="facet-triadic__column-label clip-line">
+            <span>Graphic</span>
+          </span>
+        </div>
+        <div className="facet-triadic__column">
+          <span className="facet-triadic__column-label clip-line">
+            <span>Code</span>
+          </span>
+        </div>
+      </div>
+
+      <div className="facet-caption">
+        <h2 className="facet-caption__title clip-line">
+          <span>{facet.title}</span>
+        </h2>
+        <p className="facet-caption__zh clip-line">
+          <span>{facet.titleZh}</span>
+        </p>
       </div>
     </div>
   );
@@ -668,48 +758,61 @@ function PlaceholderFacetBody({ facet }: { facet: FacetMeta }) {
 
 /* ─── Card body: Contact ────────────────────────────────────────────── */
 
+/*
+ * ContactBody — book-style colophon.
+ *
+ *   ┌──────────────────────────────────────────────────────────┐
+ *   │ 05 · Colophon                                            │
+ *   │                                                          │
+ *   │                                                          │
+ *   │                       (vast empty)                       │
+ *   │                                                          │
+ *   │                                                          │
+ *   │  Designed and built by Ryan Zhang.                       │
+ *   │  Set in Inter and Geist Mono.                            │
+ *   │  Available for design-engineer roles at AI-product teams.│
+ *   │  ryan.runsheng@gmail.com                                 │
+ *   └──────────────────────────────────────────────────────────┘
+ *
+ * Last page of a book convention: small, dense, signature-like, flush
+ * left, lower portion of the page. Vast empty area above carries the
+ * weight of "this is the end". No hero treatment, no big type, no
+ * buttons. The colophon is the closing — not another opener.
+ */
 function ContactBody() {
   return (
-    <div
-      style={{
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        gap: "var(--space-4)",
-      }}
-    >
-      <h2
-        className="clip-line"
-        style={{
-          fontSize: "clamp(40px, 5.2vw, 80px)",
-          lineHeight: 1.05,
-          fontWeight: 500,
-          letterSpacing: "-0.04em",
-          color: "var(--color-gray-12)",
-          margin: 0,
-          maxWidth: "20ch",
-        }}
-      >
+    <div className="facet-colophon">
+      <span className="facet-eyebrow clip-line">
         <span>
-          Working on something <em>AI-native</em>?
+          05
+          <span className="facet-eyebrow__separator">·</span>
+          Colophon
         </span>
-      </h2>
-      <p
-        className="clip-line"
-        style={{
-          fontSize: "clamp(16px, 1.5vw, 20px)",
-          lineHeight: 1.45,
-          color: "var(--color-gray-11)",
-          margin: 0,
-          maxWidth: "48ch",
-        }}
-      >
-        <span>
-          Open to design-engineer roles at AI-product teams, and to a small
-          number of carefully chosen consulting projects.
-        </span>
-      </p>
+      </span>
+
+      <div className="facet-colophon__block">
+        <p className="facet-colophon__line clip-line">
+          <span>Designed and built by Ryan Zhang.</span>
+        </p>
+        <p className="facet-colophon__line clip-line">
+          <span>Set in Inter and Geist Mono.</span>
+        </p>
+        <p className="facet-colophon__line clip-line">
+          <span>
+            Available for design-engineer roles at AI-product teams.
+          </span>
+        </p>
+        <p className="facet-colophon__line clip-line">
+          <span>
+            <a
+              href="mailto:ryan.runsheng@gmail.com"
+              className="facet-colophon__email"
+            >
+              ryan.runsheng@gmail.com
+            </a>
+          </span>
+        </p>
+      </div>
     </div>
   );
 }

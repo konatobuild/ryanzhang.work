@@ -1043,6 +1043,167 @@
   max-width: 28ch;
 }
 
+/*
+ * Shared facet caption — used at the bottom of stacked + triadic
+ * compositions. Mirrors the specimen caption register exactly so all
+ * facets share the same caption typography (single source of truth).
+ */
+.facet-caption {
+  display: block;
+  max-width: 56ch;
+}
+
+.facet-caption__title {
+  margin: 0 0 clamp(8px, 0.8vw, 16px) 0;
+  font-size: clamp(24px, 2.4vw, 32px);
+  font-weight: 400;
+  line-height: clamp(32px, 2.8vw, 40px);
+  letter-spacing: -0.025em;
+  color: var(--color-gray-12);
+  max-width: 32ch;
+}
+
+.facet-caption__zh {
+  margin: 0;
+  font-size: var(--fs-16);
+  font-weight: 400;
+  line-height: var(--lh-24);
+  letter-spacing: -0.01em;
+  color: var(--color-gray-11);
+  max-width: 28ch;
+}
+
+/*
+ * Stacked composition — three horizontal layers separated by hairlines.
+ * The version of the architecture is drawn with type itself.
+ */
+.facet-stacked {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: clamp(var(--space-3), 2.4vw, var(--space-5));
+  width: 100%;
+}
+
+.facet-stacked__layers {
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  border-top: 1px solid var(--color-gray-7);
+  min-height: 0;
+}
+
+.facet-stacked__layer {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--color-gray-7);
+  padding: 0 clamp(var(--space-2), 2vw, var(--space-4));
+}
+
+.facet-stacked__layer-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-14);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gray-11);
+}
+
+/*
+ * Triadic composition — three vertical columns at the top, hairline
+ * dividers between, manifesto caption beneath. Three columns = three
+ * disciplines.
+ */
+.facet-triadic {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: clamp(var(--space-3), 2.4vw, var(--space-5));
+  width: 100%;
+}
+
+.facet-triadic__columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-top: 1px solid var(--color-gray-7);
+  border-bottom: 1px solid var(--color-gray-7);
+  min-height: 0;
+}
+
+.facet-triadic__column {
+  display: flex;
+  align-items: flex-start;
+  padding: clamp(var(--space-3), 2.4vw, var(--space-5))
+    clamp(var(--space-2), 2vw, var(--space-4));
+  border-right: 1px solid var(--color-gray-7);
+}
+
+.facet-triadic__column:last-child {
+  border-right: 0;
+}
+
+.facet-triadic__column-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-14);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gray-11);
+}
+
+/*
+ * Colophon composition — book-end falling-into-place.
+ *
+ * Vast empty top half. Dense small-caps mono block lower-left, flush
+ * left, signature-grade. The closing of the book.
+ */
+.facet-colophon {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.facet-colophon__block {
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  line-height: var(--lh-20);
+  letter-spacing: 0.04em;
+  color: var(--color-gray-11);
+  max-width: 48ch;
+}
+
+.facet-colophon__line {
+  display: block;
+  margin: 0;
+}
+
+.facet-colophon__line + .facet-colophon__line {
+  margin-top: var(--space-1);
+}
+
+.facet-colophon__email {
+  color: var(--color-gray-12);
+  text-decoration: none;
+  background-image: linear-gradient(
+    var(--color-gray-12),
+    var(--color-gray-12)
+  );
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+  transition: background-size 240ms var(--ease-snappy);
+}
+
+.facet-colophon__email:hover {
+  background-size: 0% 1px;
+}
+
 .facet-plate-caption {
   position: absolute;
   bottom: var(--space-3);
