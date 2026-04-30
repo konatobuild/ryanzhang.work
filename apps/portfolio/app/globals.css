@@ -1091,7 +1091,13 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 95vw;
+  /* Width drives sizing — take the smaller of:
+     • 95vw (viewport-bound horizontally), or
+     • 85vh × aspect_ratio (viewport-bound vertically — this is the
+       width that yields exactly 85vh height at the device's aspect)
+     Whichever wins, derived height stays ≤ 85vh so the device never
+     exceeds the viewport vertically (no more bottom clipping). */
+  width: min(95vw, calc(85vh * 1.5));
   height: auto;
   max-width: none;
   max-height: none;
