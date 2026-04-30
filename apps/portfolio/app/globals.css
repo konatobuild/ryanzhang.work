@@ -337,6 +337,9 @@
    * after section without inner card frames. The deck-card element still
    * exists as a layout / scroll-step container, but it's visually
    * invisible except for hero. See the override below for hero.
+   *
+   * Padding tightened (was clamp(32, 4vw, 56)) so the device mockup on
+   * facet cards has more horizontal AND vertical room to read big.
    */
   position: relative;
   width: var(--card-w);
@@ -344,7 +347,7 @@
   background: transparent;
   border: 0;
   border-radius: 0;
-  padding: clamp(var(--space-4), 4vw, var(--space-7));
+  padding: clamp(var(--space-2), 2vw, var(--space-4));
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
@@ -363,6 +366,9 @@
   background: #ffffff;
   border: 1px solid var(--color-gray-9);
   border-radius: 0;
+  /* Hero keeps its original print-discipline padding — facets dropped
+     down to make room for the device mockup, hero doesn't need that. */
+  padding: clamp(var(--space-4), 4vw, var(--space-7));
 }
 
 /*
@@ -991,8 +997,13 @@
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  gap: clamp(var(--space-3), 2vw, var(--space-4));
+  /* Three rows: eyebrow / device (1fr) / caption. HOOK was dropped
+     to give the device maximum vertical room — the device IS the hero
+     element on the card, and TE OP-1 product pages don't add a giant
+     headline above the product photo either. The manifesto becomes
+     the caption beneath. */
+  grid-template-rows: auto 1fr auto;
+  gap: clamp(var(--space-2), 1.2vw, var(--space-3));
   width: 100%;
 }
 
@@ -1004,10 +1015,10 @@
    * matches hero display register.
    */
   margin: 0;
-  font-size: clamp(56px, 6vw, 96px);
+  font-size: clamp(36px, 3.6vw, 56px);
   font-weight: 400;
-  line-height: 1.02;
-  letter-spacing: -0.045em;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
   color: var(--color-gray-12);
   max-width: 18ch;
 }
@@ -1018,31 +1029,45 @@
   justify-content: center;
   width: 100%;
   min-height: 0;
+  overflow: hidden;
 }
 
 /*
- * Device wrapper — line-drawn laptop frame + a positioned screen panel
- * that holds the actual demo content (video, image, or placeholder).
+ * Device wrapper — Apple Pro Display XDR mockup PNG + a positioned
+ * screen panel that holds the actual demo content (video, image, or
+ * placeholder).
  *
- * The SVG line drawing is the "stage". The screen panel sits on top
- * via absolute positioning, anchored to the SVG's inner-bezel rect via
- * percentage coordinates exposed from the plate component (SCREEN_BOUNDS).
- *
- * For now the panel holds a small "demo · pending" placeholder until
- * real demo videos / screenshots are dropped in.
+ * The PNG handles the device frame, bezel, stand, and shadow. The
+ * screen panel sits BEHIND the PNG via z-index — the PNG's screen area
+ * is transparent, so content "shows through the hole". Panel coords
+ * come from SCREEN_BOUNDS exported by the plate module.
  */
 .facet-device {
   position: relative;
-  width: 100%;
-  max-width: min(960px, 96%);
+  /* Lock the 3:2 aspect by driving from height only. height: 100% fills
+     the plate row; width is auto-derived from aspect-ratio. max-width
+     caps overflow if the row gets unusually tall. Centered so the
+     (narrower-than-row) device sits in the middle.
+     CRITICAL: Do NOT also set `width: 100%` — combining width AND height
+     with aspect-ratio causes the browser to ignore aspect-ratio and
+     stretch the box. Drive from one axis only. */
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  aspect-ratio: 7500 / 5000;
+  margin: 0 auto;
   display: block;
 }
 
 .facet-device__frame {
-  display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: auto;
-  color: var(--color-gray-12);
+  height: 100%;
+  display: block;
+  z-index: 2;
+  pointer-events: none;
+  user-select: none;
 }
 
 .facet-device__screen {
@@ -1052,6 +1077,7 @@
   justify-content: center;
   background: var(--color-gray-2);
   overflow: hidden;
+  z-index: 1;
 }
 
 .facet-device__placeholder {

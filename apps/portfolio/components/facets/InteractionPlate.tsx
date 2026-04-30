@@ -1,84 +1,50 @@
 /*
- * InteractionPlate — line-drawn laptop with a screen window.
+ * InteractionPlate — Apple Pro Display XDR mockup PNG.
  *
- * The line drawing is the "stage": a hairline ortho rendering of a
- * laptop (screen + hinge + base trapezoid). The screen area is empty
- * — at runtime, the parent wraps this SVG with an absolutely-positioned
- * panel that holds the actual demo content (video / image / animation).
- * That gives us TE OP-1 product-page grammar: line-drawn device frame
- * + real content inside.
+ * Replaces the earlier line-drawn laptop SVG with a real Apple-style
+ * monitor mockup (transparent background, transparent screen area).
+ * The PNG handles the device frame, shadow, and stand. The screen
+ * area is empty — a sibling div absolutely-positioned at SCREEN_BOUNDS
+ * holds the actual demo content.
  *
- * The screen area's coordinates are exposed so the parent can position
- * the content panel in lockstep with the SVG bezel.
+ * This is the TE OP-1 product page formula faithfully translated:
+ * a real device "stage" with the work shown inside it.
  *
- * Pure stroke discipline: 1px outer, 0.75px internal, 0.5px reference
- * lines. No fills. Same printed-engineering register as the rest of
- * the deck.
+ * Source: 02 - Apple Pro Display XDR - Horizontal Mockup.png
+ *   - 7500 × 5000 px (3:2)
+ *   - RGBA, transparent background
+ *   - White screen area (treat as transparent for content overlay)
  */
+
+import Image from "next/image";
+
 export function InteractionPlate({ className }: { className?: string }) {
   return (
-    <svg
+    <Image
       className={className}
-      viewBox="0 0 960 480"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-label="Laptop displaying interaction work — line drawing of a laptop"
-    >
-      {/* ─── Laptop screen (top half) ──────────────────────────── */}
-      {/* Screen outer chassis */}
-      <rect x="120" y="30" width="720" height="380" rx="10" />
-      {/* Inner bezel — content sits inside this rect, see SCREEN_BOUNDS */}
-      <rect x="140" y="48" width="680" height="344" rx="2" />
-      {/* Camera notch — small pill shape centered at the top */}
-      <rect
-        x="455"
-        y="30"
-        width="50"
-        height="6"
-        rx="1.5"
-        strokeWidth="0.75"
-      />
-      {/* Tiny camera dot inside the notch */}
-      <circle cx="480" cy="33" r="1.25" strokeWidth="0.5" />
-
-      {/* ─── Hinge line (between screen and base) ─────────────── */}
-      <line
-        x1="120"
-        y1="411"
-        x2="840"
-        y2="411"
-        strokeWidth="0.75"
-      />
-
-      {/* ─── Laptop base (trapezoid, bottom) ───────────────────── */}
-      {/* Trapezoid sides — slight perspective so it reads as a base */}
-      <path
-        d="M 80 412 L 880 412 L 856 462 L 104 462 Z"
-        strokeWidth="0.75"
-      />
-      {/* Front edge indent — small notch in the front lip where you
-          can lift the lid open. Mirrors a real MacBook / Studio Display. */}
-      <path
-        d="M 440 462 L 460 470 L 500 470 L 520 462"
-        strokeWidth="0.5"
-      />
-    </svg>
+      src="/mockups/studio-display.png"
+      alt="Apple Pro Display XDR — interaction work shown on screen"
+      width={7500}
+      height={5000}
+      priority
+      sizes="(min-width: 1024px) 960px, 96vw"
+    />
   );
 }
 
 /*
- * Screen bounds in viewBox coordinates — used by the parent so it
- * can absolutely-position the content panel over the SVG's inner
- * bezel rect. Keeping these exported avoids drift between the two.
+ * Screen bounds in fractional coordinates of the mockup PNG.
+ * Measured against the 7500×5000 source — adjust if the mockup swaps.
+ *
+ *   inner screen rect (white area inside the black bezel):
+ *     left ≈ 24.5%   top ≈ 22%   width ≈ 51%   height ≈ 43%
  */
 export const SCREEN_BOUNDS = {
-  viewBoxWidth: 960,
-  viewBoxHeight: 480,
-  // Inner bezel: x=140 y=48 w=680 h=344
-  left: 140 / 960, // ~14.58%
-  top: 48 / 480, // 10%
-  width: 680 / 960, // ~70.83%
-  height: 344 / 480, // ~71.67%
+  imageWidth: 7500,
+  imageHeight: 5000,
+  aspectRatio: 7500 / 5000, // 1.5
+  left: 0.245,
+  top: 0.22,
+  width: 0.51,
+  height: 0.43,
 };

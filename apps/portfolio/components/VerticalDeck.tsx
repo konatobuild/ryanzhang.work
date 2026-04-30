@@ -614,10 +614,6 @@ function SpecimenFacetBody({ facet }: { facet: FacetMeta }) {
         </span>
       </span>
 
-      <h2 className="facet-poster__hook clip-line">
-        <span>{facet.hook}</span>
-      </h2>
-
       <div className="facet-poster__plate">
         <div className="facet-device" aria-label="Laptop displaying interaction work">
           <InteractionPlate className="facet-device__frame" />
