@@ -1,179 +1,84 @@
 /*
- * InteractionPlate — pure hairline UI anatomy line drawing.
+ * InteractionPlate — line-drawn laptop with a screen window.
  *
- * Pure stroke discipline: every shape is outlined, no fills (the only
- * exception is the small callout numerals, which need fill to be
- * legible at this size — a convention TE OP-1 anatomy keeps too).
+ * The line drawing is the "stage": a hairline ortho rendering of a
+ * laptop (screen + hinge + base trapezoid). The screen area is empty
+ * — at runtime, the parent wraps this SVG with an absolutely-positioned
+ * panel that holds the actual demo content (video / image / animation).
+ * That gives us TE OP-1 product-page grammar: line-drawn device frame
+ * + real content inside.
  *
- * Stroke weights:
- *   - 1px  — outer shapes (cards, canvas frame)
- *   - 0.75px — internal divisions (window chrome, content rows)
- *   - 0.5px — internal grid dots, shadow trail, faint references
+ * The screen area's coordinates are exposed so the parent can position
+ * the content panel in lockstep with the SVG bezel.
  *
- * Pure-line means the diagram reads as printed engineering material —
- * matches Karl Gerstner *Designing Programmes* / Schmittel Braun
- * manual / TE OP-1 anatomy pages, all of which are stroke-only.
+ * Pure stroke discipline: 1px outer, 0.75px internal, 0.5px reference
+ * lines. No fills. Same printed-engineering register as the rest of
+ * the deck.
  */
 export function InteractionPlate({ className }: { className?: string }) {
   return (
     <svg
       className={className}
-      viewBox="0 0 900 360"
+      viewBox="0 0 960 480"
       fill="none"
       stroke="currentColor"
       strokeWidth="1"
       xmlns="http://www.w3.org/2000/svg"
-      aria-label="Custom drag interaction anatomy: source card, gesture arc, target canvas"
+      aria-label="Laptop displaying interaction work — line drawing of a laptop"
     >
-      {/* ─── Source card (left) ───────────────────────────────── */}
-      {/* Outer card frame */}
-      <rect x="48" y="180" width="180" height="148" rx="2" />
-      {/* Title bar — heavier internal line */}
-      <line x1="64" y1="200" x2="160" y2="200" strokeWidth="0.75" />
-      {/* Content rows — finer */}
-      <line x1="64" y1="220" x2="200" y2="220" strokeWidth="0.5" />
-      <line x1="64" y1="234" x2="180" y2="234" strokeWidth="0.5" />
-      <line x1="64" y1="248" x2="190" y2="248" strokeWidth="0.5" />
-      {/* The draggable item — outlined rectangle, no fill */}
-      <rect x="74" y="270" width="80" height="36" rx="1" />
-      {/* Tiny grab handle dots inside the draggable — outlined */}
-      <circle cx="100" cy="288" r="1.5" strokeWidth="0.75" />
-      <circle cx="108" cy="288" r="1.5" strokeWidth="0.75" />
-      <circle cx="116" cy="288" r="1.5" strokeWidth="0.75" />
-
-      {/* Callout 1 — circle + small numeral (numerals filled for legibility) */}
-      <circle cx="36" cy="195" r="9" strokeWidth="0.75" />
-      <text
-        x="36"
-        y="199"
-        fontFamily="ui-monospace, monospace"
-        fontSize="11"
-        textAnchor="middle"
-        fill="currentColor"
-        stroke="none"
-      >
-        1
-      </text>
-
-      {/* ─── Drag arc (center) ────────────────────────────────── */}
-      {/* Faint shadow trail — dashed line below the main arc */}
-      <path
-        d="M 160 270 Q 450 100, 720 220"
-        strokeWidth="0.5"
-        strokeDasharray="2 4"
-        opacity="0.5"
-      />
-      {/* Main drag arc */}
-      <path d="M 160 250 Q 450 50, 720 180" strokeLinecap="round" />
-      {/* Arrowhead at the end of the arc */}
-      <path
-        d="M 712 170 L 724 180 L 710 192"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
-
-      {/* Callout 2 — circle + numeral at the apex of the arc */}
-      <circle cx="450" cy="60" r="9" strokeWidth="0.75" />
-      <text
-        x="450"
-        y="64"
-        fontFamily="ui-monospace, monospace"
-        fontSize="11"
-        textAnchor="middle"
-        fill="currentColor"
-        stroke="none"
-      >
-        2
-      </text>
-
-      {/* ─── Target canvas (right) ───────────────────────────── */}
-      {/* Outer canvas frame */}
-      <rect x="660" y="120" width="220" height="220" rx="2" />
-      {/* Window chrome bar */}
-      <line x1="660" y1="146" x2="880" y2="146" strokeWidth="0.75" />
-      {/* Three small window-control dots — outlined */}
-      <circle cx="676" cy="133" r="2.5" strokeWidth="0.75" />
-      <circle cx="688" cy="133" r="2.5" strokeWidth="0.75" />
-      <circle cx="700" cy="133" r="2.5" strokeWidth="0.75" />
-      {/* Internal grid — dashed hairlines suggesting "canvas" surface */}
-      <line
-        x1="680"
-        y1="170"
-        x2="860"
-        y2="170"
-        strokeWidth="0.5"
-        strokeDasharray="2 4"
-        opacity="0.5"
-      />
-      <line
-        x1="680"
-        y1="200"
-        x2="860"
-        y2="200"
-        strokeWidth="0.5"
-        strokeDasharray="2 4"
-        opacity="0.5"
-      />
-      <line
-        x1="680"
-        y1="230"
-        x2="860"
-        y2="230"
-        strokeWidth="0.5"
-        strokeDasharray="2 4"
-        opacity="0.5"
-      />
-      <line
-        x1="680"
-        y1="260"
-        x2="860"
-        y2="260"
-        strokeWidth="0.5"
-        strokeDasharray="2 4"
-        opacity="0.5"
-      />
-      <line
-        x1="680"
-        y1="290"
-        x2="860"
-        y2="290"
-        strokeWidth="0.5"
-        strokeDasharray="2 4"
-        opacity="0.5"
-      />
-      <line
-        x1="680"
-        y1="320"
-        x2="860"
-        y2="320"
-        strokeWidth="0.5"
-        strokeDasharray="2 4"
-        opacity="0.5"
-      />
-      {/* Drop-zone indicator — dashed outline rectangle where item lands */}
+      {/* ─── Laptop screen (top half) ──────────────────────────── */}
+      {/* Screen outer chassis */}
+      <rect x="120" y="30" width="720" height="380" rx="10" />
+      {/* Inner bezel — content sits inside this rect, see SCREEN_BOUNDS */}
+      <rect x="140" y="48" width="680" height="344" rx="2" />
+      {/* Camera notch — small pill shape centered at the top */}
       <rect
-        x="700"
-        y="200"
-        width="80"
-        height="36"
-        rx="1"
-        strokeDasharray="3 3"
+        x="455"
+        y="30"
+        width="50"
+        height="6"
+        rx="1.5"
+        strokeWidth="0.75"
+      />
+      {/* Tiny camera dot inside the notch */}
+      <circle cx="480" cy="33" r="1.25" strokeWidth="0.5" />
+
+      {/* ─── Hinge line (between screen and base) ─────────────── */}
+      <line
+        x1="120"
+        y1="411"
+        x2="840"
+        y2="411"
         strokeWidth="0.75"
       />
 
-      {/* Callout 3 — circle + numeral at the target */}
-      <circle cx="892" cy="135" r="9" strokeWidth="0.75" />
-      <text
-        x="892"
-        y="139"
-        fontFamily="ui-monospace, monospace"
-        fontSize="11"
-        textAnchor="middle"
-        fill="currentColor"
-        stroke="none"
-      >
-        3
-      </text>
+      {/* ─── Laptop base (trapezoid, bottom) ───────────────────── */}
+      {/* Trapezoid sides — slight perspective so it reads as a base */}
+      <path
+        d="M 80 412 L 880 412 L 856 462 L 104 462 Z"
+        strokeWidth="0.75"
+      />
+      {/* Front edge indent — small notch in the front lip where you
+          can lift the lid open. Mirrors a real MacBook / Studio Display. */}
+      <path
+        d="M 440 462 L 460 470 L 500 470 L 520 462"
+        strokeWidth="0.5"
+      />
     </svg>
   );
 }
+
+/*
+ * Screen bounds in viewBox coordinates — used by the parent so it
+ * can absolutely-position the content panel over the SVG's inner
+ * bezel rect. Keeping these exported avoids drift between the two.
+ */
+export const SCREEN_BOUNDS = {
+  viewBoxWidth: 960,
+  viewBoxHeight: 480,
+  // Inner bezel: x=140 y=48 w=680 h=344
+  left: 140 / 960, // ~14.58%
+  top: 48 / 480, // 10%
+  width: 680 / 960, // ~70.83%
+  height: 344 / 480, // ~71.67%
+};

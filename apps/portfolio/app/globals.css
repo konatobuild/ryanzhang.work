@@ -1020,6 +1020,48 @@
   min-height: 0;
 }
 
+/*
+ * Device wrapper — line-drawn laptop frame + a positioned screen panel
+ * that holds the actual demo content (video, image, or placeholder).
+ *
+ * The SVG line drawing is the "stage". The screen panel sits on top
+ * via absolute positioning, anchored to the SVG's inner-bezel rect via
+ * percentage coordinates exposed from the plate component (SCREEN_BOUNDS).
+ *
+ * For now the panel holds a small "demo · pending" placeholder until
+ * real demo videos / screenshots are dropped in.
+ */
+.facet-device {
+  position: relative;
+  width: 100%;
+  max-width: min(960px, 96%);
+  display: block;
+}
+
+.facet-device__frame {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--color-gray-12);
+}
+
+.facet-device__screen {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-gray-2);
+  overflow: hidden;
+}
+
+.facet-device__placeholder {
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gray-9);
+}
+
 .facet-poster__svg {
   display: block;
   width: 100%;

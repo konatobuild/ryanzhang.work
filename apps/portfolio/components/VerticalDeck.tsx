@@ -3,7 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { facets, type FacetMeta, type FacetSlug } from "@/lib/facets";
 import { HeroMorphPoc } from "@/components/HeroMorphPoc";
-import { InteractionPlate } from "@/components/facets/InteractionPlate";
+import {
+  InteractionPlate,
+  SCREEN_BOUNDS as INTERACTION_SCREEN,
+} from "@/components/facets/InteractionPlate";
 
 /*
  * VerticalDeck — the home-page primary surface.
@@ -615,8 +618,21 @@ function SpecimenFacetBody({ facet }: { facet: FacetMeta }) {
         <span>{facet.hook}</span>
       </h2>
 
-      <div className="facet-poster__plate" aria-hidden="true">
-        <InteractionPlate className="facet-poster__svg" />
+      <div className="facet-poster__plate">
+        <div className="facet-device" aria-label="Laptop displaying interaction work">
+          <InteractionPlate className="facet-device__frame" />
+          <div
+            className="facet-device__screen"
+            style={{
+              left: `${INTERACTION_SCREEN.left * 100}%`,
+              top: `${INTERACTION_SCREEN.top * 100}%`,
+              width: `${INTERACTION_SCREEN.width * 100}%`,
+              height: `${INTERACTION_SCREEN.height * 100}%`,
+            }}
+          >
+            <span className="facet-device__placeholder">demo · pending</span>
+          </div>
+        </div>
       </div>
 
       <div className="facet-poster__caption">
