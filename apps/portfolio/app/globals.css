@@ -1097,11 +1097,12 @@
        width that yields exactly 85vh height at the device's aspect)
      Whichever wins, derived height stays ≤ 85vh so the device never
      exceeds the viewport vertically (no more bottom clipping). */
-  width: min(95vw, calc(85vh * 1.5));
+  /* Aspect ratio of the new tighter mockup is ~1.305 (3994/3060). */
+  width: min(95vw, calc(85vh * 1.305));
   height: auto;
   max-width: none;
   max-height: none;
-  aspect-ratio: 7500 / 5000;
+  aspect-ratio: 3994 / 3060;
 }
 
 .facet-poster__hook {
@@ -1151,7 +1152,7 @@
   height: 100%;
   width: auto;
   max-width: 100%;
-  aspect-ratio: 7500 / 5000;
+  aspect-ratio: 3994 / 3060;
   margin: 0 auto;
   display: block;
 }
