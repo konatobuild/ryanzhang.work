@@ -48,6 +48,13 @@ export interface FacetMeta {
   total: number;
 
   // Surface card copy (rendered on home VerticalDeck card)
+  /**
+   * Poster HOOK — a short direct sentence rendered at supersized scale
+   * above the line drawing on the facet card. Should be a complete
+   * declarative claim (4–6 words), not a symbolic noun. Example:
+   * "I build interactions." — not "INTERACTIONS".
+   */
+  hook: string;
   /** English headline — primary voice on the card. */
   title: string;
   /** Chinese subhead — runs beneath the English headline. */
@@ -80,6 +87,7 @@ export const facets: FacetMeta[] = [
     slug: "interaction",
     index: 1,
     total: 3,
+    hook: "I build interactions.",
     title: "I keep refusing the default interaction.",
     titleZh: "我对交互形式不安分。",
     subhead:
@@ -112,6 +120,7 @@ export const facets: FacetMeta[] = [
     slug: "ai-systems",
     index: 2,
     total: 3,
+    hook: "I design AI as systems.",
     title: "I design AI as a system, not as a skin.",
     titleZh: "我把 AI 当系统设计，不是当皮肤贴。",
     subhead:
@@ -144,6 +153,7 @@ export const facets: FacetMeta[] = [
     slug: "taste-formation",
     index: 3,
     total: 3,
+    hook: "I work across three disciplines.",
     title: "My taste was formed across three disciplines.",
     titleZh: "我的审美是在三个学科里长出来的。",
     subhead:

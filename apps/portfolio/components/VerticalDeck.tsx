@@ -601,8 +601,8 @@ function SpecimenFacetBody({ facet }: { facet: FacetMeta }) {
   const total = String(facet.total).padStart(2, "0");
 
   return (
-    <div className="facet-specimen">
-      <span className="facet-specimen__eyebrow clip-line">
+    <div className="facet-poster">
+      <span className="facet-eyebrow clip-line">
         <span>
           {ordinal}
           <span className="facet-eyebrow__total"> / {total}</span>
@@ -611,16 +611,19 @@ function SpecimenFacetBody({ facet }: { facet: FacetMeta }) {
         </span>
       </span>
 
-      <div className="facet-specimen__plate" aria-hidden="true">
-        <InteractionPlate className="facet-specimen__svg" />
+      <h2 className="facet-poster__hook clip-line">
+        <span>{facet.hook}</span>
+      </h2>
+
+      <div className="facet-poster__plate" aria-hidden="true">
+        <InteractionPlate className="facet-poster__svg" />
       </div>
 
-      <div className="facet-specimen__caption">
-        <span className="facet-specimen__rule" aria-hidden="true" />
-        <h2 className="facet-specimen__title clip-line">
+      <div className="facet-poster__caption">
+        <p className="facet-poster__title clip-line">
           <span>{facet.title}</span>
-        </h2>
-        <p className="facet-specimen__zh clip-line">
+        </p>
+        <p className="facet-poster__zh clip-line">
           <span>{facet.titleZh}</span>
         </p>
       </div>

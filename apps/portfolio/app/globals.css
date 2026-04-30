@@ -965,6 +965,94 @@
  * Deliberately *not* a 2-column layout — that's the hero's gesture and
  * the placeholder facets'. Specimen is vertical, photo-led, captioned.
  */
+
+/*
+ * Facet poster composition — Bauhaus poster + Braun line drawing.
+ *
+ *   ┌──────────────────────────────────────────┐
+ *   │ 02 / FACET                               │  eyebrow tiny
+ *   │                                          │
+ *   │ I build interactions.                    │  HOOK supersized
+ *   │                                          │
+ *   │ ┌──────────────────────────────────────┐ │
+ *   │ │   [dense UI anatomy line drawing]    │ │  graphic dominant
+ *   │ │                                      │ │
+ *   │ └──────────────────────────────────────┘ │
+ *   │                                          │
+ *   │ Drag flows · gesture surfaces            │  caption tiny
+ *   │ 我自己写交互。                              │
+ *   └──────────────────────────────────────────┘
+ *
+ * Four-zone vertical sandwich: eyebrow / HOOK / graphic / caption.
+ * Same structure across all three facets — variety lives inside the
+ * graphic, not in the layout.
+ */
+.facet-poster {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: clamp(var(--space-3), 2vw, var(--space-4));
+  width: 100%;
+}
+
+.facet-poster__hook {
+  /*
+   * Supersized poster type. Inherits Inter Regular 400 (single weight,
+   * no shift). Endpoints 56 / 96 are 8-grid multiples; the upper end
+   * approaches the hero name (48-72) without overtaking it. Tracking
+   * matches hero display register.
+   */
+  margin: 0;
+  font-size: clamp(56px, 6vw, 96px);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  color: var(--color-gray-12);
+  max-width: 18ch;
+}
+
+.facet-poster__plate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+}
+
+.facet-poster__svg {
+  display: block;
+  width: 100%;
+  max-width: min(960px, 96%);
+  height: auto;
+  color: var(--color-gray-12);
+}
+
+.facet-poster__caption {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  max-width: 56ch;
+}
+
+.facet-poster__title {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--color-gray-11);
+  line-height: var(--lh-20);
+}
+
+.facet-poster__zh {
+  margin: 0;
+  font-size: var(--fs-14);
+  font-weight: 400;
+  line-height: var(--lh-20);
+  letter-spacing: -0.005em;
+  color: var(--color-gray-11);
+}
 .facet-specimen {
   flex: 1;
   min-height: 0;
