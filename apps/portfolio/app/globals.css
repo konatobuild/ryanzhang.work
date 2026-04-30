@@ -291,13 +291,16 @@
   position: fixed;
   inset: 0;
   /*
-   * Warm cream ground — the "desk" the calling card sits on, and the
-   * paper the rest of the deck is printed on. Echoes Braun catalog
-   * paper stock (warm off-white) and Teenage Engineering's product
-   * page ground. Replaces the cooler gray-3 we had earlier so the
-   * whole deck has Bauhaus-grade warmth.
+   * Braun-catalog white. Schmittel-era Braun (Less and More, 1962
+   * Radios catalog, twen ads) is printed on clinical white — not the
+   * warm cream TE chose for OP-1. The earlier cream version was a
+   * misattribution; reverting to the Braun convention now.
+   *
+   * Slightly off pure white (#fafafa, gray-2) so it reads as paper,
+   * not as #fff screen. On screens, true #fff is harsh; gray-2
+   * still reads as "white paper" but stops the eye from straining.
    */
-  background: #f4f0e8;
+  background: var(--color-gray-2);
   overflow: hidden;
   contain: paint;
 }
@@ -349,15 +352,17 @@
 }
 
 /*
- * Hero card — the only visible "card" in the deck. Sits on the cream
- * ground as a physical calling card on a desk. Keeps the white fill +
- * hairline border + radius the rest of the cards drop. Cards 02–05
- * become full-bleed compositions on the cream surface around it.
+ * Hero card — the only visible "card" in the deck. On Braun-white
+ * ground, hero's card-ness can't come from a fill contrast (everything
+ * is the same near-white). It comes from a stronger hairline rule
+ * around the card, the way Schmittel framed product silhouettes when
+ * he needed them framed: a single 1px black-grade line, no fill, no
+ * radius softening. Reads as "a rectangular object on the page".
  */
 .deck-card[data-card-index="0"] {
   background: #ffffff;
-  border: 1px solid var(--color-gray-5);
-  border-radius: var(--radius-3);
+  border: 1px solid var(--color-gray-9);
+  border-radius: 0;
 }
 
 /*
