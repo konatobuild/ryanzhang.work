@@ -396,6 +396,25 @@
   padding-inline-start: clamp(56px, 6.4vw, 96px);
 }
 
+/*
+ * Hero "clean view" — card 1 sits below the viewport while the user is
+ * looking at the hero. Without this, the next card's eyebrow and title
+ * peek above the viewport bottom on initial load and break the calling-
+ * card silhouette.
+ *
+ * Formula: from hero's bottom edge (at 50dvh + card-h/2 from viewport
+ * top in the centered position) to viewport bottom is 50dvh - card-h/2.
+ * Subtract the existing card-gap because flex gap already contributes
+ * spacing. max(0, …) collapses the rule on short viewports where hero
+ * already fills past the viewport bottom.
+ */
+.deck-card[data-card-index="1"] {
+  margin-top: max(
+    0px,
+    calc(50dvh - var(--card-h) / 2 - var(--card-gap))
+  );
+}
+
 .deck-card__body {
   flex: 1;
   min-height: 0;
