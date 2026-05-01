@@ -403,6 +403,10 @@
   padding-inline-start: clamp(56px, 6.4vw, 96px);
 }
 
+.deck-card[data-card-index="1"] {
+  z-index: 2;
+}
+
 .deck-card__body {
   flex: 1;
   min-height: 0;
@@ -411,6 +415,10 @@
   justify-content: center;
   gap: var(--space-3);
   overflow: hidden;
+}
+
+.deck-card:not([data-card-index="0"]) .deck-card__body {
+  overflow: visible;
 }
 
 /* Top chrome — minimal index marker, sticky-ish at top of viewport.
@@ -1047,6 +1055,8 @@
   gap: var(--space-2);
   flex-shrink: 0;
   margin-bottom: clamp(var(--space-3), 2vw, var(--space-5));
+  position: relative;
+  z-index: 2;
 }
 
 .facet-bigshow__title {
@@ -1075,6 +1085,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: clamp(var(--space-5), 6vh, var(--space-8));
   /* Allow device to extend past this wrapper, past the card, all the
      way out to deck-stage clip boundary. */
   overflow: visible;
@@ -1082,23 +1093,17 @@
 }
 
 /* Device override for bigshow: dominant scale that breaks out of card.
-   Position: absolute escapes the parent flex context — without this,
-   flex parents squash the device down to wrap width regardless of the
-   95vw declaration. left: 50% + translate(-50%) centers the (wider-
-   than-card) device on the card's horizontal center. */
+   Position: absolute escapes the parent flex context. Width is capped
+   so the device stays within the deck's scale system — wider than the
+   ~936px hero card, but never running away on ultrawide displays.
+   Aspect ratio of the tighter mockup is ~1.305 (3994/3060). */
 .facet-bigshow .facet-device {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 65%;
   transform: translate(-50%, -50%);
-  /* Width drives sizing — take the smaller of:
-     • 95vw (viewport-bound horizontally), or
-     • 85vh × aspect_ratio (viewport-bound vertically — this is the
-       width that yields exactly 85vh height at the device's aspect)
-     Whichever wins, derived height stays ≤ 85vh so the device never
-     exceeds the viewport vertically (no more bottom clipping). */
-  /* Aspect ratio of the new tighter mockup is ~1.305 (3994/3060). */
-  width: min(95vw, calc(85vh * 1.305));
+  z-index: 1;
+  width: min(1500px, 118vw);
   height: auto;
   max-width: none;
   max-height: none;
