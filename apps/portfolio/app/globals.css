@@ -331,19 +331,15 @@
 
 .deck-card {
   /*
-   * Default card = framed object only for the hero (card 0). All other
-   * cards drop the white fill, border, and radius — content sits directly
-   * on the cream ground, the way TE's OP-1 product page composes section
-   * after section without inner card frames. The deck-card element still
-   * exists as a layout / scroll-step container, but it's visually
-   * invisible except for hero. See the override below for hero.
-   *
-   * Padding tightened (was clamp(32, 4vw, 56)) so the device mockup on
-   * facet cards has more horizontal AND vertical room to read big.
+   * Hero is the only "calling-card object" with a fixed 16:10 aspect.
+   * Sections below the hero are essentially browse content — they grow
+   * to fit whatever they hold (a big device mockup, a multi-row index,
+   * a colophon). They keep min-height: card-h so their compositions
+   * don't collapse when content is light, but content may push past it.
    */
   position: relative;
   width: var(--card-w);
-  height: var(--card-h);
+  min-height: var(--card-h);
   background: transparent;
   border: 0;
   border-radius: 0;
@@ -351,10 +347,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  /* Default cards (facets, contact) allow content to extend past their
-     own boundary — facet device mockups deliberately break out of the
-     card frame to read at near-viewport scale. Hero overrides back to
-     hidden so its calling-card silhouette stays sharp. */
   overflow: visible;
 }
 
@@ -373,7 +365,8 @@
   /* Hero keeps its original print-discipline padding — facets dropped
      down to make room for the device mockup, hero doesn't need that. */
   padding: clamp(var(--space-4), 4vw, var(--space-7));
-  /* Hero clips content to its silhouette; facets allow break-out. */
+  /* Hero is the only fixed-aspect card. Content stays inside the rule. */
+  height: var(--card-h);
   overflow: hidden;
 }
 
@@ -401,10 +394,6 @@
  */
 .deck-card[data-card-index="0"] {
   padding-inline-start: clamp(56px, 6.4vw, 96px);
-}
-
-.deck-card[data-card-index="1"] {
-  z-index: 2;
 }
 
 .deck-card__body {
@@ -1080,29 +1069,25 @@
 }
 
 .facet-bigshow__device-wrap {
-  flex: 1;
-  min-height: 0;
   display: flex;
-  align-items: center;
   justify-content: center;
   margin-top: clamp(var(--space-5), 6vh, var(--space-8));
-  /* Allow device to extend past this wrapper, past the card, all the
-     way out to deck-stage clip boundary. */
+  /* Card is content-driven; the wrap is just a centering box.
+     Horizontal break-out is allowed (device wider than card body)
+     but vertical extent is committed — the wrap grows to fit. */
   overflow: visible;
-  position: relative;
 }
 
-/* Device override for bigshow: dominant scale that breaks out of card.
-   Position: absolute escapes the parent flex context. Width is capped
-   so the device stays within the deck's scale system — wider than the
-   ~936px hero card, but never running away on ultrawide displays.
+/* Device for bigshow: dominant scale, in normal flow.
+   Width capped so the device stays within the deck's scale system —
+   wider than the ~936-1200px hero card but never runaway on ultrawide.
+   flex-shrink: 0 keeps the device at its declared width even when it's
+   wider than the wrap (the wrap is flex/row by default and would shrink
+   the device to fit otherwise — that's how we lost the break-out).
    Aspect ratio of the tighter mockup is ~1.305 (3994/3060). */
 .facet-bigshow .facet-device {
-  position: absolute;
-  left: 50%;
-  top: 65%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
+  position: relative;
+  flex: 0 0 auto;
   width: min(1500px, 118vw);
   height: auto;
   max-width: none;

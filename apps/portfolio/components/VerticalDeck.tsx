@@ -74,20 +74,22 @@ export function VerticalDeck() {
 
   // Animation + layout state.
   //
-  // cardStep        — distance between adjacent cards in the unscaled track
-  //                   (CSS layout value, e.g. 822 for a 750-tall card + 72 gap)
-  // effectiveStep   — scroll-pixels to advance one visual card at sustained
-  //                   scale. At DECK_SCALE = 0.78, one card visually = 1054px
-  //                   of native scroll. Used for spacer height and activeIndex.
+  // scrollPositions — native-scroll Y to land each card visually centered.
+  //                   Computed per-card so variable-height sections (e.g.
+  //                   the specimen card with a tall mockup) still resolve
+  //                   to the right scroll target. Position 0 is hero.
+  // firstStep       — scroll-pixels to advance from hero to card 1; used
+  //                   for the scale ramp transition only.
   const motionRef = useRef({
     scale: 1,
-    cardStep: 0,
-    effectiveStep: 0,
+    scrollPositions: [] as number[],
+    firstStep: 0,
   });
 
-  // Recalculate spacer height + cardStep whenever viewport changes.
-  // We read the actual rendered card dimensions (instead of resolving
-  // the CSS variable strings) so calc() / clamp() are evaluated for us.
+  // Recalculate spacer height + per-card scroll positions whenever the
+  // layout changes. Reading per-card offsets (instead of one uniform step)
+  // is the key to supporting variable card heights — each section may
+  // grow with its content (e.g. SpecimenFacet's big device mockup).
   useEffect(() => {
     const recalc = () => {
       const track = trackRef.current;
@@ -97,20 +99,23 @@ export function VerticalDeck() {
       const cards = track.querySelectorAll<HTMLElement>(".deck-card");
       if (cards.length < 2) return false;
 
-      const r0 = cards[0].getBoundingClientRect();
-      const r1 = cards[1].getBoundingClientRect();
+      // Each card's offsetTop is its top in unscaled track coords.
+      // Subtracting card 0's offsetTop normalizes so card 0 sits at 0.
+      const baseTop = cards[0].offsetTop;
+      const scrollPositions: number[] = [];
+      cards.forEach((c) => {
+        const trackOffset = c.offsetTop - baseTop;
+        // At DECK_SCALE, card N's visual center reaches the viewport
+        // center when scrollY = trackOffset / DECK_SCALE.
+        scrollPositions.push(trackOffset / DECK_SCALE);
+      });
 
-      // cardStep = distance from card N's top to card N+1's top.
-      const cardStep = r1.top - r0.top;
-      if (cardStep <= 0) return false;
+      if (scrollPositions[1] <= 0) return false;
 
-      motionRef.current.cardStep = cardStep;
-      // Compensate for sustained scale: at scale 0.78, advancing one
-      // visual card requires step / 0.78 = 1054 native scroll-pixels.
-      const effectiveStep = cardStep / DECK_SCALE;
-      motionRef.current.effectiveStep = effectiveStep;
+      motionRef.current.scrollPositions = scrollPositions;
+      motionRef.current.firstStep = scrollPositions[1];
 
-      const totalScroll = (CARD_DEFS.length - 1) * effectiveStep;
+      const totalScroll = scrollPositions[scrollPositions.length - 1];
       spacer.style.height = `${totalScroll + 8}px`;
 
       return true;
@@ -156,16 +161,15 @@ export function VerticalDeck() {
 
     const tick = () => {
       const m = motionRef.current;
-      const step = m.cardStep;
-      const effective = m.effectiveStep;
+      const firstStep = m.firstStep;
+      const sps = m.scrollPositions;
 
       let targetScale = HOME_SCALE;
 
-      if (effective > 0) {
-        // Transition completes within the first 70% of the first effective
-        // card-step (i.e., as the user approaches the visual position of
-        // card 2). Beyond that, scale stays at DECK_SCALE.
-        const range = effective * 0.7;
+      if (firstStep > 0) {
+        // Transition completes within the first 70% of the hero→card-1
+        // scroll distance. Beyond that, scale stays at DECK_SCALE.
+        const range = firstStep * 0.7;
         const t = Math.min(window.scrollY / range, 1);
         const eased = (1 - Math.cos(t * Math.PI)) / 2; // smooth s-curve
         targetScale = HOME_SCALE + (DECK_SCALE - HOME_SCALE) * eased;
@@ -183,21 +187,19 @@ export function VerticalDeck() {
           `scale(${scale.toFixed(4)})`;
       }
 
-      // Active index uses effective step so the counter ticks when the
-      // visual card center reaches the viewport center — not when scrollY
-      // hits the unscaled cardStep.
-      if (effective > 0) {
-        const idx = Math.round(window.scrollY / effective);
-        const clamped = Math.max(0, Math.min(idx, CARD_DEFS.length - 1));
-        setActiveIndex((prev) => (prev === clamped ? prev : clamped));
+      // Active index: the largest i where scrollY has crossed the
+      // midpoint between card[i-1] and card[i]. Works for variable
+      // card heights because midpoints come from per-card positions,
+      // not a uniform step.
+      if (sps.length > 1) {
+        const sy = window.scrollY;
+        let idx = 0;
+        for (let i = 1; i < sps.length; i++) {
+          const mid = (sps[i - 1] + sps[i]) / 2;
+          if (sy >= mid) idx = i;
+        }
+        setActiveIndex((prev) => (prev === idx ? prev : idx));
       }
-
-      // Print-spec rule: card contents do not parallax. The deck as a
-      // whole scrubs and scales; cards themselves stay still. Earlier
-      // versions imitated rauno.me's per-frame inertia spring here, but
-      // simulated inertia reads as motion-graphic and undermines the
-      // print register the rest of the design commits to.
-      void step;
 
       raf = requestAnimationFrame(tick);
     };
@@ -330,9 +332,10 @@ export function VerticalDeck() {
 
   // Anchor scroll handler — scroll programmatically to a given card index.
   const scrollToIndex = (index: number) => {
-    const eff = motionRef.current.effectiveStep;
-    if (eff <= 0) return;
-    window.scrollTo({ top: index * eff, behavior: "smooth" });
+    const sps = motionRef.current.scrollPositions;
+    const target = sps[index];
+    if (target === undefined) return;
+    window.scrollTo({ top: target, behavior: "smooth" });
   };
 
   return (
