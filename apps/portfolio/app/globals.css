@@ -358,14 +358,24 @@
  * he needed them framed: a single 1px black-grade line, no fill, no
  * radius softening. Reads as "a rectangular object on the page".
  */
-.deck-card[data-card-index="0"] {
+/*
+ * Calling-card pair — hero (card 0) + colophon (card 5) share the same
+ * contained frame. The deck reads as: front of card → expansion pages
+ * (facets + selected works) → back of card. Both calling cards lock to
+ * --card-h with the thin border so they look like physical objects;
+ * the expansion pages between them are full-bleed and content-driven.
+ *
+ * The deck-level scale ramp does the calling-card motion at both ends:
+ * hero opens 1 → 0.78 as the user enters; the terminal ramps 0.78 → 1
+ * as they reach the closing card. Border, fill, and aspect ratio are
+ * shared so the two ends read as the same physical object.
+ */
+.deck-card[data-card-index="0"],
+.deck-card[data-card-index="5"] {
   background: #ffffff;
   border: 1px solid var(--color-gray-9);
   border-radius: 0;
-  /* Hero keeps its original print-discipline padding — facets dropped
-     down to make room for the device mockup, hero doesn't need that. */
   padding: clamp(var(--space-4), 4vw, var(--space-7));
-  /* Hero is the only fixed-aspect card. Content stays inside the rule. */
   height: var(--card-h);
   overflow: hidden;
 }
@@ -425,7 +435,7 @@
   overflow: hidden;
 }
 
-.deck-card:not([data-card-index="0"]) .deck-card__body {
+.deck-card:not([data-card-index="0"]):not([data-card-index="5"]) .deck-card__body {
   overflow: visible;
 }
 
@@ -1336,78 +1346,82 @@
   max-width: 28ch;
 }
 
+/* recompile-marker: works v2 */
 /*
- * Stacked composition — three horizontal layers separated by hairlines.
- * The version of the architecture is drawn with type itself.
+ * Surfaces composition — uniform specimen frame (triadic-grammar extension).
+ *
+ * Two rows of equal-treatment cells held by a hairline frame. Primary row
+ * carries 2 wide cells (interface / code); supporting row carries 3
+ * narrower cells (object / graphic / detail). Size hierarchy comes from
+ * cell count per row, not from cell-level styling — every cell shares
+ * the same plate, label, and padding so the section reads as one
+ * coherent index of mediums.
+ *
+ * Caption sits below the frame to mirror the triadic facet's grammar.
  */
-.facet-stacked {
+.facet-surfaces {
   flex: 1;
   min-height: 0;
   display: grid;
   grid-template-rows: auto 1fr auto;
   gap: clamp(var(--space-3), 2.4vw, var(--space-5));
-  width: 100%;
+  /*
+   * Full-bleed within the deck. The card-card itself stays at --card-w
+   * so the eyebrow and caption sit on the same horizontal axis as other
+   * facets, but the frame breaks out to the same 118vw width that the
+   * Section 2 device uses. After the deck's 0.78 scale this renders at
+   * ~92vw — TE-grade near-full-bleed without overflowing the stage.
+   */
+  width: min(1800px, 118vw);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.facet-stacked__layers {
-  display: grid;
-  grid-template-rows: 1fr 1fr 1fr;
-  border-top: 1px solid var(--color-gray-7);
-  min-height: 0;
-}
-
-.facet-stacked__layer {
+.facet-surfaces__frame {
   display: flex;
-  align-items: center;
-  border-bottom: 1px solid var(--color-gray-7);
-  padding: 0 clamp(var(--space-2), 2vw, var(--space-4));
-}
-
-.facet-stacked__layer-label {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: var(--fs-14);
-  font-weight: 400;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--color-gray-11);
-}
-
-/*
- * Triadic composition — three vertical columns at the top, hairline
- * dividers between, manifesto caption beneath. Three columns = three
- * disciplines.
- */
-.facet-triadic {
-  flex: 1;
-  min-height: 0;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: clamp(var(--space-3), 2.4vw, var(--space-5));
-  width: 100%;
-}
-
-.facet-triadic__columns {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  flex-direction: column;
   border-top: 1px solid var(--color-gray-7);
   border-bottom: 1px solid var(--color-gray-7);
   min-height: 0;
 }
 
-.facet-triadic__column {
+.facet-surfaces__row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  border-bottom: 1px solid var(--color-gray-7);
+}
+
+.facet-surfaces__row:last-child {
+  border-bottom: 0;
+}
+
+.facet-surfaces__row--primary {
+  min-height: clamp(560px, 64vh, 800px);
+}
+
+.facet-surfaces__row--supporting {
+  min-height: clamp(420px, 48vh, 600px);
+}
+
+.facet-surfaces__cell {
   display: flex;
   align-items: flex-start;
   padding: clamp(var(--space-3), 2.4vw, var(--space-5))
     clamp(var(--space-2), 2vw, var(--space-4));
   border-right: 1px solid var(--color-gray-7);
+  background: var(--color-gray-3);
+  min-width: 0;
 }
 
-.facet-triadic__column:last-child {
+.facet-surfaces__cell:last-child {
   border-right: 0;
 }
 
-.facet-triadic__column-label {
+.facet-surfaces__cell--span-4 { grid-column: span 4; }
+.facet-surfaces__cell--span-6 { grid-column: span 6; }
+
+.facet-surfaces__cell-label {
   display: block;
   font-family: var(--font-mono);
   font-size: var(--fs-14);
@@ -1415,6 +1429,161 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-gray-11);
+}
+
+/*
+ * Record composition — Braun ad-page spread.
+ *
+ * Each credential is a single typographic ad — small mono year
+ * eyebrow, large sans title (the visual anchor), mono caps body
+ * label, short description paragraph. Multiple ads laid out as a
+ * 2-column catalog spread, with whitespace (not hairlines) doing
+ * all the dividing work.
+ *
+ * Borrows from Vitsoe's whitespace discipline + Braun catalog ad
+ * rhythm (model-number eyebrow → product name → spec body) — and
+ * stops there. No internal hairlines, no marginalia column, no
+ * mono-led density. Only top + bottom of section get a single rule
+ * (echoing the hero's hairline) to bracket the spread.
+ *
+ * Visual contrast with S3: S3 is "framed objects" (hairline plates),
+ * S4 is "open spread" (whitespace ads). The deck reads as object
+ * catalog → ad page → colophon.
+ */
+.facet-record {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-5), 5vh, var(--space-7));
+  /* Same break-out as surfaces — full bleed within deck scale. */
+  width: min(1800px, 118vw);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.facet-record__header {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-2), 1.5vh, var(--space-3));
+}
+
+.facet-record__thesis {
+  margin: 0;
+  font-size: clamp(28px, 2.6vw, 36px);
+  font-weight: 400;
+  line-height: clamp(36px, 2.8vw, 44px);
+  letter-spacing: -0.025em;
+  color: var(--color-gray-12);
+  max-width: 36ch;
+}
+
+.facet-record__entries {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(var(--space-7), 6vw, var(--space-10));
+  row-gap: clamp(var(--space-7), 6vh, var(--space-10));
+  padding: clamp(var(--space-5), 5vh, var(--space-7))
+    clamp(var(--space-3), 2.4vw, var(--space-5));
+  border-top: 1px solid var(--color-gray-9);
+  border-bottom: 1px solid var(--color-gray-9);
+}
+
+.facet-record__entry {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-2), 1.5vh, var(--space-3));
+  /* No padding, no border — each entry is a free-standing ad. */
+  min-width: 0;
+}
+
+.facet-record__year {
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gray-11);
+  line-height: 1;
+}
+
+.facet-record__main {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-1), 0.8vh, var(--space-2));
+  min-width: 0;
+}
+
+.facet-record__title {
+  margin: 0;
+  font-size: clamp(24px, 2.2vw, 32px);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--color-gray-12);
+  max-width: 28ch;
+}
+
+.facet-record__body {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.16em;
+  color: var(--color-gray-11);
+  text-transform: uppercase;
+  text-transform: uppercase;
+}
+
+.facet-record__context {
+  margin: 0;
+  font-size: clamp(14px, 1.05vw, 16px);
+  line-height: 1.6;
+  color: var(--color-gray-11);
+  letter-spacing: -0.005em;
+  max-width: 50ch;
+}
+
+/*
+ * Selected works — middle browse section.
+ *
+ * Demoted from "card-back of the hero" to a regular full-bleed-ish
+ * middle section. The closing calling-card slot is now reserved for
+ * the colophon (card 5), which gets the contained --card-w × --card-h
+ * frame and the deck's terminal scale ramp. Selected Works grows with
+ * its content like the other middle sections.
+ *
+ * Placeholder shell — the eventual layout is a curated work catalog
+ * (featured demo + index list, or thumbnail grid).
+ */
+.works-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: var(--card-h);
+  padding: clamp(var(--space-4), 5vh, var(--space-7)) 0;
+}
+
+.works-card__placeholder {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(var(--space-2), 1.6vh, var(--space-3));
+  border: 1px dashed var(--color-gray-7);
+  margin-top: clamp(var(--space-3), 2.4vh, var(--space-4));
+  padding: clamp(var(--space-4), 4vh, var(--space-6));
+}
+
+.works-card__placeholder-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-14);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-gray-9);
 }
 
 /*

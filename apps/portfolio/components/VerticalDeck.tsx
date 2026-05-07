@@ -31,7 +31,7 @@ import {
 type CardMeta = {
   anchor: string;
   label: string;
-  variant: "identity" | "facet" | "contact";
+  variant: "identity" | "facet" | "selected-works" | "contact";
   /** Only set when variant === "facet". */
   facetSlug?: FacetSlug;
 };
@@ -41,6 +41,16 @@ type CardMeta = {
 // visually compresses by this factor — 1px of scroll moves the deck 0.78px.
 const HOME_SCALE = 1;
 const DECK_SCALE = 0.78;
+
+/*
+ * RAMP_PX — scroll distance over which the deck-level scale ramps between
+ * the calling-card (1) and the browse register (0.78). Used for both the
+ * opening (hero) and closing (terminal) ramps so the metaphor's symmetry
+ * is matched by symmetric pacing. Earlier we used `firstStep × 0.7` and
+ * `lastStep × 0.7`, but the per-step factor floats with middle-card
+ * heights, producing visibly asymmetric open/close cadences.
+ */
+const RAMP_PX = 1200;
 
 const CARD_DEFS: CardMeta[] = [
   { anchor: "01", label: "Home", variant: "identity" },
@@ -62,7 +72,8 @@ const CARD_DEFS: CardMeta[] = [
     variant: "facet",
     facetSlug: "taste-formation",
   },
-  { anchor: "05", label: "Make contact", variant: "contact" },
+  { anchor: "05", label: "Selected Works", variant: "selected-works" },
+  { anchor: "06", label: "Make contact", variant: "contact" },
 ];
 
 export function VerticalDeck() {
@@ -78,18 +89,36 @@ export function VerticalDeck() {
   //                   Computed per-card so variable-height sections (e.g.
   //                   the specimen card with a tall mockup) still resolve
   //                   to the right scroll target. Position 0 is hero.
-  // firstStep       — scroll-pixels to advance from hero to card 1; used
-  //                   for the scale ramp transition only.
+  //                   Last entry is the terminal calling-card target,
+  //                   computed at scale=1 to match the closing ramp's end.
   const motionRef = useRef({
-    scale: 1,
     scrollPositions: [] as number[],
-    firstStep: 0,
   });
 
   // Recalculate spacer height + per-card scroll positions whenever the
-  // layout changes. Reading per-card offsets (instead of one uniform step)
-  // is the key to supporting variable card heights — each section may
-  // grow with its content (e.g. SpecimenFacet's big device mockup).
+  // layout changes. Reading per-card centers (not offsetTops) is what
+  // makes variable-height cards visually center correctly.
+  //
+  // Math derivation. The track has `position: absolute; top: 0; left: 50%`
+  // and the JS transform is `translateX(-50%) translateY(-scrollY) scale(s)`
+  // with `transform-origin: 50% 50%` of the unscaled track. A point at
+  // unscaled offset y inside the track ends up at viewport-Y:
+  //
+  //     visualY = -scrollY + H/2 + (y - H/2) * s            (1)
+  //
+  // where H is the unscaled track height. To center card N visually,
+  // y = cardCenter_N (offsetTop + height/2) and visualY = dvh/2:
+  //
+  //     scrollY_N = H/2 * (1 - s) + s * cardCenter_N - dvh/2
+  //
+  // The scale at which each target is computed must match the scale the
+  // tick function will produce when the user reaches that scroll target:
+  //   - card 0 (hero, opening calling card)        → scale = 1
+  //   - middle cards (browse state)                → scale = DECK_SCALE
+  //   - last card (terminal, closing calling card) → scale = 1
+  // Hero opens the calling card with a 1 → 0.78 ramp; terminal closes it
+  // with a symmetric 0.78 → 1 ramp. Both calling cards land at full size,
+  // so their scrollY targets must use scale = 1 in the formula above.
   useEffect(() => {
     const recalc = () => {
       const track = trackRef.current;
@@ -99,24 +128,33 @@ export function VerticalDeck() {
       const cards = track.querySelectorAll<HTMLElement>(".deck-card");
       if (cards.length < 2) return false;
 
-      // Each card's offsetTop is its top in unscaled track coords.
-      // Subtracting card 0's offsetTop normalizes so card 0 sits at 0.
-      const baseTop = cards[0].offsetTop;
+      const dvh = window.innerHeight;
+      const halfH = track.scrollHeight / 2;
+      const lastIdx = cards.length - 1;
       const scrollPositions: number[] = [];
-      cards.forEach((c) => {
-        const trackOffset = c.offsetTop - baseTop;
-        // At DECK_SCALE, card N's visual center reaches the viewport
-        // center when scrollY = trackOffset / DECK_SCALE.
-        scrollPositions.push(trackOffset / DECK_SCALE);
+      cards.forEach((c, i) => {
+        if (i === 0) {
+          scrollPositions.push(0);
+          return;
+        }
+        // Terminal card lands at full scale (calling-card-back focused);
+        // every middle card lands at the sustained browse scale.
+        const s = i === lastIdx ? HOME_SCALE : DECK_SCALE;
+        const center = c.offsetTop + c.offsetHeight / 2;
+        const sy = halfH * (1 - s) + s * center - dvh / 2;
+        scrollPositions.push(sy);
       });
 
       if (scrollPositions[1] <= 0) return false;
 
       motionRef.current.scrollPositions = scrollPositions;
-      motionRef.current.firstStep = scrollPositions[1];
 
+      // Spacer must extend a full viewport past the last target so the
+      // browser actually permits scrollY = scrollPositions[last]
+      // (max scrollY = scrollHeight - viewport). Otherwise the last
+      // card is unreachable and the deck stalls one card short.
       const totalScroll = scrollPositions[scrollPositions.length - 1];
-      spacer.style.height = `${totalScroll + 8}px`;
+      spacer.style.height = `${totalScroll + dvh}px`;
 
       return true;
     };
@@ -130,56 +168,84 @@ export function VerticalDeck() {
     };
     tryRecalc();
 
-    // ResizeObserver picks up font-load reflow + viewport changes.
-    const ro = new ResizeObserver(() => recalc());
+    // rAF-throttled recalc so font-load reflow / resize bursts collapse
+    // into one recompute per frame instead of running synchronously
+    // inside the ResizeObserver callback.
+    let recalcRaf = 0;
+    const scheduleRecalc = () => {
+      if (recalcRaf) return;
+      recalcRaf = requestAnimationFrame(() => {
+        recalcRaf = 0;
+        recalc();
+      });
+    };
+
+    const ro = new ResizeObserver(scheduleRecalc);
     if (trackRef.current) ro.observe(trackRef.current);
-    window.addEventListener("resize", recalc);
+    window.addEventListener("resize", scheduleRecalc);
 
     return () => {
+      if (recalcRaf) cancelAnimationFrame(recalcRaf);
       ro.disconnect();
-      window.removeEventListener("resize", recalc);
+      window.removeEventListener("resize", scheduleRecalc);
     };
   }, []);
 
   // Main animation loop — position-driven translate + scale.
   //
-  // Scale model (matches rauno.me's actual behavior, verified by reading
-  // pages/index-25e30adbdf1f855a.js directly):
-  //   - At scrollY = 0 (hero centered)        → scale = 1 (full size)
-  //   - At scrollY > TRANSITION_RANGE         → scale = DECK_SCALE (sustained)
-  //   - Smooth cosine ramp between
+  // Three-phase scale model: hero ramp / browse / terminal ramp. The
+  // calling-card metaphor lives at the deck level — hero opens it
+  // (1 → 0.78), the user browses at the sustained 0.78 scale, and the
+  // terminal card closes it back (0.78 → 1). Both ends land at full
+  // scale; the middle is the browse register.
   //
-  // Once the user enters the deck, every card stays at the compressed scale
-  // for the rest of navigation — no per-card pop-back to 1. That's what
-  // makes scrolling between cards feel smooth and continuous instead of
-  // "jumping" at every section. Returning to scrollY = 0 expands back to 1.
+  //   scrollY = 0              → scale = 1 (hero, opening card front)
+  //   0 < scrollY < RAMP_PX    → scale ramps 1 → 0.78
+  //   RAMP_PX ≤ sy ≤ tS        → scale = 0.78 (browse register)
+  //   tS < scrollY ≤ tE        → scale ramps 0.78 → 1
+  //   scrollY = tE             → scale = 1 (terminal, closing card back)
   //
-  // We still damp the scale variable slightly so sub-pixel scroll jitter
-  // doesn't translate into scale jitter.
+  // tE = scrollPositions[last]; tS = tE − RAMP_PX. Both ramps share the
+  // same fixed scroll distance so open and close feel symmetric — earlier
+  // we used per-step factors (firstStep×0.7 / lastStep×0.7), but those
+  // floated with middle-card heights, giving asymmetric pacing.
+  //
+  // No damping: the scale is set directly to its target each frame.
+  // Damping (lerp ×0.4) was masking subpixel jitter at the cost of a
+  // visible lag during ramps — the formula computes scrollPositions at
+  // the *target* scale, so any actual-scale lag translates to position
+  // error proportional to (target − actual) × (cardCenter − halfH).
+  // For the terminal card that error reached ~165px during fast scroll
+  // and read as a "rubbery" closing.
   useEffect(() => {
     let raf = 0;
 
     const tick = () => {
       const m = motionRef.current;
-      const firstStep = m.firstStep;
       const sps = m.scrollPositions;
+      const sy = window.scrollY;
 
-      let targetScale = HOME_SCALE;
+      let scale = HOME_SCALE;
 
-      if (firstStep > 0) {
-        // Transition completes within the first 70% of the hero→card-1
-        // scroll distance. Beyond that, scale stays at DECK_SCALE.
-        const range = firstStep * 0.7;
-        const t = Math.min(window.scrollY / range, 1);
-        const eased = (1 - Math.cos(t * Math.PI)) / 2; // smooth s-curve
-        targetScale = HOME_SCALE + (DECK_SCALE - HOME_SCALE) * eased;
+      if (sps.length > 1) {
+        const terminalEnd = sps[sps.length - 1];
+        const terminalStart = terminalEnd - RAMP_PX;
+
+        if (sy >= terminalStart) {
+          // Terminal ramp: 0.78 → 1 over the last RAMP_PX.
+          const t = Math.min((sy - terminalStart) / RAMP_PX, 1);
+          const eased = (1 - Math.cos(t * Math.PI)) / 2;
+          scale = DECK_SCALE + (HOME_SCALE - DECK_SCALE) * eased;
+        } else if (sy > 0) {
+          // Hero ramp: 1 → 0.78 over the first RAMP_PX. Beyond, sits
+          // at DECK_SCALE for the browse zone.
+          const t = Math.min(sy / RAMP_PX, 1);
+          const eased = (1 - Math.cos(t * Math.PI)) / 2;
+          scale = HOME_SCALE + (DECK_SCALE - HOME_SCALE) * eased;
+        }
       }
 
-      // Critically-damped chase — converges in ~3 frames at 60fps.
-      m.scale += (targetScale - m.scale) * 0.4;
-
-      const scale = Math.abs(m.scale - 1) < 0.0005 ? 1 : m.scale;
-      const ty = -window.scrollY;
+      const ty = -sy;
 
       if (trackRef.current) {
         trackRef.current.style.transform =
@@ -192,7 +258,6 @@ export function VerticalDeck() {
       // card heights because midpoints come from per-card positions,
       // not a uniform step.
       if (sps.length > 1) {
-        const sy = window.scrollY;
         let idx = 0;
         for (let i = 1; i < sps.length; i++) {
           const mid = (sps[i - 1] + sps[i]) / 2;
@@ -211,124 +276,108 @@ export function VerticalDeck() {
   /*
    * Section re-entry text reveal.
    *
-   * When the user settles on a card different from the previously-revealed
-   * one, replay the clip-line elements inside that card with a stagger.
-   * Each line resets to translateY(110%) and animates back to 0 — same
-   * mechanism as the page-load hero clip-reveal, but JS-driven so it can
-   * fire on every section re-entry.
+   * Fires whenever activeIndex changes — i.e., the moment the user
+   * crosses the midpoint between two cards. Each visited card replays
+   * its clip-line elements once per visit; lastReplayedIdxRef stops
+   * the same card from looping if the user wiggles inside it.
    *
-   * Hero (index 0) is initially revealed by CSS, so we mark it as already
-   * replayed; the JS only fires once the user has visited a different card.
-   * Triggered on scroll-stop (220ms debounce), not on every activeIndex
-   * change, so fast scrolls passing through cards don't queue animations.
+   * Reactive on activeIndex (not on scroll-stop debounce) so the
+   * animation always fires when the user actually enters the card,
+   * even if they scroll past it without stopping. Hero (idx 0) gets a
+   * per-character cascade reveal; the terminal card is animated by the
+   * deck-level scale ramp and skips line replay so it doesn't compete
+   * with the closing motion; every middle card uses rise-from-below.
    */
-  const activeIndexRef = useRef(0);
-  useEffect(() => {
-    activeIndexRef.current = activeIndex;
-  }, [activeIndex]);
+  const lastReplayedIdxRef = useRef(0);
 
   useEffect(() => {
-    let stopTimer: number | undefined;
-    const lastReplayedIdxRef = { current: 0 };
+    if (activeIndex === lastReplayedIdxRef.current) return;
+    lastReplayedIdxRef.current = activeIndex;
 
-    const replay = () => {
-      const idx = activeIndexRef.current;
-      if (idx === lastReplayedIdxRef.current) return;
-      lastReplayedIdxRef.current = idx;
+    const cards = trackRef.current?.querySelectorAll<HTMLElement>(
+      ".deck-card",
+    );
+    if (!cards) return;
+    const card = cards[activeIndex];
+    if (!card) return;
 
-      const cards = trackRef.current?.querySelectorAll<HTMLElement>(
-        ".deck-card",
-      );
-      const card = cards?.[idx];
-      if (!card) return;
+    // Terminal card: the deck-level scale ramp (0.78 → 1) is the entry
+    // animation. Skip line replay so the closing reads as one piece —
+    // text drops while the card is still scaling would steal focus from
+    // the ramp and read as double-signal.
+    if (activeIndex === cards.length - 1) return;
 
-      // Hero (card 0) — per-character cascade with per-line direction.
-      // Mirrors the CSS first-load animation so re-entry feels identical.
-      if (idx === 0) {
-        const heroLines = card.querySelectorAll<HTMLElement>(".hero-line");
-        if (heroLines.length === 0) return;
+    // Hero (card 0) — per-character cascade with per-line direction.
+    // Mirrors the CSS first-load animation so re-entry feels identical.
+    if (activeIndex === 0) {
+      const heroLines = card.querySelectorAll<HTMLElement>(".hero-line");
+      if (heroLines.length === 0) return;
 
-        // Must mirror the CSS @keyframes hero-char-* values in globals.css.
-        // drop/drift compensated for the manifesto's lh=32px lock so absolute
-        // swing matches the previous lh=36.4 baseline (-29px / +9px).
-        const ANIM_FROM = {
-          rise: { transform: "translateY(110%)", opacity: "0" },
-          drop: { transform: "translateY(-91%)", opacity: "0" },
-          drift: { transform: "translateY(28%)", opacity: "0" },
-        } as const;
-        const ANIM_DURATION = { rise: 700, drop: 750, drift: 900 } as const;
-        const TO = { transform: "translateY(0)", opacity: "1" };
+      const ANIM_FROM = {
+        rise: { transform: "translateY(110%)", opacity: "0" },
+        drop: { transform: "translateY(-91%)", opacity: "0" },
+        drift: { transform: "translateY(28%)", opacity: "0" },
+      } as const;
+      const ANIM_DURATION = { rise: 700, drop: 750, drift: 900 } as const;
+      const TO = { transform: "translateY(0)", opacity: "1" };
 
-        heroLines.forEach((line) => {
-          const lineDelay = parseInt(line.dataset.delayMs ?? "0", 10);
-          const animKey = (line.dataset.anim ?? "rise") as keyof typeof ANIM_FROM;
-          const fromKf = ANIM_FROM[animKey];
-          const duration = ANIM_DURATION[animKey];
-          const chars = line.querySelectorAll<HTMLElement>(".hero-char");
-          chars.forEach((char, i) => {
-            char.getAnimations().forEach((a) => a.cancel());
-            char.animate([fromKf, TO], {
-              duration,
-              delay: lineDelay + i * 16,
-              easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
-              fill: "both",
-            });
+      heroLines.forEach((line) => {
+        const lineDelay = parseInt(line.dataset.delayMs ?? "0", 10);
+        const animKey = (line.dataset.anim ?? "rise") as keyof typeof ANIM_FROM;
+        const fromKf = ANIM_FROM[animKey];
+        const duration = ANIM_DURATION[animKey];
+        const chars = line.querySelectorAll<HTMLElement>(".hero-char");
+        chars.forEach((char, i) => {
+          char.getAnimations().forEach((a) => a.cancel());
+          char.animate([fromKf, TO], {
+            duration,
+            delay: lineDelay + i * 16,
+            easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
+            fill: "both",
           });
         });
+      });
 
-        // Hairline rule between name and manifesto — scaleX from left.
-        // Sequenced after name char cascade lands (~700ms).
-        const rule = card.querySelector<HTMLElement>(".hero-rule");
-        if (rule) {
-          rule.getAnimations().forEach((a) => a.cancel());
-          rule.animate(
-            [
-              { transform: "scaleX(0)" },
-              { transform: "scaleX(1)" },
-            ],
-            {
-              duration: 600,
-              delay: 700,
-              easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
-              fill: "both",
-            },
-          );
-        }
-        return;
-      }
-
-      // Non-hero cards — line-level replay (existing behavior).
-      const lines = card.querySelectorAll<HTMLElement>(".clip-line > *");
-      if (lines.length === 0) return;
-
-      lines.forEach((el, i) => {
-        el.getAnimations().forEach((a) => a.cancel());
-        el.animate(
+      // Hairline rule between name and manifesto — scaleX from left.
+      const rule = card.querySelector<HTMLElement>(".hero-rule");
+      if (rule) {
+        rule.getAnimations().forEach((a) => a.cancel());
+        rule.animate(
           [
-            { transform: "translateY(110%)" },
-            { transform: "translateY(0)" },
+            { transform: "scaleX(0)" },
+            { transform: "scaleX(1)" },
           ],
           {
-            duration: 800,
-            delay: i * 80,
+            duration: 600,
+            delay: 700,
             easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
             fill: "both",
           },
         );
-      });
-    };
+      }
+      return;
+    }
 
-    const onScroll = () => {
-      window.clearTimeout(stopTimer);
-      stopTimer = window.setTimeout(replay, 220);
-    };
+    // Middle cards — standard rise-from-below line replay.
+    const lines = card.querySelectorAll<HTMLElement>(".clip-line > *");
+    if (lines.length === 0) return;
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.clearTimeout(stopTimer);
-    };
-  }, []);
+    lines.forEach((el, i) => {
+      el.getAnimations().forEach((a) => a.cancel());
+      el.animate(
+        [
+          { transform: "translateY(110%)" },
+          { transform: "translateY(0)" },
+        ],
+        {
+          duration: 800,
+          delay: i * 80,
+          easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
+          fill: "both",
+        },
+      );
+    });
+  }, [activeIndex]);
 
   // Anchor scroll handler — scroll programmatically to a given card index.
   const scrollToIndex = (index: number) => {
@@ -373,6 +422,7 @@ export function VerticalDeck() {
                     }
                   />
                 )}
+                {meta.variant === "selected-works" && <SelectedWorksBody />}
                 {meta.variant === "contact" && <ContactBody />}
               </div>
             </article>
@@ -574,10 +624,10 @@ function FacetBody({ facet }: { facet: FacetMeta }) {
     return <SpecimenFacetBody facet={facet} />;
   }
   if (facet.slug === "ai-systems") {
-    return <StackedFacetBody facet={facet} />;
+    return <SurfacesFacetBody />;
   }
   if (facet.slug === "taste-formation") {
-    return <TriadicFacetBody facet={facet} />;
+    return <RecordFacetBody />;
   }
   return <SpecimenFacetBody facet={facet} />;
 }
@@ -646,66 +696,86 @@ function SpecimenFacetBody({ facet }: { facet: FacetMeta }) {
 }
 
 /*
- * StackedFacetBody — Bauhaus engineering-page composition.
+ * SurfacesFacetBody — uniform specimen frame (triadic-grammar extension).
  *
- *   ┌──────────────────────────────────────────────────────────┐
- *   │ 02 / 03 · Facet                                          │
- *   │ ─────────────────────────────────────────────────────────│
- *   │  Layer 01 · UI                                           │
- *   │ ─────────────────────────────────────────────────────────│
- *   │  Layer 02 · Middle layer                                 │
- *   │ ─────────────────────────────────────────────────────────│
- *   │  Layer 03 · Model                                        │
- *   │ ─────────────────────────────────────────────────────────│
- *   │  I design AI as a system, not as a skin.                 │
- *   │  我把 AI 当系统设计，不是当皮肤贴。                            │
- *   └──────────────────────────────────────────────────────────┘
+ *   ┌─────────────────────────────────────────────────────────┐
+ *   │ 03 · Surfaces                                           │
+ *   │ ────────────────────────────────────────────────────────│
+ *   │ ┌──────────────────┬──────────────────┐                 │
+ *   │ │  INTERFACE       │  CODE            │ ← primary       │
+ *   │ │  [specimen]      │  [specimen]      │   span-6 each   │
+ *   │ ├──────────────────┼──────────┬───────┤                 │
+ *   │ │ OBJECT │ GRAPHIC │ DETAIL   │       │ ← supporting    │
+ *   │ │ [spec] │ [spec]  │ [spec]   │       │   span-4 each   │
+ *   │ └────────┴─────────┴──────────┘                         │
+ *   │ ────────────────────────────────────────────────────────│
+ *   │ Same eye, different surfaces.                           │
+ *   │ 同一种判断，落在不同表面。                                  │
+ *   └─────────────────────────────────────────────────────────┘
  *
- * Three horizontal zones separated by hairlines = the architecture
- * itself, drawn with type. The version reads top-to-bottom from
- * surface (UI) to ground (model). Caption sits underneath, repeating
- * the SpecimenFacetBody convention so all facets share the same
- * caption register.
+ * Reads as an expanded triadic — same hairline-frame grammar as
+ * TriadicFacetBody (03 · taste-formation), but with a 5-cell layout
+ * across two rows so size hierarchy emerges from cell count without
+ * breaking uniform cell treatment. Caption sits below the frame,
+ * mirroring the triadic convention so all index-style facets share
+ * the same caption register.
+ *
+ * No mixed image/text cells, no bullet lists in cells — the visual
+ * unity is the whole point. Specimen content drops in later; for
+ * chassis state every cell is an empty plate with a mono label.
  */
-function StackedFacetBody({ facet }: { facet: FacetMeta }) {
-  const ordinal = String(facet.index).padStart(2, "0");
-  const total = String(facet.total).padStart(2, "0");
-
+function SurfacesFacetBody() {
   return (
-    <div className="facet-stacked">
+    <div className="facet-surfaces">
       <span className="facet-eyebrow clip-line">
         <span>
-          {ordinal}
-          <span className="facet-eyebrow__total"> / {total}</span>
+          03
           <span className="facet-eyebrow__separator">·</span>
-          Facet
+          Surfaces
         </span>
       </span>
 
-      <div className="facet-stacked__layers">
-        <div className="facet-stacked__layer">
-          <span className="facet-stacked__layer-label clip-line">
-            <span>Layer 01 · UI</span>
-          </span>
+      <div className="facet-surfaces__frame">
+        {/* Primary row — Interface + Code, span-6 each */}
+        <div className="facet-surfaces__row facet-surfaces__row--primary">
+          <div className="facet-surfaces__cell facet-surfaces__cell--span-6">
+            <span className="facet-surfaces__cell-label clip-line">
+              <span>Interface</span>
+            </span>
+          </div>
+          <div className="facet-surfaces__cell facet-surfaces__cell--span-6">
+            <span className="facet-surfaces__cell-label clip-line">
+              <span>Code</span>
+            </span>
+          </div>
         </div>
-        <div className="facet-stacked__layer">
-          <span className="facet-stacked__layer-label clip-line">
-            <span>Layer 02 · Middle layer</span>
-          </span>
-        </div>
-        <div className="facet-stacked__layer">
-          <span className="facet-stacked__layer-label clip-line">
-            <span>Layer 03 · Model</span>
-          </span>
+
+        {/* Supporting row — Object / Graphic / Detail, span-4 each */}
+        <div className="facet-surfaces__row facet-surfaces__row--supporting">
+          <div className="facet-surfaces__cell facet-surfaces__cell--span-4">
+            <span className="facet-surfaces__cell-label clip-line">
+              <span>Object</span>
+            </span>
+          </div>
+          <div className="facet-surfaces__cell facet-surfaces__cell--span-4">
+            <span className="facet-surfaces__cell-label clip-line">
+              <span>Graphic</span>
+            </span>
+          </div>
+          <div className="facet-surfaces__cell facet-surfaces__cell--span-4">
+            <span className="facet-surfaces__cell-label clip-line">
+              <span>Detail</span>
+            </span>
+          </div>
         </div>
       </div>
 
       <div className="facet-caption">
         <h2 className="facet-caption__title clip-line">
-          <span>{facet.title}</span>
+          <span>Same eye, different surfaces.</span>
         </h2>
         <p className="facet-caption__zh clip-line">
-          <span>{facet.titleZh}</span>
+          <span>同一种判断，落在不同表面。</span>
         </p>
       </div>
     </div>
@@ -713,61 +783,191 @@ function StackedFacetBody({ facet }: { facet: FacetMeta }) {
 }
 
 /*
- * TriadicFacetBody — three-column index composition.
+ * RecordFacetBody — editorial entries with marginalia (annotated record).
  *
  *   ┌──────────────────────────────────────────────────────────┐
- *   │ 03 / 03 · Facet                                          │
- *   │                                                          │
- *   │  Industrial   │   Graphic   │   Code                     │
- *   │ ─────────────────────────────────────────────────────────│
- *   │  My taste was formed across three disciplines.           │
- *   │  我的审美是在三个学科里长出来的。                              │
+ *   │ 04 · On Record                                           │
+ *   │ What's been recognized, where it was made.               │
+ *   │ ──────────────────────────────────────────────────────── │
+ *   │ 2025    IF DESIGN AWARD             [why this matters /  │
+ *   │         Industrial · Object          jury size, % awarded,│
+ *   │                                      what the body did]  │
+ *   │ ──────────────────────────────────────────────────────── │
+ *   │ 2024    [Project name]              [context · why it    │
+ *   │         External · SaaS              matters]            │
+ *   │ ──────────────────────────────────────────────────────── │
+ *   │ ...                                                       │
  *   └──────────────────────────────────────────────────────────┘
  *
- * Three vertical columns at the top become the three disciplines, each
- * with its own mono-caps label. Hairline rule below the columns marks
- * the boundary between the index and the manifesto caption.
+ * Vertical reading rhythm — orthogonal to S3's horizontal cell grid so
+ * the deck visibly changes register entering S4 (specimen catalog →
+ * annotated record). Each entry is a 3-column block: year (left, mono
+ * large) / title-and-body (middle) / context (right, the "why this
+ * matters" annotation).
+ *
+ * The context column is the actual content move that distinguishes
+ * this from a CV table — it lets each credential be storytelling
+ * (jury composition, % awarded, citation, what it was given for)
+ * rather than just a label. No logos, no logo walls — context is
+ * always text.
+ *
+ * Placeholders here demonstrate the format only; real awards /
+ * projects / education get filled in when the record is authored.
+ * Reverse-chronological mixed (awards + projects + education in one
+ * column) so the section reads as one continuous record rather than
+ * three sub-categories.
  */
-function TriadicFacetBody({ facet }: { facet: FacetMeta }) {
-  const ordinal = String(facet.index).padStart(2, "0");
-  const total = String(facet.total).padStart(2, "0");
+const RECORD_PLACEHOLDERS = [
+  {
+    year: "2025",
+    title: "[Award name placeholder]",
+    body: "Industrial · Object",
+    context:
+      "[~1-2 line context — jury size, % accepted, recognition body's stature, what the work was awarded for]",
+  },
+  {
+    year: "2025",
+    title: "[Project name placeholder]",
+    body: "External · AI systems",
+    context:
+      "[~1-2 line context — what it does, scale, citation or recognition that gives it weight]",
+  },
+  {
+    year: "2024",
+    title: "[Award name placeholder]",
+    body: "Graphic",
+    context:
+      "[~1-2 line context — jury, percentile, what category]",
+  },
+  {
+    year: "2024",
+    title: "[Project name placeholder]",
+    body: "External · SaaS",
+    context:
+      "[~1-2 line context — your role, scale, outcome]",
+  },
+  {
+    year: "2024",
+    title: "[Project name placeholder]",
+    body: "External · platform",
+    context:
+      "[~1-2 line context]",
+  },
+  {
+    year: "2023",
+    title: "[Education placeholder]",
+    body: "Master's · school name",
+    context:
+      "[~1-2 line context — program focus, thesis, advisors]",
+  },
+  {
+    year: "2023",
+    title: "[Award name placeholder]",
+    body: "Industrial · Object",
+    context:
+      "[~1-2 line context]",
+  },
+  {
+    year: "2022",
+    title: "[Award name placeholder]",
+    body: "Graphic",
+    context:
+      "[~1-2 line context]",
+  },
+  {
+    year: "2021",
+    title: "[Education placeholder]",
+    body: "Bachelor's · school name",
+    context:
+      "[~1-2 line context]",
+  },
+];
 
+function RecordFacetBody() {
   return (
-    <div className="facet-triadic">
+    <div className="facet-record">
+      <header className="facet-record__header">
+        <span className="facet-eyebrow clip-line">
+          <span>
+            04
+            <span className="facet-eyebrow__separator">·</span>
+            On Record
+          </span>
+        </span>
+        <h2 className="facet-record__thesis clip-line">
+          <span>What&apos;s been recognized, where it was made.</span>
+        </h2>
+      </header>
+
+      <div className="facet-record__entries">
+        {RECORD_PLACEHOLDERS.map((entry, i) => (
+          <article key={i} className="facet-record__entry">
+            <span className="facet-record__year">{entry.year}</span>
+            <div className="facet-record__main">
+              <h3 className="facet-record__title clip-line">
+                <span>{entry.title}</span>
+              </h3>
+              <p className="facet-record__body">{entry.body}</p>
+            </div>
+            <p className="facet-record__context">{entry.context}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Card body: Selected Works ─────────────────────────────────────── */
+
+/*
+ * SelectedWorksBody — the "card back" of the hero.
+ *
+ *   ┌──────────────────────────────────────────────────────────┐
+ *   │ 05 · Selected Works                                      │
+ *   │                                                          │
+ *   │   ┌─────────────┐   [ work index list goes here ]       │
+ *   │   │  featured   │                                        │
+ *   │   │  demo       │   01  [project] · status               │
+ *   │   │  thumbnail  │   02  [project] · status               │
+ *   │   │             │   03  [project] · status               │
+ *   │   └─────────────┘   ...                                  │
+ *   │                                                          │
+ *   └──────────────────────────────────────────────────────────┘
+ *
+ * Mirrors the hero card's contained shape — same width (--card-w),
+ * same height (--card-h), same white-with-thin-border treatment —
+ * so S1 (hero) and S5 (works) read as the calling card's two faces.
+ * Everything between (S2 / S3 / S4) breaks out full-bleed; this is
+ * the deck's other "anchor" frame.
+ *
+ * Layout placeholder for now. Real content (featured demo image
+ * left + work index list right) gets wired once the visual shell
+ * is approved.
+ */
+function SelectedWorksBody() {
+  return (
+    <div className="works-card">
       <span className="facet-eyebrow clip-line">
         <span>
-          {ordinal}
-          <span className="facet-eyebrow__total"> / {total}</span>
+          05
           <span className="facet-eyebrow__separator">·</span>
-          Facet
+          Selected Works
         </span>
       </span>
 
-      <div className="facet-triadic__columns">
-        <div className="facet-triadic__column">
-          <span className="facet-triadic__column-label clip-line">
-            <span>Industrial</span>
-          </span>
-        </div>
-        <div className="facet-triadic__column">
-          <span className="facet-triadic__column-label clip-line">
-            <span>Graphic</span>
-          </span>
-        </div>
-        <div className="facet-triadic__column">
-          <span className="facet-triadic__column-label clip-line">
-            <span>Code</span>
-          </span>
-        </div>
-      </div>
-
-      <div className="facet-caption">
-        <h2 className="facet-caption__title clip-line">
-          <span>{facet.title}</span>
-        </h2>
-        <p className="facet-caption__zh clip-line">
-          <span>{facet.titleZh}</span>
-        </p>
+      <div className="works-card__placeholder" aria-hidden="true">
+        <span className="works-card__placeholder-label clip-line">
+          <span>[ card chassis · layout to come ]</span>
+        </span>
+        <span className="works-card__placeholder-label clip-line">
+          <span>featured demo · 6/12 col</span>
+        </span>
+        <span className="works-card__placeholder-label clip-line">
+          <span>work index list · 6/12 col</span>
+        </span>
+        <span className="works-card__placeholder-label clip-line">
+          <span>→ all work</span>
+        </span>
       </div>
     </div>
   );
@@ -801,7 +1001,7 @@ function ContactBody() {
     <div className="facet-colophon">
       <span className="facet-eyebrow clip-line">
         <span>
-          05
+          06
           <span className="facet-eyebrow__separator">·</span>
           Colophon
         </span>
