@@ -132,6 +132,22 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    /*
+     * Microtypography — the print-blood layer.
+     *
+     * font-feature-settings: explicit OpenType — kerning, standard ligatures,
+     *   contextual alternates. Inter ships these but most engines leave them
+     *   off by default; turning them on gives the page a typeset feel
+     *   instead of a rendered feel.
+     * font-optical-sizing: large display sizes get tighter sidebearings,
+     *   small sizes get looser ones (Inter's variable axes).
+     * hanging-punctuation: opening quotes / em-dashes hang outside the text
+     *   block so vertical edges read as straight (Bringhurst rule, Safari only,
+     *   no-op elsewhere — progressive enhancement).
+     */
+    font-feature-settings: "kern", "liga", "calt";
+    font-optical-sizing: auto;
+    hanging-punctuation: first last;
   }
 
   /* Italic in serif — the editorial print rule. */
@@ -149,12 +165,22 @@
   h2,
   h3 {
     letter-spacing: -0.03em;
+    /* Headings: balance line breaks so the last line isn't a one-word widow.
+       Cheap, modern, and exactly what a print typesetter would do by hand. */
+    text-wrap: balance;
   }
 
   h4,
   h5,
   h6 {
     letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    /* Body: prevent single-word widows at paragraph ends.
+       More expensive than `balance` so reserved for paragraph-level text. */
+    text-wrap: pretty;
   }
 
   a:focus-visible,
@@ -284,7 +310,17 @@
 
   position: fixed;
   inset: 0;
-  background: var(--color-gray-3);
+  /*
+   * Braun-catalog white. Schmittel-era Braun (Less and More, 1962
+   * Radios catalog, twen ads) is printed on clinical white — not the
+   * warm cream TE chose for OP-1. The earlier cream version was a
+   * misattribution; reverting to the Braun convention now.
+   *
+   * Slightly off pure white (#fafafa, gray-2) so it reads as paper,
+   * not as #fff screen. On screens, true #fff is harsh; gray-2
+   * still reads as "white paper" but stops the eye from straining.
+   */
+  background: var(--color-gray-2);
   overflow: hidden;
   contain: paint;
 }
@@ -314,17 +350,99 @@
 }
 
 .deck-card {
+  /*
+   * Hero is the only "calling-card object" with a fixed 16:10 aspect.
+   * Sections below the hero are essentially browse content — they grow
+   * to fit whatever they hold (a big device mockup, a multi-row index,
+   * a colophon). They keep min-height: card-h so their compositions
+   * don't collapse when content is light, but content may push past it.
+   */
   position: relative;
   width: var(--card-w);
-  height: var(--card-h);
-  background: #ffffff;
-  border: 1px solid var(--color-gray-5);
-  border-radius: var(--radius-3);
-  padding: var(--margin-card-outer);
+  min-height: var(--card-h);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: clamp(var(--space-2), 2vw, var(--space-4));
   display: flex;
   flex-direction: column;
-  gap: var(--stack-block);
+  gap: var(--space-3);
+  overflow: visible;
+}
+
+/*
+ * Hero card — the only visible "card" in the deck. On Braun-white
+ * ground, hero's card-ness can't come from a fill contrast (everything
+ * is the same near-white). It comes from a stronger hairline rule
+ * around the card, the way Schmittel framed product silhouettes when
+ * he needed them framed: a single 1px black-grade line, no fill, no
+ * radius softening. Reads as "a rectangular object on the page".
+ */
+/*
+ * Calling-card pair — hero (card 0) + colophon (card 5) share the same
+ * contained frame. The deck reads as: front of card → expansion pages
+ * (facets + selected works) → back of card. Both calling cards lock to
+ * --card-h with the thin border so they look like physical objects;
+ * the expansion pages between them are full-bleed and content-driven.
+ *
+ * The deck-level scale ramp does the calling-card motion at both ends:
+ * hero opens 1 → 0.78 as the user enters; the terminal ramps 0.78 → 1
+ * as they reach the closing card. Border, fill, and aspect ratio are
+ * shared so the two ends read as the same physical object.
+ */
+.deck-card[data-card-index="0"],
+.deck-card[data-card-index="5"] {
+  background: #ffffff;
+  border: 1px solid var(--color-gray-9);
+  border-radius: 0;
+  padding: clamp(var(--space-4), 4vw, var(--space-7));
+  height: var(--card-h);
   overflow: hidden;
+}
+
+/*
+ * Hero card — asymmetric outer margin.
+ *
+ * The home is visual-first (not information-bearing), so the hero card is
+ * allowed to break the 6-card uniform-padding rule on its inside-start edge
+ * only. Right / top / bottom inherit the uniform .deck-card padding above so
+ * the outer chrome (border, radius, height) stays identical across all six
+ * cards — the asymmetry lives purely inside the type block.
+ *
+ * Why padding-left grows: the hero name renders at 48–72px cap-height, and
+ * print convention says the outer margin should be at least ~1.5× cap-height
+ * (Bringhurst / Van de Graaf). The base 56px padding gave a 0.8× ratio against
+ * a 70px name — too tight. Bumping the wide-end to 96px (1.3×) brings the
+ * type block's left bearing up to print discipline. Independently, this
+ * compensates for the morph SVG's built-in viewBox padding on the right side
+ * (~40px of "free white" inside the figure that we can't subtract), so left
+ * and right finally read as optically symmetric.
+ *
+ * Endpoints 56 / 96 are both 8-grid multiples (12 baseline units); 96 is
+ * also exactly 3× the manifesto line-height (32px), so the margin sits on
+ * the same vertical lattice we just locked the typography into.
+ */
+.deck-card[data-card-index="0"] {
+  padding-inline-start: clamp(56px, 6.4vw, 96px);
+}
+
+/*
+ * Hero "clean view" — card 1 sits below the viewport while the user is
+ * looking at the hero. Without this, the next card's eyebrow and title
+ * peek above the viewport bottom on initial load and break the calling-
+ * card silhouette.
+ *
+ * Formula: from hero's bottom edge (at 50dvh + card-h/2 from viewport
+ * top in the centered position) to viewport bottom is 50dvh - card-h/2.
+ * Subtract the existing card-gap because flex gap already contributes
+ * spacing. max(0, …) collapses the rule on short viewports where hero
+ * already fills past the viewport bottom.
+ */
+.deck-card[data-card-index="1"] {
+  margin-top: max(
+    0px,
+    calc(50dvh - var(--card-h) / 2 - var(--card-gap))
+  );
 }
 
 .deck-card__body {
@@ -335,6 +453,10 @@
   justify-content: center;
   gap: var(--stack-block);
   overflow: hidden;
+}
+
+.deck-card:not([data-card-index="0"]):not([data-card-index="5"]) .deck-card__body {
+  overflow: visible;
 }
 
 /* Top chrome — minimal index marker, sticky-ish at top of viewport.
@@ -525,9 +647,21 @@
 
 .hero-manifesto {
   margin: 0;
-  font-size: clamp(20px, 1.9vw, 26px);
+  /*
+   * 8px baseline grid lock for the manifesto block.
+   *
+   *   font-size endpoints 20 / 24 (was 20 / 26 — 26 is off-grid).
+   *   line-height absolute 32px (was unitless 1.4 — produced 28px @ 20 fs and
+   *     ~36.4px @ 26 fs, neither on grid).
+   *
+   * With four manifesto lines at 32px each, the manifesto block is exactly
+   * 128px tall (16 × 8 grid units) — every line baseline lands on the
+   * shared lattice with the name and rule. This is the print-blood lock:
+   * the whole hero stack is now baseline-grid honest.
+   */
+  font-size: clamp(20px, 1.9vw, 24px);
   font-weight: 400;
-  line-height: 1.4;
+  line-height: 32px;
   letter-spacing: -0.02em;
   color: var(--color-gray-12);
   display: flex;
@@ -607,14 +741,21 @@
 }
 
 .hero-line[data-anim="drop"] .hero-char {
-  transform: translateY(-80%);
+  /*
+   * Manifesto-only direction. Percentage compensated for the manifesto's
+   * absolute 32px line-height: original -80% of lh=36.4 ≈ -29px swing;
+   * to keep the same absolute swing on lh=32, scale to -91% ≈ -29px.
+   * Same intent as before, decoupled from the manifesto type-size change.
+   */
+  transform: translateY(-91%);
   opacity: 0;
   animation: hero-char-drop 750ms var(--ease-snappy) both;
   animation-delay: calc(var(--hero-line-delay, 0ms) + var(--char-i, 0) * 16ms);
 }
 
 .hero-line[data-anim="drift"] .hero-char {
-  transform: translateY(25%);
+  /* Manifesto-only. 25% of old 36.4 ≈ 9.1px → 28% of new 32 ≈ 9.0px. */
+  transform: translateY(28%);
   opacity: 0;
   animation: hero-char-drift 900ms var(--ease-snappy) both;
   animation-delay: calc(var(--hero-line-delay, 0ms) + var(--char-i, 0) * 16ms);
@@ -626,12 +767,12 @@
 }
 
 @keyframes hero-char-drop {
-  from { transform: translateY(-80%); opacity: 0; }
+  from { transform: translateY(-91%); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
 }
 
 @keyframes hero-char-drift {
-  from { transform: translateY(25%); opacity: 0; }
+  from { transform: translateY(28%); opacity: 0; }
   to   { transform: translateY(0);   opacity: 1; }
 }
 
@@ -699,10 +840,935 @@
     transform: none;
     animation: none;
   }
-  .hero-rule {
+  .hero-rule,
+  .facet-rule {
     transform: scaleX(1);
     animation: none;
   }
+}
+
+/*
+ * Facet card grammar — inherits the hero's two-register print spec.
+ *
+ *   ┌─ eyebrow (mono caps) ─────────────────────────────────────────┐
+ *   │                                                                │
+ *   │  facet.title          ← display register                       │
+ *   │  ─────────────────    ← hairline rule                          │
+ *   │  facet.titleZh        ← text register                          │
+ *   │  facet.subhead        ← text register                          │
+ *   │                                                                │
+ *   │  CTA                                                           │
+ *   └────────────────────────────────────────────────────────────────┘
+ *
+ * Single weight (400) throughout — hierarchy comes from size + rule
+ * + register, never from font-weight. Sizes locked to the 8px grid.
+ * Tracking matches hero: -0.045em on display, -0.02em on text.
+ */
+.facet-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(var(--space-3), 3vw, var(--space-5));
+  align-items: stretch;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .facet-layout {
+    grid-template-columns: minmax(0, 1fr) clamp(280px, 24vw, 340px);
+    gap: clamp(var(--space-4), 4vw, var(--space-7));
+  }
+}
+
+.facet-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.facet-eyebrow {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gray-11);
+  /* baseline-grid lock: 24 / 32 endpoints both 8-multiples */
+  margin: 0 0 clamp(24px, 2vw, 32px) 0;
+}
+
+.facet-eyebrow__total {
+  color: var(--color-gray-9);
+}
+
+.facet-eyebrow__separator {
+  color: var(--color-gray-9);
+  margin: 0 0.6em;
+}
+
+.facet-title {
+  /*
+   * Display register. Slightly smaller than hero name (48–72) so the
+   * facet titles defer to the hero on the deck. Endpoints 40 / 56 are
+   * both 8-multiples. Tracking and weight match hero exactly.
+   */
+  margin: 0 0 clamp(16px, 1.6vw, 24px) 0;
+  font-size: clamp(40px, 4vw, 56px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--color-gray-12);
+  max-width: 22ch;
+}
+
+.facet-rule {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--color-gray-7);
+  transform: scaleX(0);
+  transform-origin: left center;
+  /* same rhythm as hero-rule */
+  margin: 0 0 clamp(24px, 2vw, 32px) 0;
+  animation: hero-rule-draw 600ms var(--ease-snappy) 700ms both;
+}
+
+.facet-subtitle {
+  /*
+   * Text register, primary. Same line-height / size / tracking as the
+   * hero manifesto so the two registers carry across the deck.
+   */
+  margin: 0;
+  font-size: clamp(20px, 1.9vw, 24px);
+  font-weight: 400;
+  line-height: 32px;
+  letter-spacing: -0.02em;
+  color: var(--color-gray-12);
+  max-width: 22ch;
+}
+
+.facet-body {
+  /* Text register, secondary. One register down: 16 absolute, lh 24. */
+  margin: clamp(16px, 1.6vw, 24px) 0 0 0;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: -0.005em;
+  color: var(--color-gray-11);
+  max-width: 44ch;
+}
+
+.facet-cta-row {
+  flex-shrink: 0;
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+  /* baseline lock: 32 = 4 grid units */
+  margin: clamp(24px, 2.4vw, 32px) 0 0 0;
+}
+
+/*
+ * Plate slot — mirror of .hero-plate-slot. Until a real calibrating
+ * asset lands, the slot is an intentional void: hairline frame, no
+ * fill, a mono caption in the corner. Reads as "pending" rather than
+ * "broken" because the framing alone is composed.
+ */
+.facet-plate-slot {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  border: 1px solid var(--color-gray-6);
+  border-radius: var(--radius-2);
+  min-height: clamp(180px, 24vw, 280px);
+}
+
+/*
+ * Populated plate variant — drops the hairline frame so the Schmittel
+ * graphic sits silhouetted on the card's white surface (Braun catalog
+ * convention: product photos are never boxed). The slot still claims
+ * the same grid column so the type block on the left keeps its rhythm.
+ */
+.facet-plate-slot--filled {
+  border: 0;
+  border-radius: 0;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3);
+}
+
+.facet-plate-svg {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  color: var(--color-gray-12);
+}
+
+/*
+ * Specimen layout — Braun catalog spread composition. Photo dominates
+ * the page; caption sits underneath, left-flush, smaller than display
+ * register. Hairline rule above the caption marks the photo / caption
+ * boundary (Schmittel convention).
+ *
+ *   ┌──────────────────────────────────────────────┐
+ *   │ eyebrow                                      │
+ *   │                                              │
+ *   │   [ landscape diagram, dominant ]            │
+ *   │                                              │
+ *   │   ─────────────                              │
+ *   │   Title                                      │
+ *   │   中文                                        │
+ *   └──────────────────────────────────────────────┘
+ *
+ * Deliberately *not* a 2-column layout — that's the hero's gesture and
+ * the placeholder facets'. Specimen is vertical, photo-led, captioned.
+ */
+
+/*
+ * Facet poster composition — Bauhaus poster + Braun line drawing.
+ *
+ *   ┌──────────────────────────────────────────┐
+ *   │ 02 / FACET                               │  eyebrow tiny
+ *   │                                          │
+ *   │ I build interactions.                    │  HOOK supersized
+ *   │                                          │
+ *   │ ┌──────────────────────────────────────┐ │
+ *   │ │   [dense UI anatomy line drawing]    │ │  graphic dominant
+ *   │ │                                      │ │
+ *   │ └──────────────────────────────────────┘ │
+ *   │                                          │
+ *   │ Drag flows · gesture surfaces            │  caption tiny
+ *   │ 我自己写交互。                              │
+ *   └──────────────────────────────────────────┘
+ *
+ * Four-zone vertical sandwich: eyebrow / HOOK / graphic / caption.
+ * Same structure across all three facets — variety lives inside the
+ * graphic, not in the layout.
+ */
+.facet-poster {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  /* Three rows: eyebrow / device (1fr) / caption. HOOK was dropped
+     to give the device maximum vertical room — the device IS the hero
+     element on the card, and TE OP-1 product pages don't add a giant
+     headline above the product photo either. The manifesto becomes
+     the caption beneath. */
+  grid-template-rows: auto 1fr auto;
+  gap: clamp(var(--space-2), 1.2vw, var(--space-3));
+  width: 100%;
+}
+
+/*
+ * Facet bigshow — text block at top, device that breaks out of the
+ * card boundary to render at near-viewport scale. The device is the
+ * dominant element; text is a small block above it (NOT below).
+ *
+ *   ┌─ card boundary (1200x750) ────────────────────────────┐
+ *   │ 02 / FACET                                            │
+ *   │ I keep refusing the default interaction.              │
+ *   │ 我对交互形式不安分。                                       │
+ *   │                                                       │
+ *   │   ╔══════════════════════════════════════════╗        │
+ *   │   ║                                          ║        │
+ *   │   ║  [Pro Display XDR — fills 90vw]          ║        │
+ *   │   ║   …extends past card boundary…           ║        │
+ *   │   ║                                          ║        │
+ *   └───╠══════════════════════════════════════════╣────────┘
+ *       ║                                          ║   ← break-out!
+ *       ╚══════════════════════════════════════════╝
+ */
+.facet-bigshow {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+}
+
+.facet-bigshow__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  margin-bottom: clamp(var(--space-3), 2vw, var(--space-5));
+  position: relative;
+  z-index: 2;
+}
+
+.facet-bigshow__title {
+  margin: 0;
+  font-size: clamp(28px, 2.6vw, 36px);
+  font-weight: 400;
+  line-height: clamp(36px, 2.8vw, 44px);
+  letter-spacing: -0.025em;
+  color: var(--color-gray-12);
+  max-width: 36ch;
+}
+
+.facet-bigshow__zh {
+  margin: 0;
+  font-size: var(--fs-16);
+  font-weight: 400;
+  line-height: var(--lh-24);
+  letter-spacing: -0.005em;
+  color: var(--color-gray-11);
+  max-width: 32ch;
+}
+
+.facet-bigshow__device-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(var(--space-5), 6vh, var(--space-8));
+  /* Card is content-driven; the wrap is just a centering box.
+     Horizontal break-out is allowed (device wider than card body)
+     but vertical extent is committed — the wrap grows to fit. */
+  overflow: visible;
+}
+
+/* Device for bigshow: dominant scale, in normal flow.
+   Width capped so the device stays within the deck's scale system —
+   wider than the ~936-1200px hero card but never runaway on ultrawide.
+   flex-shrink: 0 keeps the device at its declared width even when it's
+   wider than the wrap (the wrap is flex/row by default and would shrink
+   the device to fit otherwise — that's how we lost the break-out).
+   Aspect ratio of the tighter mockup is ~1.305 (3994/3060). */
+.facet-bigshow .facet-device {
+  position: relative;
+  flex: 0 0 auto;
+  width: min(1500px, 118vw);
+  height: auto;
+  max-width: none;
+  max-height: none;
+  aspect-ratio: 3994 / 3060;
+}
+
+.facet-poster__hook {
+  /*
+   * Supersized poster type. Inherits Inter Regular 400 (single weight,
+   * no shift). Endpoints 56 / 96 are 8-grid multiples; the upper end
+   * approaches the hero name (48-72) without overtaking it. Tracking
+   * matches hero display register.
+   */
+  margin: 0;
+  font-size: clamp(36px, 3.6vw, 56px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  color: var(--color-gray-12);
+  max-width: 18ch;
+}
+
+.facet-poster__plate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/*
+ * Device wrapper — Apple Pro Display XDR mockup PNG + a positioned
+ * screen panel that holds the actual demo content (video, image, or
+ * placeholder).
+ *
+ * The PNG handles the device frame, bezel, stand, and shadow. The
+ * screen panel sits BEHIND the PNG via z-index — the PNG's screen area
+ * is transparent, so content "shows through the hole". Panel coords
+ * come from SCREEN_BOUNDS exported by the plate module.
+ */
+.facet-device {
+  position: relative;
+  /* Lock the 3:2 aspect by driving from height only. height: 100% fills
+     the plate row; width is auto-derived from aspect-ratio. max-width
+     caps overflow if the row gets unusually tall. Centered so the
+     (narrower-than-row) device sits in the middle.
+     CRITICAL: Do NOT also set `width: 100%` — combining width AND height
+     with aspect-ratio causes the browser to ignore aspect-ratio and
+     stretch the box. Drive from one axis only. */
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  aspect-ratio: 3994 / 3060;
+  margin: 0 auto;
+  display: block;
+}
+
+.facet-device__frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 2;
+  pointer-events: none;
+  user-select: none;
+}
+
+.facet-device__screen {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-gray-2);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.facet-device__placeholder {
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gray-9);
+}
+
+.facet-poster__svg {
+  display: block;
+  width: 100%;
+  max-width: min(960px, 96%);
+  height: auto;
+  color: var(--color-gray-12);
+}
+
+.facet-poster__caption {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  max-width: 56ch;
+}
+
+.facet-poster__title {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--color-gray-11);
+  line-height: var(--lh-20);
+}
+
+.facet-poster__zh {
+  margin: 0;
+  font-size: var(--fs-14);
+  font-weight: 400;
+  line-height: var(--lh-20);
+  letter-spacing: -0.005em;
+  color: var(--color-gray-11);
+}
+.facet-specimen {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  width: 100%;
+}
+
+.facet-specimen__eyebrow {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gray-11);
+  margin: 0;
+}
+
+.facet-specimen__plate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+  padding: clamp(var(--space-2), 2vw, var(--space-4)) 0;
+}
+
+.facet-specimen__svg {
+  display: block;
+  width: 100%;
+  max-width: min(880px, 92%);
+  height: auto;
+  color: var(--color-gray-12);
+}
+
+.facet-specimen__caption {
+  display: block;
+  max-width: 56ch;
+}
+
+.facet-specimen__rule {
+  display: block;
+  width: clamp(120px, 18vw, 240px);
+  height: 1px;
+  background: var(--color-gray-7);
+  transform: scaleX(0);
+  transform-origin: left center;
+  margin: 0 0 clamp(16px, 1.6vw, 24px) 0;
+  animation: hero-rule-draw 600ms var(--ease-snappy) 700ms both;
+}
+
+.facet-specimen__title {
+  /*
+   * Caption-grade display — smaller than facet-title (40-56) and hero
+   * (48-72), endpoints 24/32 still on the 8-grid. This is the catalog
+   * caption register: under the photograph, Schmittel-tight tracking,
+   * but typographically subordinate to the photo above.
+   */
+  margin: 0 0 clamp(8px, 0.8vw, 16px) 0;
+  font-size: clamp(24px, 2.4vw, 32px);
+  font-weight: 400;
+  line-height: clamp(32px, 2.8vw, 40px);
+  letter-spacing: -0.025em;
+  color: var(--color-gray-12);
+  max-width: 32ch;
+}
+
+.facet-specimen__zh {
+  margin: 0;
+  font-size: var(--fs-16);
+  font-weight: 400;
+  line-height: var(--lh-24);
+  letter-spacing: -0.01em;
+  color: var(--color-gray-11);
+  max-width: 28ch;
+}
+
+/*
+ * Shared facet caption — used at the bottom of stacked + triadic
+ * compositions. Mirrors the specimen caption register exactly so all
+ * facets share the same caption typography (single source of truth).
+ */
+.facet-caption {
+  display: block;
+  max-width: 56ch;
+}
+
+.facet-caption__title {
+  margin: 0 0 clamp(8px, 0.8vw, 16px) 0;
+  font-size: clamp(24px, 2.4vw, 32px);
+  font-weight: 400;
+  line-height: clamp(32px, 2.8vw, 40px);
+  letter-spacing: -0.025em;
+  color: var(--color-gray-12);
+  max-width: 32ch;
+}
+
+.facet-caption__zh {
+  margin: 0;
+  font-size: var(--fs-16);
+  font-weight: 400;
+  line-height: var(--lh-24);
+  letter-spacing: -0.01em;
+  color: var(--color-gray-11);
+  max-width: 28ch;
+}
+
+/* recompile-marker: works v2 */
+/*
+ * Surfaces composition — uniform specimen frame (triadic-grammar extension).
+ *
+ * Two rows of equal-treatment cells held by a hairline frame. Primary row
+ * carries 2 wide cells (interface / code); supporting row carries 3
+ * narrower cells (object / graphic / detail). Size hierarchy comes from
+ * cell count per row, not from cell-level styling — every cell shares
+ * the same plate, label, and padding so the section reads as one
+ * coherent index of mediums.
+ *
+ * Caption sits below the frame to mirror the triadic facet's grammar.
+ */
+.facet-surfaces {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  /* eyebrow / frame / ledger / caption */
+  grid-template-rows: auto 1fr auto auto;
+  gap: clamp(var(--space-3), 2.4vw, var(--space-5));
+  /*
+   * Full-bleed within the deck. The card-card itself stays at --card-w
+   * so the eyebrow and caption sit on the same horizontal axis as other
+   * facets, but the frame breaks out to the same 118vw width that the
+   * Section 2 device uses. After the deck's 0.78 scale this renders at
+   * ~92vw — TE-grade near-full-bleed without overflowing the stage.
+   */
+  width: min(1800px, 118vw);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.facet-surfaces__frame {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-gray-7);
+  min-height: 0;
+}
+
+.facet-surfaces__row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  border-bottom: 1px solid var(--color-gray-7);
+}
+
+.facet-surfaces__row:last-child {
+  border-bottom: 0;
+}
+
+.facet-surfaces__row--primary {
+  min-height: clamp(560px, 64vh, 800px);
+}
+
+.facet-surfaces__row--supporting {
+  min-height: clamp(420px, 48vh, 600px);
+}
+
+.facet-surfaces__cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: clamp(var(--space-3), 2.4vw, var(--space-5))
+    clamp(var(--space-2), 2vw, var(--space-4));
+  border-right: 1px solid var(--color-gray-7);
+  min-width: 0;
+  position: relative;
+  outline: 0;
+  transition: background-color 200ms ease;
+}
+
+.facet-surfaces__cell:last-child {
+  border-right: 0;
+}
+
+.facet-surfaces__cell--span-4 { grid-column: span 4; }
+.facet-surfaces__cell--span-6 { grid-column: span 6; }
+
+.facet-surfaces__cell-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-14);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gray-11);
+}
+
+/*
+ * Per-cell hover caption — opt-in "看点" prose.
+ *   Default: invisible, slid 6px below resting position.
+ *   On hover/focus-within: fades in + lifts to baseline.
+ *   On touch (no-hover devices): hidden entirely (ledger covers info).
+ */
+.facet-surfaces__cell-caption {
+  display: block;
+  font-size: var(--fs-14);
+  line-height: 1.45;
+  color: var(--color-gray-11);
+  max-width: 42ch;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+
+.facet-surfaces__cell:hover .facet-surfaces__cell-caption,
+.facet-surfaces__cell:focus-visible .facet-surfaces__cell-caption,
+.facet-surfaces__cell:focus-within .facet-surfaces__cell-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (hover: none) {
+  .facet-surfaces__cell-caption {
+    display: none;
+  }
+}
+
+/*
+ * Ledger — frame-bottom figure list.
+ *   Always-visible mono index; columns: number / category / name / meta.
+ *   Single hairline rules above each row + below the last; reads like a
+ *   museum-wall "list of figures" / Phaidon end-page index.
+ */
+.facet-surfaces__ledger {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gray-11);
+}
+
+.facet-surfaces__ledger-row {
+  display: grid;
+  grid-template-columns: clamp(28px, 3vw, 40px) clamp(96px, 10vw, 140px) 1fr auto;
+  gap: clamp(var(--space-2), 2vw, var(--space-4));
+  align-items: baseline;
+  padding-block: clamp(var(--space-1), 1.2vw, var(--space-2));
+  border-top: 1px solid var(--color-gray-6);
+}
+
+.facet-surfaces__ledger-row:last-child {
+  border-bottom: 1px solid var(--color-gray-6);
+}
+
+.facet-surfaces__ledger-index {
+  color: var(--color-gray-12);
+}
+
+.facet-surfaces__ledger-category {
+  color: var(--color-gray-12);
+}
+
+.facet-surfaces__ledger-name {
+  color: var(--color-gray-11);
+  letter-spacing: 0.12em;
+  /* Specimen names may include lowercase / mixed; keep them legible */
+  text-transform: none;
+  font-size: var(--fs-13, 13px);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.facet-surfaces__ledger-meta {
+  color: var(--color-gray-9);
+  justify-self: end;
+  white-space: nowrap;
+}
+
+/*
+ * Record composition — Braun ad-page spread.
+ *
+ * Each credential is a single typographic ad — small mono year
+ * eyebrow, large sans title (the visual anchor), mono caps body
+ * label, short description paragraph. Multiple ads laid out as a
+ * 2-column catalog spread, with whitespace (not hairlines) doing
+ * all the dividing work.
+ *
+ * Borrows from Vitsoe's whitespace discipline + Braun catalog ad
+ * rhythm (model-number eyebrow → product name → spec body) — and
+ * stops there. No internal hairlines, no marginalia column, no
+ * mono-led density. Only top + bottom of section get a single rule
+ * (echoing the hero's hairline) to bracket the spread.
+ *
+ * Visual contrast with S3: S3 is "framed objects" (hairline plates),
+ * S4 is "open spread" (whitespace ads). The deck reads as object
+ * catalog → ad page → colophon.
+ */
+.facet-record {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-5), 5vh, var(--space-7));
+  /* Same break-out as surfaces — full bleed within deck scale. */
+  width: min(1800px, 118vw);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.facet-record__header {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-2), 1.5vh, var(--space-3));
+}
+
+.facet-record__thesis {
+  margin: 0;
+  font-size: clamp(28px, 2.6vw, 36px);
+  font-weight: 400;
+  line-height: clamp(36px, 2.8vw, 44px);
+  letter-spacing: -0.025em;
+  color: var(--color-gray-12);
+  max-width: 36ch;
+}
+
+.facet-record__entries {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(var(--space-7), 6vw, var(--space-10));
+  row-gap: clamp(var(--space-7), 6vh, var(--space-10));
+  padding: clamp(var(--space-5), 5vh, var(--space-7))
+    clamp(var(--space-3), 2.4vw, var(--space-5));
+  border-top: 1px solid var(--color-gray-9);
+  border-bottom: 1px solid var(--color-gray-9);
+}
+
+.facet-record__entry {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-2), 1.5vh, var(--space-3));
+  /* No padding, no border — each entry is a free-standing ad. */
+  min-width: 0;
+}
+
+.facet-record__year {
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gray-11);
+  line-height: 1;
+}
+
+.facet-record__main {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-1), 0.8vh, var(--space-2));
+  min-width: 0;
+}
+
+.facet-record__title {
+  margin: 0;
+  font-size: clamp(24px, 2.2vw, 32px);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--color-gray-12);
+  max-width: 28ch;
+}
+
+.facet-record__body {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.16em;
+  color: var(--color-gray-11);
+  text-transform: uppercase;
+  text-transform: uppercase;
+}
+
+.facet-record__context {
+  margin: 0;
+  font-size: clamp(14px, 1.05vw, 16px);
+  line-height: 1.6;
+  color: var(--color-gray-11);
+  letter-spacing: -0.005em;
+  max-width: 50ch;
+}
+
+/*
+ * Selected works — middle browse section.
+ *
+ * Demoted from "card-back of the hero" to a regular full-bleed-ish
+ * middle section. The closing calling-card slot is now reserved for
+ * the colophon (card 5), which gets the contained --card-w × --card-h
+ * frame and the deck's terminal scale ramp. Selected Works grows with
+ * its content like the other middle sections.
+ *
+ * Placeholder shell — the eventual layout is a curated work catalog
+ * (featured demo + index list, or thumbnail grid).
+ */
+.works-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: var(--card-h);
+  padding: clamp(var(--space-4), 5vh, var(--space-7)) 0;
+}
+
+.works-card__placeholder {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(var(--space-2), 1.6vh, var(--space-3));
+  border: 1px dashed var(--color-gray-7);
+  margin-top: clamp(var(--space-3), 2.4vh, var(--space-4));
+  padding: clamp(var(--space-4), 4vh, var(--space-6));
+}
+
+.works-card__placeholder-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-14);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-gray-9);
+}
+
+/*
+ * Colophon composition — book-end falling-into-place.
+ *
+ * Vast empty top half. Dense small-caps mono block lower-left, flush
+ * left, signature-grade. The closing of the book.
+ */
+.facet-colophon {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.facet-colophon__block {
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  line-height: var(--lh-20);
+  letter-spacing: 0.04em;
+  color: var(--color-gray-11);
+  max-width: 48ch;
+}
+
+.facet-colophon__line {
+  display: block;
+  margin: 0;
+}
+
+.facet-colophon__line + .facet-colophon__line {
+  margin-top: var(--space-1);
+}
+
+.facet-colophon__email {
+  color: var(--color-gray-12);
+  text-decoration: none;
+  background-image: linear-gradient(
+    var(--color-gray-12),
+    var(--color-gray-12)
+  );
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+  transition: background-size 240ms var(--ease-snappy);
+}
+
+.facet-colophon__email:hover {
+  background-size: 0% 1px;
+}
+
+.facet-plate-caption {
+  position: absolute;
+  bottom: var(--space-3);
+  left: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gray-9);
 }
 
 .hero-morph-lab {
