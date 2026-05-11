@@ -624,10 +624,10 @@ function FacetBody({ facet }: { facet: FacetMeta }) {
     return <SpecimenFacetBody facet={facet} />;
   }
   if (facet.slug === "ai-systems") {
-    return <SurfacesFacetBody />;
+    return <SurfacesFacetBody facet={facet} />;
   }
   if (facet.slug === "taste-formation") {
-    return <RecordFacetBody />;
+    return <RecordFacetBody facet={facet} />;
   }
   return <SpecimenFacetBody facet={facet} />;
 }
@@ -792,7 +792,9 @@ const SURFACES_ENTRIES: SurfaceEntry[] = [
   },
 ];
 
-function SurfacesFacetBody() {
+function SurfacesFacetBody({ facet }: { facet: FacetMeta }) {
+  const ordinal = String(facet.index).padStart(2, "0");
+  const total = String(facet.total).padStart(2, "0");
   const primary = SURFACES_ENTRIES.filter((e) => e.row === "primary");
   const supporting = SURFACES_ENTRIES.filter((e) => e.row === "supporting");
 
@@ -813,9 +815,10 @@ function SurfacesFacetBody() {
     <div className="facet-surfaces">
       <span className="facet-eyebrow clip-line">
         <span>
-          03
+          {ordinal}
+          <span className="facet-eyebrow__total"> / {total}</span>
           <span className="facet-eyebrow__separator">·</span>
-          Surfaces
+          Facet
         </span>
       </span>
 
@@ -843,10 +846,10 @@ function SurfacesFacetBody() {
 
       <div className="facet-caption">
         <h2 className="facet-caption__title clip-line">
-          <span>Same eye, different surfaces.</span>
+          <span>{facet.title}</span>
         </h2>
         <p className="facet-caption__zh clip-line">
-          <span>同一种判断，落在不同表面。</span>
+          <span>{facet.titleZh}</span>
         </p>
       </div>
     </div>
@@ -954,19 +957,22 @@ const RECORD_PLACEHOLDERS = [
   },
 ];
 
-function RecordFacetBody() {
+function RecordFacetBody({ facet }: { facet: FacetMeta }) {
+  const ordinal = String(facet.index).padStart(2, "0");
+  const total = String(facet.total).padStart(2, "0");
   return (
     <div className="facet-record">
       <header className="facet-record__header">
         <span className="facet-eyebrow clip-line">
           <span>
-            04
+            {ordinal}
+            <span className="facet-eyebrow__total"> / {total}</span>
             <span className="facet-eyebrow__separator">·</span>
-            On Record
+            Facet
           </span>
         </span>
         <h2 className="facet-record__thesis clip-line">
-          <span>What&apos;s been recognized, where it was made.</span>
+          <span>{facet.title}</span>
         </h2>
       </header>
 
@@ -1105,9 +1111,38 @@ function ContactBody() {
   );
 }
 
-/* ─── Interaction reel — single looping clip inside the monitor screen ─ */
-
+/* ─── Interaction reel — single looping clip inside the monitor screen ─
+ *
+ * Respects prefers-reduced-motion: when the user has reduced-motion set,
+ * the video pauses on its first frame and never starts. JS — not the
+ * `autoplay` HTML attribute — drives playback so we can react to runtime
+ * preference changes (OS-level toggle while the page is open).
+ */
 function InteractionReel() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const apply = (reduced: boolean) => {
+      if (reduced) {
+        v.pause();
+        v.currentTime = 0;
+      } else {
+        v.play().catch(() => {});
+      }
+    };
+
+    apply(mq.matches);
+
+    const handler = (e: MediaQueryListEvent) => apply(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
   return (
     <div
       style={{
@@ -1117,9 +1152,9 @@ function InteractionReel() {
       }}
     >
       <video
+        ref={videoRef}
         src="/interaction/drag-electron.mp4"
         muted
-        autoPlay
         loop
         playsInline
         preload="auto"
