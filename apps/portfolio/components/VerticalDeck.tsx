@@ -687,7 +687,7 @@ function SpecimenFacetBody({ facet }: { facet: FacetMeta }) {
               height: `${INTERACTION_SCREEN.height * 100}%`,
             }}
           >
-            <span className="facet-device__placeholder">demo · pending</span>
+            <InteractionReel />
           </div>
         </div>
       </div>
@@ -696,35 +696,119 @@ function SpecimenFacetBody({ facet }: { facet: FacetMeta }) {
 }
 
 /*
- * SurfacesFacetBody — uniform specimen frame (triadic-grammar extension).
+ * SurfacesFacetBody — uniform specimen frame with hover-reveal + ledger.
  *
  *   ┌─────────────────────────────────────────────────────────┐
  *   │ 03 · Surfaces                                           │
- *   │ ────────────────────────────────────────────────────────│
+ *   │ ─── outer hairline frame ────────────────────────────── │
  *   │ ┌──────────────────┬──────────────────┐                 │
  *   │ │  INTERFACE       │  CODE            │ ← primary       │
  *   │ │  [specimen]      │  [specimen]      │   span-6 each   │
- *   │ ├──────────────────┼──────────┬───────┤                 │
- *   │ │ OBJECT │ GRAPHIC │ DETAIL   │       │ ← supporting    │
- *   │ │ [spec] │ [spec]  │ [spec]   │       │   span-4 each   │
- *   │ └────────┴─────────┴──────────┘                         │
- *   │ ────────────────────────────────────────────────────────│
+ *   │ │  ↳ hover caption │  ↳ hover caption │                 │
+ *   │ ├──────────┬───────┼──────────┐                         │
+ *   │ │ OBJECT   │ GRAPHIC│ DETAIL  │ ← supporting span-4 ×3  │
+ *   │ │ [spec]   │ [spec] │ [spec]  │                         │
+ *   │ │ ↳ hover  │ ↳ hover│ ↳ hover │                         │
+ *   │ └──────────┴────────┴─────────┘                         │
+ *   │ ─── ledger (always visible) ────────────────────────── │
+ *   │ 01  INTERFACE  Stash 0.4.2          retrieval pane · 26 │
+ *   │ 02  CODE       deck_tick()          motion · 26         │
+ *   │ 03  OBJECT     Aurora               Red Dot · 25        │
+ *   │ ...                                                      │
+ *   │ ─────────────────────────────────────────────────────── │
  *   │ Same eye, different surfaces.                           │
  *   │ 同一种判断，落在不同表面。                                  │
  *   └─────────────────────────────────────────────────────────┘
  *
- * Reads as an expanded triadic — same hairline-frame grammar as
- * TriadicFacetBody (03 · taste-formation), but with a 5-cell layout
- * across two rows so size hierarchy emerges from cell count without
- * breaking uniform cell treatment. Caption sits below the frame,
- * mirroring the triadic convention so all index-style facets share
- * the same caption register.
+ * Two-layer explanation strategy:
+ *   - Per-cell hover caption — opt-in "看点" prose, only visible on
+ *     hover/focus. Cell stays sparse by default (top mono label only).
+ *     Hidden on touch devices (no hover affordance, ledger covers info).
+ *   - Frame-bottom ledger — always-visible numbered index of all 5
+ *     specimens. Mono catalog grammar: index / category / name / meta.
+ *     This is the museum-wall figure list — primary source of credit
+ *     and identity for every specimen.
  *
- * No mixed image/text cells, no bullet lists in cells — the visual
- * unity is the whole point. Specimen content drops in later; for
- * chassis state every cell is an empty plate with a mono label.
+ * Specimen content drops in later; for chassis state every cell is an
+ * empty plate with a mono label, and ledger fields carry placeholders.
  */
+
+type SurfaceEntry = {
+  index: string;
+  category: string;
+  span: 4 | 6;
+  row: "primary" | "supporting";
+  name: string;
+  meta: string;
+  /** One-line hover prose — what to notice. */
+  caption: string;
+};
+
+const SURFACES_ENTRIES: SurfaceEntry[] = [
+  {
+    index: "01",
+    category: "Interface",
+    span: 6,
+    row: "primary",
+    name: "[待填 · specimen name]",
+    meta: "[待填 · year/context]",
+    caption: "[待填 · 一句话看点 — what to notice in this interface specimen]",
+  },
+  {
+    index: "02",
+    category: "Code",
+    span: 6,
+    row: "primary",
+    name: "[待填 · code excerpt name]",
+    meta: "[待填 · year]",
+    caption: "[待填 · 一句话看点 — what to notice in this code specimen]",
+  },
+  {
+    index: "03",
+    category: "Object",
+    span: 4,
+    row: "supporting",
+    name: "[待填 · object name]",
+    meta: "[待填 · award/year]",
+    caption: "[待填 · 一句话看点 — what to notice in this object]",
+  },
+  {
+    index: "04",
+    category: "Graphic",
+    span: 4,
+    row: "supporting",
+    name: "[待填 · graphic name]",
+    meta: "[待填 · year]",
+    caption: "[待填 · 一句话看点 — what to notice in this graphic]",
+  },
+  {
+    index: "05",
+    category: "Detail",
+    span: 4,
+    row: "supporting",
+    name: "[待填 · detail source]",
+    meta: "[待填 · macro context]",
+    caption: "[待填 · 一句话看点 — what the macro reveals]",
+  },
+];
+
 function SurfacesFacetBody() {
+  const primary = SURFACES_ENTRIES.filter((e) => e.row === "primary");
+  const supporting = SURFACES_ENTRIES.filter((e) => e.row === "supporting");
+
+  const renderCell = (entry: SurfaceEntry) => (
+    <div
+      key={entry.index}
+      className={`facet-surfaces__cell facet-surfaces__cell--span-${entry.span}`}
+      tabIndex={0}
+    >
+      <span className="facet-surfaces__cell-label clip-line">
+        <span>{entry.category}</span>
+      </span>
+      <span className="facet-surfaces__cell-caption">{entry.caption}</span>
+    </div>
+  );
+
   return (
     <div className="facet-surfaces">
       <span className="facet-eyebrow clip-line">
@@ -736,39 +820,26 @@ function SurfacesFacetBody() {
       </span>
 
       <div className="facet-surfaces__frame">
-        {/* Primary row — Interface + Code, span-6 each */}
         <div className="facet-surfaces__row facet-surfaces__row--primary">
-          <div className="facet-surfaces__cell facet-surfaces__cell--span-6">
-            <span className="facet-surfaces__cell-label clip-line">
-              <span>Interface</span>
-            </span>
-          </div>
-          <div className="facet-surfaces__cell facet-surfaces__cell--span-6">
-            <span className="facet-surfaces__cell-label clip-line">
-              <span>Code</span>
-            </span>
-          </div>
+          {primary.map(renderCell)}
         </div>
-
-        {/* Supporting row — Object / Graphic / Detail, span-4 each */}
         <div className="facet-surfaces__row facet-surfaces__row--supporting">
-          <div className="facet-surfaces__cell facet-surfaces__cell--span-4">
-            <span className="facet-surfaces__cell-label clip-line">
-              <span>Object</span>
-            </span>
-          </div>
-          <div className="facet-surfaces__cell facet-surfaces__cell--span-4">
-            <span className="facet-surfaces__cell-label clip-line">
-              <span>Graphic</span>
-            </span>
-          </div>
-          <div className="facet-surfaces__cell facet-surfaces__cell--span-4">
-            <span className="facet-surfaces__cell-label clip-line">
-              <span>Detail</span>
-            </span>
-          </div>
+          {supporting.map(renderCell)}
         </div>
       </div>
+
+      <ol className="facet-surfaces__ledger">
+        {SURFACES_ENTRIES.map((entry) => (
+          <li key={entry.index} className="facet-surfaces__ledger-row">
+            <span className="facet-surfaces__ledger-index">{entry.index}</span>
+            <span className="facet-surfaces__ledger-category">
+              {entry.category}
+            </span>
+            <span className="facet-surfaces__ledger-name">{entry.name}</span>
+            <span className="facet-surfaces__ledger-meta">{entry.meta}</span>
+          </li>
+        ))}
+      </ol>
 
       <div className="facet-caption">
         <h2 className="facet-caption__title clip-line">
@@ -1030,6 +1101,37 @@ function ContactBody() {
           </span>
         </p>
       </div>
+    </div>
+  );
+}
+
+/* ─── Interaction reel — single looping clip inside the monitor screen ─ */
+
+function InteractionReel() {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        background: "#000",
+      }}
+    >
+      <video
+        src="/interaction/drag-electron.mp4"
+        muted
+        autoPlay
+        loop
+        playsInline
+        preload="auto"
+        aria-label="Drag interaction"
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
+      />
     </div>
   );
 }

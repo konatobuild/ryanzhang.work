@@ -1363,7 +1363,8 @@
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  /* eyebrow / frame / ledger / caption */
+  grid-template-rows: auto 1fr auto auto;
   gap: clamp(var(--space-3), 2.4vw, var(--space-5));
   /*
    * Full-bleed within the deck. The card-card itself stays at --card-w
@@ -1381,8 +1382,7 @@
 .facet-surfaces__frame {
   display: flex;
   flex-direction: column;
-  border-top: 1px solid var(--color-gray-7);
-  border-bottom: 1px solid var(--color-gray-7);
+  border: 1px solid var(--color-gray-7);
   min-height: 0;
 }
 
@@ -1406,12 +1406,17 @@
 
 .facet-surfaces__cell {
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: flex-start;
+  gap: var(--space-3);
   padding: clamp(var(--space-3), 2.4vw, var(--space-5))
     clamp(var(--space-2), 2vw, var(--space-4));
   border-right: 1px solid var(--color-gray-7);
-  background: var(--color-gray-3);
   min-width: 0;
+  position: relative;
+  outline: 0;
+  transition: background-color 200ms ease;
 }
 
 .facet-surfaces__cell:last-child {
@@ -1429,6 +1434,100 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-gray-11);
+}
+
+/*
+ * Per-cell hover caption — opt-in "看点" prose.
+ *   Default: invisible, slid 6px below resting position.
+ *   On hover/focus-within: fades in + lifts to baseline.
+ *   On touch (no-hover devices): hidden entirely (ledger covers info).
+ */
+.facet-surfaces__cell-caption {
+  display: block;
+  font-size: var(--fs-14);
+  line-height: 1.45;
+  color: var(--color-gray-11);
+  max-width: 42ch;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+
+.facet-surfaces__cell:hover .facet-surfaces__cell-caption,
+.facet-surfaces__cell:focus-visible .facet-surfaces__cell-caption,
+.facet-surfaces__cell:focus-within .facet-surfaces__cell-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (hover: none) {
+  .facet-surfaces__cell-caption {
+    display: none;
+  }
+}
+
+/*
+ * Ledger — frame-bottom figure list.
+ *   Always-visible mono index; columns: number / category / name / meta.
+ *   Single hairline rules above each row + below the last; reads like a
+ *   museum-wall "list of figures" / Phaidon end-page index.
+ */
+.facet-surfaces__ledger {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gray-11);
+}
+
+.facet-surfaces__ledger-row {
+  display: grid;
+  grid-template-columns: clamp(28px, 3vw, 40px) clamp(96px, 10vw, 140px) 1fr auto;
+  gap: clamp(var(--space-2), 2vw, var(--space-4));
+  align-items: baseline;
+  padding-block: clamp(var(--space-1), 1.2vw, var(--space-2));
+  border-top: 1px solid var(--color-gray-6);
+}
+
+.facet-surfaces__ledger-row:last-child {
+  border-bottom: 1px solid var(--color-gray-6);
+}
+
+.facet-surfaces__ledger-index {
+  color: var(--color-gray-12);
+}
+
+.facet-surfaces__ledger-category {
+  color: var(--color-gray-12);
+}
+
+.facet-surfaces__ledger-name {
+  color: var(--color-gray-11);
+  letter-spacing: 0.12em;
+  /* Specimen names may include lowercase / mixed; keep them legible */
+  text-transform: none;
+  font-size: var(--fs-13, 13px);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.facet-surfaces__ledger-meta {
+  color: var(--color-gray-9);
+  justify-self: end;
+  white-space: nowrap;
 }
 
 /*
