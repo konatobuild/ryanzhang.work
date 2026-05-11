@@ -29,17 +29,20 @@ export function InteractionPlate({ className }: { className?: string }) {
 
 /*
  * Screen bounds in fractional coordinates of the mockup PNG.
- * Measured against the 3994×3060 source — re-measure if the mockup swaps.
+ * Measured by alpha-mask scan of the 3994×3060 source — re-measure if
+ * the mockup swaps. Numbers reflect the transparent rectangle inside
+ * the bezel (the actual screen area), not the device silhouette.
  *
- *   inner screen rect (white area inside the black bezel):
- *     left ≈ 1.3%   top ≈ 1.6%   width ≈ 97.4%   height ≈ 73.5%
+ *   inner screen rect: left=203 top=212 right=3782 bottom=2226 (px)
+ *   →                  5.08% / 6.93% / 89.63% / 65.85% (fractions)
+ *   →                  3580×2015 px, aspect 1.776 (≈16:9)
  */
 export const SCREEN_BOUNDS = {
   imageWidth: 3994,
   imageHeight: 3060,
-  aspectRatio: 3994 / 3060, // ~1.305
-  left: 0.013,
-  top: 0.016,
-  width: 0.974,
-  height: 0.735,
+  aspectRatio: 3994 / 3060, // device aspect, ~1.305
+  left: 0.0508,
+  top: 0.0693,
+  width: 0.8963,
+  height: 0.6585,
 };
