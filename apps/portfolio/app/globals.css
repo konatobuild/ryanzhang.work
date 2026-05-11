@@ -61,6 +61,26 @@
   --space-11: 88px;
   --space-print: 128px;
 
+  /*
+   * Margin system — print discipline.
+   *
+   * The "frame" of a card (outer padding + column gutter) scales by step
+   * between mobile and desktop. Interior block rhythm (tight + block)
+   * stays constant across breakpoints — matching how a printed book
+   * changes page margins between editions while keeping leading and
+   * paragraph spacing fixed.
+   *
+   * Roles:
+   *   --margin-card-outer   card edge → first content
+   *   --margin-card-gutter  column-gap inside multi-column cards
+   *   --stack-tight         within-block rhythm (heading→intro→list)
+   *   --stack-block         between-block rhythm (data block ⟷ CTA block)
+   */
+  --margin-card-outer: 64px;
+  --margin-card-gutter: 64px;
+  --stack-tight: 24px;
+  --stack-block: 48px;
+
   /* Type scale — jumpy ladder, deliberately discontinuous. */
   --fs-10: 10px;
   --fs-12: 12px;
@@ -300,10 +320,10 @@
   background: #ffffff;
   border: 1px solid var(--color-gray-5);
   border-radius: var(--radius-3);
-  padding: clamp(var(--space-4), 4vw, var(--space-7));
+  padding: var(--margin-card-outer);
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--stack-block);
   overflow: hidden;
 }
 
@@ -313,7 +333,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: var(--space-3);
+  gap: var(--stack-block);
   overflow: hidden;
 }
 
@@ -328,7 +348,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-3) var(--space-5);
+  padding: var(--stack-tight) var(--space-4);
   font-family: var(--font-mono);
   font-size: var(--fs-12);
   line-height: var(--lh-16);
@@ -345,7 +365,7 @@
 /* Right-edge progress hairline. */
 .deck-progress {
   position: absolute;
-  right: var(--space-5);
+  right: var(--space-4);
   top: 12vh;
   bottom: 12vh;
   width: 1px;
@@ -373,6 +393,16 @@
 }
 
 @media (max-width: 768px) {
+  /*
+   * Print-discipline override: at smaller "edition", outer frame and
+   * column gutter step down. Interior block rhythm (tight + block)
+   * stays constant so paragraph leading and stack spacing don't shrink.
+   */
+  :root {
+    --margin-card-outer: 32px;
+    --margin-card-gutter: 32px;
+  }
+
   .deck-stage {
     --card-w: calc(100vw - var(--space-4));
     --card-gap: clamp(24px, 5vh, 48px);
@@ -461,7 +491,8 @@
 }
 
 .hero-name {
-  margin: 0 0 clamp(16px, 1.6vw, 22px) 0;
+  /* tight: name + hairline rule are one nameplate unit */
+  margin: 0 0 var(--stack-tight) 0;
   font-size: clamp(48px, 5.4vw, 72px);
   font-weight: 400;
   line-height: 1;
@@ -482,7 +513,8 @@
   background: var(--color-gray-7);
   transform: scaleX(0);
   transform-origin: left center;
-  margin: 0 0 clamp(20px, 2vw, 32px) 0;
+  /* block: nameplate ends, manifesto begins */
+  margin: 0 0 var(--stack-block) 0;
   animation: hero-rule-draw 600ms var(--ease-snappy) 700ms both;
 }
 
@@ -617,7 +649,7 @@
 .hero-layout {
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(var(--space-3), 3vw, var(--space-5));
+  gap: var(--stack-block);
   align-items: center;
   width: 100%;
 }
@@ -635,7 +667,7 @@
 @media (min-width: 1024px) {
   .hero-layout {
     grid-template-columns: minmax(0, 1fr) clamp(280px, 24vw, 340px);
-    gap: clamp(var(--space-4), 4vw, var(--space-7));
+    gap: var(--margin-card-gutter);
   }
 
   .hero-plate-slot {

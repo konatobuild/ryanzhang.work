@@ -575,7 +575,7 @@ function StashBody({ entry }: { entry: CaseEntry | null }) {
           flex: 1,
           display: "grid",
           gridTemplateColumns: "minmax(0, 1.1fr) minmax(0, 1fr)",
-          gap: "clamp(var(--space-4), 4vw, var(--space-7))",
+          gap: "var(--margin-card-gutter)",
           alignItems: "stretch",
           minHeight: 0,
         }}
@@ -585,7 +585,7 @@ function StashBody({ entry }: { entry: CaseEntry | null }) {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            gap: "var(--space-3)",
+            gap: "var(--stack-tight)",
             minWidth: 0,
           }}
         >
@@ -629,7 +629,6 @@ function StashBody({ entry }: { entry: CaseEntry | null }) {
                 fontSize: "clamp(13px, 1.15vw, 15px)",
                 lineHeight: 1.4,
                 color: "var(--color-gray-12)",
-                marginTop: "var(--space-2)",
               }}
             >
               <li>
@@ -686,10 +685,9 @@ function StashBody({ entry }: { entry: CaseEntry | null }) {
         <div
           style={{
             display: "flex",
-            gap: "var(--space-3)",
+            gap: "var(--stack-tight)",
             flexWrap: "wrap",
             alignItems: "center",
-            marginTop: "var(--space-2)",
           }}
         >
           <a
@@ -727,7 +725,7 @@ function WorkSlotBody({ label }: { label: string }) {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          gap: "var(--space-3)",
+          gap: "var(--stack-tight)",
         }}
       >
         <h2
@@ -788,7 +786,7 @@ function ContactBody() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          gap: "var(--space-4)",
+          gap: "var(--stack-tight)",
         }}
       >
         <h2
@@ -827,7 +825,7 @@ function ContactBody() {
         <div
           style={{
             display: "flex",
-            gap: "var(--space-3)",
+            gap: "var(--stack-tight)",
             flexWrap: "wrap",
           }}
         >
