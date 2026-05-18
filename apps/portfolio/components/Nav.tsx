@@ -8,9 +8,9 @@ export function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  // Home is a fixed-positioned deck and renders its own minimal chrome.
-  // Hide the standard nav there — the deck takes the whole viewport.
-  if (pathname === "/") return null;
+  // Deck surfaces render their own minimal chrome and take the whole
+  // viewport. Hide the standard nav on every deck-driven page.
+  if (pathname === "/" || pathname === "/industrial-design") return null;
 
   return (
     <>

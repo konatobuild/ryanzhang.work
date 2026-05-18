@@ -1842,3 +1842,218 @@
   flex-shrink: 0;
   min-width: 160px;
 }
+
+/* ─── IndustrialDeck ───────────────────────────────────────────────────
+ *
+ * /industrial-design's surface. Same fixed-stage motion model as the
+ * home deck (translateY follows scrollY), but two structural diffs:
+ *
+ *   - No deck-level scale ramp. Scale = 1 throughout. Scaling a full-
+ *     bleed product photo down would expose stage background at the
+ *     photo's edges, so the cinema slots demand unscaled rendering.
+ *   - Slots come in two kinds. "card" slots (01 + 07) are calling-card
+ *     frames at --card-w × --card-h sitting on a gray stage background;
+ *     "cinema" slots (02–06) are 100vw × 100dvh with their own ground
+ *     and dramatic dark fill, reserved for product photography.
+ *
+ * The bookend + cinema rhythm mirrors editor-voice / plate / editor-
+ * voice in Naoto Fukasawa / TE product monographs.
+ */
+
+.id-deck-stage {
+  --card-w: min(1200px, calc(100vw - var(--space-8)));
+  --card-h: calc(var(--card-w) * 10 / 16);
+  --card-gap: clamp(40px, 8vh, 80px);
+
+  position: fixed;
+  inset: 0;
+  background: var(--color-gray-2);
+  overflow: hidden;
+  contain: paint;
+}
+
+.id-deck-spacer {
+  pointer-events: none;
+}
+
+.id-deck-track {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Cinema slots butt up edge-to-edge (TE rhythm) with only a 1px
+     hairline divider between them. Card↔cinema breathing space is
+     re-introduced as margin-top on the boundary slots below. */
+  gap: 0;
+  /* Card 01 sits centered on first paint (scrollY = 0). */
+  padding-top: calc((100dvh - var(--card-h)) / 2);
+  padding-bottom: calc((100dvh - var(--card-h)) / 2);
+  transform: translateX(-50%);
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.id-deck-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Card slots — share the home calling-card chrome (16:10, white, 1px
+   hairline, no radius) so Card 01 and Card 07 read as the same physical
+   object that opens and closes the page. */
+.id-deck-slot--card-identity,
+.id-deck-slot--card-colophon {
+  width: var(--card-w);
+  height: var(--card-h);
+  background: #ffffff;
+  border: 1px solid var(--color-gray-9);
+  border-radius: 0;
+  padding: clamp(var(--space-4), 4vw, var(--space-7));
+  overflow: hidden;
+}
+
+/* Hero card on the ID page — same asymmetric inside-start padding rule
+   as the home hero so the type block's left bearing has print discipline
+   against the 48–72px cap-height name. */
+.id-deck-slot--card-identity {
+  padding-inline-start: clamp(56px, 6.4vw, 96px);
+}
+
+/* Cinema slots (both variants) — pre-sized at viewport / DECK_SCALE so
+   they render at exactly 100vw × 100dvh once the deck settles at the
+   browse scale (DECK_SCALE = 0.78, mirrored in IndustrialDeck.tsx).
+   Keeping the two constants in sync is what lets the cinema slot fill
+   the viewport without exposing stage background at its edges. */
+.id-deck-slot--cinema-big,
+.id-deck-slot--cinema-pair {
+  width: calc(100vw / 0.78);
+  height: calc(100dvh / 0.78);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Atmospheric big plate — dark ground. */
+.id-deck-slot--cinema-big {
+  background: var(--color-gray-12);
+}
+
+/* Catalog pair — light ground, mirrors TE's product-grid sections that
+   follow each hero. Two halves split 50/50 inside .id-cinema--pair. */
+.id-deck-slot--cinema-pair {
+  background: var(--color-gray-1);
+}
+
+/* Hairline divider between adjacent cinema slots — "极细隔断". The big↔
+   pair contrast already marks the boundary visually; this 1px line is
+   the editorial signature that re-asserts it. Gray-9 sits in the middle
+   of the scale so it stays readable against both dark and light grounds.
+
+   Only adjacent cinema↔cinema needs the line; card↔cinema boundaries
+   already breathe through the margin-top rules below. */
+.id-deck-slot--cinema-big + .id-deck-slot--cinema-big,
+.id-deck-slot--cinema-big + .id-deck-slot--cinema-pair,
+.id-deck-slot--cinema-pair + .id-deck-slot--cinema-big,
+.id-deck-slot--cinema-pair + .id-deck-slot--cinema-pair {
+  border-top: 1px solid var(--color-gray-9);
+}
+
+/*
+ * Card↔Cinema breathing space. Track flex gap is 0, so each boundary
+ * slot carries its own margin-top to insert the gray-stage gap that
+ * also keeps the cinema's edge below/above the viewport while the
+ * calling card is centered.
+ *
+ * Formula derivation: at scrollY = 0 (Card 01 centered, scale = 1),
+ * Cinema 01's natural top = (dvh + card-h)/2 (track padding-top +
+ * card-h). Pushing it below viewport bottom requires margin-top ≥
+ * (dvh - card-h)/2. The +var(--space-2) buffer covers subpixel and
+ * scrollbar wiggle. Symmetric rule on the last slot (Card 08, the
+ * closing colophon) handles the closing side — its index moves with
+ * the slot count, so keep these two selectors in sync with SLOT_DEFS
+ * in IndustrialDeck.tsx.
+ */
+.id-deck-slot[data-slot-index="1"],
+.id-deck-slot[data-slot-index="9"] {
+  margin-top: max(
+    0px,
+    calc(50dvh - var(--card-h) / 2 + var(--space-2))
+  );
+}
+
+.id-cinema {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Full-bleed plate photograph — fills the slot edge-to-edge, sits
+   underneath the marker. Next.js Image with `fill` positions absolutely
+   inset 0; we just need object-fit: cover so the image scales to fill
+   100vw × 100dvh without distortion. */
+.id-cinema__photo {
+  object-fit: cover;
+  object-position: center;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Cinema-pair splits its slot into two halves, separated by a 1px
+   vertical hairline (same editorial divider language as the horizontal
+   inter-slot dividers). Each half is its own placeholder. */
+.id-cinema--pair {
+  display: flex;
+  flex-direction: row;
+}
+
+.id-cinema__half {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.id-cinema__half + .id-cinema__half {
+  border-left: 1px solid var(--color-gray-9);
+}
+
+/*
+ * De-emphasized plate marker. Originally a two-line PLATE 0N / LAYOUT
+ * TBD caption — but the user wants text receded so the eventual product
+ * photography speaks. Reduced to a single small ordinal in the bottom-
+ * left corner; color sits one step from the slot's ground so it reads
+ * as a wayfinding number, not a caption.
+ */
+.id-cinema__marker {
+  position: absolute;
+  left: clamp(var(--space-2), 2.4vw, var(--space-4));
+  bottom: clamp(var(--space-2), 2.4vw, var(--space-4));
+  font-family: var(--font-mono);
+  font-size: var(--fs-10);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.id-deck-slot--cinema-big .id-cinema__marker {
+  color: var(--color-gray-9);
+}
+
+.id-deck-slot--cinema-pair .id-cinema__marker {
+  color: var(--color-gray-9);
+}
+
+/* Hero layout override for ID identity — drop the right-side plate
+   column; ID identity is text-only. The .hero-layout grid in globals
+   reserves a right slot for HeroMorphPoc; here we collapse it. */
+.id-hero-layout {
+  grid-template-columns: 1fr !important;
+}
+
+@media (max-width: 768px) {
+  .id-deck-stage {
+    --card-w: calc(100vw - var(--space-4));
+    --card-gap: clamp(24px, 5vh, 48px);
+  }
+}

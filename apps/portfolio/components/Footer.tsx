@@ -8,8 +8,9 @@ const CONTACT_EMAIL = "ryan.runsheng@gmail.com";
 
 export function Footer() {
   const pathname = usePathname();
-  // Home is a fixed-positioned deck — footer is irrelevant there.
-  if (pathname === "/") return null;
+  // Deck surfaces own their own chrome — footer would compete with the
+  // deck's colophon card. Home (/) and /industrial-design are both decks.
+  if (pathname === "/" || pathname === "/industrial-design") return null;
 
   const year = new Date().getFullYear();
   return (
