@@ -1902,14 +1902,24 @@
   flex-direction: column;
 }
 
-/* Card slots — share the home calling-card chrome (16:10, white, 1px
-   hairline, no radius) so Card 01 and Card 07 read as the same physical
-   object that opens and closes the page. */
+/* Card slots — share the home calling-card chrome (16:10, near-white,
+   1px hairline, no radius) so Card 01 and Card 09 read as the same
+   physical object that opens and closes the page.
+
+   No procedural paper-grain overlay. We tried several recipes
+   (feDiffuseLighting height map, plain fractalNoise multiply,
+   anisotropic fibre stretch, soft-light blend) — at the small card
+   scale on a desktop viewport, each one trades visibility for color
+   warmth and never lands as "card stock". The honest move is to keep
+   the surface clean and let a faint warm undertone (#fcfbf8) plus
+   the typography + morph carry the calling-card weight. This mirrors
+   how product-page aesthetics at Aesop / Apple do it: cream undertone,
+   strong type, no faked paper. */
 .id-deck-slot--card-identity,
 .id-deck-slot--card-colophon {
   width: var(--card-w);
   height: var(--card-h);
-  background: #ffffff;
+  background: #fcfbf8;
   border: 1px solid var(--color-gray-9);
   border-radius: 0;
   padding: clamp(var(--space-4), 4vw, var(--space-7));
@@ -1918,9 +1928,31 @@
 
 /* Hero card on the ID page — same asymmetric inside-start padding rule
    as the home hero so the type block's left bearing has print discipline
-   against the 48–72px cap-height name. */
+   against the 48–72px cap-height name. justify-content: center mirrors
+   home's .deck-card__body so the hero-layout grid sits in the vertical
+   middle of the card instead of hugging the top edge. (Colophon keeps
+   its default top-aligned flow — book-colophon convention puts the text
+   block lower-left with empty room above it, not centered.) */
 .id-deck-slot--card-identity {
   padding-inline-start: clamp(56px, 6.4vw, 96px);
+  justify-content: center;
+}
+
+/* Page-load cohort fade for non-hero industrial slots. Mirrors the home
+   deck rule (.deck-card[data-card-index]:not([data-card-index="0"]))
+   so cinema slots and the closing colophon don't paint at full opacity
+   while the hero cascade is still running — the arrival reads as one
+   staged sequence (hero first, then everything else 800ms later). Fires
+   once per page load; JS re-entry replay (in IndustrialDeck.tsx) handles
+   scroll-back. */
+.id-deck-slot[data-slot-index]:not([data-slot-index="0"]) {
+  opacity: 0;
+  animation: id-deck-slot-load-fade 350ms var(--ease-default) 800ms forwards;
+}
+
+@keyframes id-deck-slot-load-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 /* Cinema slots (both variants) — pre-sized at viewport / DECK_SCALE so
@@ -2044,11 +2076,121 @@
   color: var(--color-gray-9);
 }
 
-/* Hero layout override for ID identity — drop the right-side plate
-   column; ID identity is text-only. The .hero-layout grid in globals
-   reserves a right slot for HeroMorphPoc; here we collapse it. */
-.id-hero-layout {
-  grid-template-columns: 1fr !important;
+/*
+ * On Record footer cluster (Card 09 body). Two children of
+ * .facet-colophon (eyebrow + this footer) plus the parent's
+ * justify-content: space-between push the cluster to the card bottom,
+ * leaving vast empty above — the "calling-card back signature line"
+ * register. Inside the cluster: logo row above email, stacked tight.
+ */
+.id-onrecord-footer {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-4), 4vw, var(--space-6));
+}
+
+/*
+ * Single horizontal row of unified-color award marks. Flush-left,
+ * generous gap, wraps only if a viewport gets narrow enough to force
+ * it. Logos are author-supplied single-color SVGs; until they land,
+ * .id-onrecord__placeholder fills each slot with mono-caps text.
+ * Width is content-driven so the row doesn't span the card edge-to-
+ * edge — preserves the breathing room the card back asks for.
+ */
+.id-onrecord {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  /* Slots are uniform-width now (.id-onrecord__entry has fixed
+     dimensions), so the gap can step down a bit — equal-slots
+     already do the balancing work that the larger gap was doing
+     for variable-width text placeholders. */
+  gap: clamp(var(--space-4), 3.5vw, var(--space-6));
+}
+
+.id-onrecord__entry {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Each entry is a fixed-size slot — uniform width per award so a
+     wider logo (London 3.14:1) doesn't dominate the row. Slot is the
+     "ad area"; logo scales to fit it preserving aspect ratio. */
+  width: clamp(120px, 13vw, 160px);
+  height: clamp(48px, 5.5vw, 64px);
+}
+
+.id-onrecord__logo {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  /* Brand-color logos (PNG + JPG) are normalized in CSS so the four
+     awards read with unified visual weight on the card:
+       grayscale(1)     — strips brand colors (red, gold, silver) to gray
+       contrast(1.4)    — pushes detail back after grayscale flattens it
+       brightness(0.6)  — pulls everything toward dark ink (gray-12 range)
+     plus mix-blend-mode: multiply, which solves the JPG-with-white-
+     background problem: white multiplies with cream card → stays cream
+     (effectively transparent), brand pixels darken onto the cream. */
+  filter: grayscale(1) contrast(1.4) brightness(0.6);
+  mix-blend-mode: multiply;
+}
+
+/*
+ * Award lockup placeholder. Deliberately styled as a CSS placeholder
+ * (dashed hairline frame, no fill, quiet neutral type) so it reads
+ * as "logo slot — pending" rather than as a stand-in attempt to BE
+ * the brand. Each award (Red Dot, MUSE, NY Product, London) has
+ * its own official logotype, color, and grammar — rendering them
+ * as uniform mono-caps text would misrepresent all four. The
+ * dashed frame announces "this isn't trying to be a logo".
+ *
+ * Once entry.logoSrc lands, the ColophonBody renders the Image
+ * directly and this placeholder is bypassed entirely.
+ */
+.id-onrecord__placeholder {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: clamp(var(--space-2), 1.2vw, var(--space-3))
+           clamp(var(--space-3), 2vw, var(--space-4));
+  min-width: clamp(96px, 11vw, 132px);
+  border: 1px dashed var(--color-gray-6);
+  font-family: var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.id-onrecord__placeholder-name {
+  font-size: var(--fs-12);
+  color: var(--color-gray-11);
+}
+
+.id-onrecord__placeholder-level {
+  font-size: var(--fs-10);
+  letter-spacing: 0.16em;
+  color: var(--color-gray-9);
+}
+
+/*
+ * Small section-anchor caption above the logo row. Mono caps, gray-9
+ * (one step quieter than the placeholder text) so the eye lands on the
+ * marks first and treats this as a signpost, not a sentence. Em-dash
+ * suffix is a print convention (credits page / colophon "—" line).
+ */
+.id-onrecord__caption {
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gray-9);
+  display: block;
 }
 
 @media (max-width: 768px) {

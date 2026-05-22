@@ -2,21 +2,28 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { HeroMorphPoc } from "@/components/HeroMorphPoc";
 
 /*
  * IndustrialDeck — primary surface for /industrial-design.
  *
- * Mirror of VerticalDeck's full motion model: fixed stage, scroll-as-
- * scrubber, track translateY tied to scrollY, AND the calling-card
- * scale ramp (1 → 0.78 → 1) that opens and closes the deck. The same
- * "calling card opens, browse, closes" gesture as the home page; the
- * shared signature is the point.
+ * Same calling-card gesture as home (open 1 → 0.78, browse, close 0.78
+ * → 1) but with a decoupled motion model: scrollY drives EITHER scale OR
+ * translate, never both at once. Previously they were coupled (ty = -sy
+ * with scale on top), which caused a perceptible mid-ramp wobble on the
+ * hero — the scale-toward-track-midpoint pull worked against the
+ * translate-up, and the cosine ease's velocity peak briefly inverted net
+ * direction. Decoupling lets the hero shrink in place during phase A
+ * and the terminal grow in place during phase C; nothing translates
+ * inside a ramp. Phase B is pure translate at constant 0.78.
  *
- * The only difference is slot composition. Slots come in two kinds:
- *   - "card"   — Card 01 (identity) and Card 07 (colophon). Same
+ * See the comment block above tick() for the partition math.
+ *
+ * Slot composition (orthogonal to motion):
+ *   - "card"   — Card 01 (identity) and Card 09 (colophon). Same
  *     contained 16:10 white-with-hairline frame as home's hero/terminal
  *     cards. Bookends.
- *   - "cinema" — slots 02–06. Pre-sized at 100vw/DECK_SCALE wide and
+ *   - "cinema" — slots 02–08. Pre-sized at 100vw/DECK_SCALE wide and
  *     100dvh/DECK_SCALE tall in unscaled pixels, so once the deck
  *     settles at the browse scale (DECK_SCALE = 0.78), each cinema slot
  *     fills the viewport exactly. Reserved for product photography.
@@ -26,10 +33,11 @@ import Image from "next/image";
  * takes the page edge-to-edge in between.
  */
 
-// Same ramp model as VerticalDeck. Calling card opens 1 → DECK_SCALE on
-// entry; the browse register holds DECK_SCALE; the terminal card closes
-// DECK_SCALE → 1. RAMP_PX is the scroll distance for each ramp; symmetric
-// so open and close feel matched.
+// Calling card opens 1 → DECK_SCALE on entry; the browse register holds
+// DECK_SCALE; the terminal card closes DECK_SCALE → 1. RAMP_PX is the
+// scroll distance for each ramp; symmetric so open and close feel
+// matched. With decoupled motion these ramps are now pure scale phases —
+// no translate happens inside them.
 const HOME_SCALE = 1;
 const DECK_SCALE = 0.78;
 const RAMP_PX = 1200;
@@ -179,10 +187,20 @@ export function IndustrialDeck() {
 
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // Per-slot scroll target: scale at landing matches the ramp state at
-  // that scroll position (HOME_SCALE for bookends, DECK_SCALE for middle).
-  // Derivation in VerticalDeck — same here.
-  const motionRef = useRef({ scrollPositions: [] as number[] });
+  // Three-phase motion model — see the comment above tick() for the full
+  // derivation. Cached layout state (hero/terminal unscaled centers,
+  // halfH, dvh) lets tick() run without re-reading the DOM per frame, and
+  // tyAB / phase boundaries are derived once per recalc.
+  const motionRef = useRef({
+    scrollPositions: [] as number[],
+    tyAB: 0,
+    terminalScrollStart: 0,
+    terminalScrollEnd: 0,
+    heroCenter: 0,
+    terminalCenter: 0,
+    halfH: 0,
+    dvh: 0,
+  });
 
   useEffect(() => {
     const recalc = () => {
@@ -196,26 +214,61 @@ export function IndustrialDeck() {
       const dvh = window.innerHeight;
       const halfH = track.scrollHeight / 2;
       const lastIdx = slots.length - 1;
-      const scrollPositions: number[] = [];
-      slots.forEach((s, i) => {
-        if (i === 0) {
-          scrollPositions.push(0);
-          return;
-        }
-        // Last slot (Card 07) lands at HOME_SCALE; middle (cinema) slots
-        // land at DECK_SCALE. Cinema slots are pre-sized so they fit
-        // exactly viewport at DECK_SCALE.
-        const s_scale = i === lastIdx ? HOME_SCALE : DECK_SCALE;
-        const center = s.offsetTop + s.offsetHeight / 2;
-        const sy = halfH * (1 - s_scale) + s_scale * center - dvh / 2;
-        scrollPositions.push(sy);
+
+      const cardCenters: number[] = Array.from(slots).map(
+        (el) => el.offsetTop + el.offsetHeight / 2,
+      );
+      const heroCenter = cardCenters[0];
+      const terminalCenter = cardCenters[lastIdx];
+
+      // Decoupled scale/translate model. Earlier the track used ty = -sy
+      // with scale ramping on top, which made the hero card visibly drift
+      // down-then-up during phase A because the scale-toward-track-midpoint
+      // pull worked against the translate-up. Now sy is partitioned:
+      //
+      //   Phase A (sy ∈ [0, RAMP_PX])           scale 1 → 0.78, hero held
+      //   Phase B (sy ∈ [RAMP_PX, terminalStart]) scale 0.78, pure translate
+      //   Phase C (sy ∈ [terminalStart, terminalEnd]) scale 0.78 → 1, terminal held
+      //
+      // "Held" means the card's visual center stays at dvh/2 for the full
+      // ramp — ty is solved each frame to cancel the scale-induced drift.
+      //
+      // Phase A end ty (tyAB):
+      //   visualY_hero = ty + halfH + (heroCenter - halfH)*DECK_SCALE = dvh/2
+      //   ⇒ tyAB = dvh/2 - halfH*(1-DECK_SCALE) - heroCenter*DECK_SCALE
+      // Phase C start ty (tyBC), same formula with terminalCenter.
+      //
+      // Phase B then linearly interpolates ty from tyAB to tyBC.
+      // sp[i] for a middle card i (lands centered at scale 0.78):
+      //   ty_centered_i = dvh/2 - halfH*(1-DECK_SCALE) - cardCenter_i*DECK_SCALE
+      //   sp[i] = RAMP_PX + (tyAB - ty_centered_i)
+      //         = RAMP_PX + DECK_SCALE * (cardCenter_i - heroCenter)
+      const tyAB =
+        dvh / 2 - halfH * (1 - DECK_SCALE) - heroCenter * DECK_SCALE;
+      const tyBC =
+        dvh / 2 - halfH * (1 - DECK_SCALE) - terminalCenter * DECK_SCALE;
+      const phaseBLength = tyAB - tyBC;
+      const terminalScrollStart = RAMP_PX + phaseBLength;
+      const terminalScrollEnd = terminalScrollStart + RAMP_PX;
+
+      const scrollPositions: number[] = cardCenters.map((center, i) => {
+        if (i === 0) return 0;
+        if (i === lastIdx) return terminalScrollEnd;
+        return RAMP_PX + DECK_SCALE * (center - heroCenter);
       });
 
-      if (scrollPositions[1] <= 0) return false;
+      if (scrollPositions[1] <= RAMP_PX) return false;
 
       motionRef.current.scrollPositions = scrollPositions;
-      const totalScroll = scrollPositions[scrollPositions.length - 1];
-      spacer.style.height = `${totalScroll + dvh}px`;
+      motionRef.current.tyAB = tyAB;
+      motionRef.current.terminalScrollStart = terminalScrollStart;
+      motionRef.current.terminalScrollEnd = terminalScrollEnd;
+      motionRef.current.heroCenter = heroCenter;
+      motionRef.current.terminalCenter = terminalCenter;
+      motionRef.current.halfH = halfH;
+      motionRef.current.dvh = dvh;
+
+      spacer.style.height = `${terminalScrollEnd + dvh}px`;
       return true;
     };
 
@@ -245,32 +298,59 @@ export function IndustrialDeck() {
     };
   }, []);
 
-  // Three-phase scale model — identical to VerticalDeck. Opens at 1
-  // (Card 01 calling card), ramps to 0.78 over the first RAMP_PX of
-  // scroll, sustains through the cinema browse zone, ramps back to 1
-  // over the last RAMP_PX (Card 07 calling card closes).
+  // Three-phase tick — decouples scale from translate so the hero (and
+  // terminal) card stays visually stationary during its scale ramp. The
+  // previous shared model used ty = -sy with scale on top, which produced
+  // a small but perceptible "sink-then-rise-then-sink" wobble on the
+  // hero during phase A: the scale-toward-track-midpoint pull worked
+  // against the translate-up, and the cosine ease's mid-ramp velocity
+  // peak briefly inverted the net direction.
+  //
+  // New phases (math derived in recalc above):
+  //   sy ∈ [0, RAMP_PX]
+  //     Phase A — scale ramps 1 → 0.78, ty solved each frame to hold
+  //     visualY_hero = dvh/2. Hero shrinks in place; nothing translates.
+  //   sy ∈ [RAMP_PX, terminalScrollStart]
+  //     Phase B — scale = 0.78 (constant). ty = tyAB - (sy - RAMP_PX),
+  //     i.e. pure translate. This is the browse register.
+  //   sy ∈ [terminalScrollStart, terminalScrollEnd]
+  //     Phase C — scale ramps 0.78 → 1, ty solved to hold the terminal
+  //     card centered. Terminal grows in place; nothing translates.
+  //
+  // Before motionRef is populated (first frames after mount, layout not
+  // yet measured), fall back to identity transform — using the partial
+  // state would project nonsense ty values.
   useEffect(() => {
     let raf = 0;
     const tick = () => {
-      const sps = motionRef.current.scrollPositions;
-      const sy = window.scrollY;
+      const m = motionRef.current;
+      const sps = m.scrollPositions;
+      const sy = Math.max(window.scrollY, 0);
 
-      let scale = HOME_SCALE;
-      if (sps.length > 1) {
-        const terminalEnd = sps[sps.length - 1];
-        const terminalStart = terminalEnd - RAMP_PX;
-        if (sy >= terminalStart) {
-          const t = Math.min((sy - terminalStart) / RAMP_PX, 1);
-          const eased = (1 - Math.cos(t * Math.PI)) / 2;
-          scale = DECK_SCALE + (HOME_SCALE - DECK_SCALE) * eased;
-        } else if (sy > 0) {
-          const t = Math.min(sy / RAMP_PX, 1);
-          const eased = (1 - Math.cos(t * Math.PI)) / 2;
-          scale = HOME_SCALE + (DECK_SCALE - HOME_SCALE) * eased;
-        }
+      let scale: number;
+      let ty: number;
+
+      if (sps.length < 2) {
+        scale = HOME_SCALE;
+        ty = -sy;
+      } else if (sy <= RAMP_PX) {
+        const t = sy / RAMP_PX;
+        const eased = (1 - Math.cos(t * Math.PI)) / 2;
+        scale = HOME_SCALE + (DECK_SCALE - HOME_SCALE) * eased;
+        ty = m.dvh / 2 - m.halfH * (1 - scale) - m.heroCenter * scale;
+      } else if (sy < m.terminalScrollStart) {
+        scale = DECK_SCALE;
+        ty = m.tyAB - (sy - RAMP_PX);
+      } else {
+        const t = Math.min(
+          (sy - m.terminalScrollStart) / RAMP_PX,
+          1,
+        );
+        const eased = (1 - Math.cos(t * Math.PI)) / 2;
+        scale = DECK_SCALE + (HOME_SCALE - DECK_SCALE) * eased;
+        ty = m.dvh / 2 - m.halfH * (1 - scale) - m.terminalCenter * scale;
       }
 
-      const ty = -sy;
       if (trackRef.current) {
         trackRef.current.style.transform =
           `translateX(-50%) translateY(${ty.toFixed(2)}px) ` +
@@ -293,10 +373,19 @@ export function IndustrialDeck() {
   }, []);
 
   /*
-   * Re-entry text replay. Fires on activeIndex change.
+   * Re-entry replay. Fires on activeIndex change.
    *   - idx 0 (identity)   → per-character cascade like home hero
-   *   - cinema slots       → no replay; image speaks
+   *   - cinema slots       → photo fade-rise + marker fade (composite:add
+   *                          so any imageZoom transform stays preserved)
    *   - colophon (last)    → standard clip-line rise
+   *
+   * Earlier this skipped cinema slots entirely — every plate landed
+   * pre-paint with no arrival beat. The deck's "card-flip" cadence on
+   * home came from each card replaying its text on entry; cinema slots
+   * have no text, so they need their own image-grammar replay to match
+   * that rhythm. The photo gets a 12px rise + opacity 0 → 1 over 900ms;
+   * the corner marker fades in slightly delayed so the eye lands on the
+   * photo first, then registers the wayfinding number.
    */
   const lastReplayedIdxRef = useRef(0);
   useEffect(() => {
@@ -350,7 +439,41 @@ export function IndustrialDeck() {
       return;
     }
 
-    if (slot.dataset.kind === "cinema") return;
+    if (slot.dataset.kind === "cinema") {
+      const photos = slot.querySelectorAll<HTMLElement>(".id-cinema__photo");
+      photos.forEach((photo) => {
+        photo.getAnimations().forEach((a) => a.cancel());
+        photo.animate(
+          [
+            { transform: "translateY(12px)", opacity: 0 },
+            { transform: "translateY(0)", opacity: 1 },
+          ],
+          {
+            duration: 900,
+            easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
+            fill: "both",
+            composite: "add",
+          },
+        );
+      });
+      const markers = slot.querySelectorAll<HTMLElement>(".id-cinema__marker");
+      markers.forEach((marker, i) => {
+        marker.getAnimations().forEach((a) => a.cancel());
+        marker.animate(
+          [
+            { opacity: 0 },
+            { opacity: 1 },
+          ],
+          {
+            duration: 600,
+            delay: 300 + i * 80,
+            easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
+            fill: "both",
+          },
+        );
+      });
+      return;
+    }
 
     const lines = slot.querySelectorAll<HTMLElement>(".clip-line > *");
     if (lines.length === 0) return;
@@ -503,12 +626,13 @@ function IDDeckProgress({
 /* ─── Card 01 · Identity ────────────────────────────────────────────── */
 
 /*
- * Mirrors home's IdentityBody hero-text layout — same .hero-* classes
- * so the type rules, hairline rule, and clip-reveal animations in
- * globals.css pick this up without duplication. ID-flavored copy. No
- * right-side plate (HeroMorphPoc is the AI-builder signature; doesn't
- * belong on the ID surface). The text block sits on its own — left-
- * weighted print composition.
+ * Mirrors home's IdentityBody exactly — same .hero-* classes for the
+ * type rules, hairline rule, clip-reveal animations, AND the same
+ * HeroMorphPoc on the right. The morph is a Ryan Zhang signature, not
+ * an AI-builder-only mark (see the 8-archetype refactor in 1d10a3f); the
+ * earlier comment treating it as a home-only motif was wrong. Reusing
+ * it here makes the hero read as the same person's calling card on both
+ * surfaces. Only the manifesto copy differs (industrial-flavored).
  */
 function HeroLine({
   delayMs,
@@ -558,7 +682,7 @@ function HeroLine({
 
 function IdentityBody() {
   return (
-    <div className="hero-layout id-hero-layout">
+    <div className="hero-layout">
       <div className="hero-text">
         <h1 className="hero-name" aria-label="Ryan Zhang">
           <HeroLine delayMs={0} indent={0} anim="rise">Ryan Zhang</HeroLine>
@@ -566,21 +690,24 @@ function IdentityBody() {
         <span className="hero-rule" aria-hidden="true" />
         <p
           className="hero-manifesto"
-          aria-label="trained as an industrial designer, drawing objects before screens, designing consumer products recognized internationally"
+          aria-label="is an industrial designer. Form follows feasibility. Shipping consumer products drawn to be built."
         >
           <HeroLine delayMs={900} indent={0} anim="drop">
-            trained as an industrial designer
+            is an industrial designer
           </HeroLine>
           <HeroLine delayMs={1000} indent={1} anim="drift">
-            drawing objects before screens
+            form follows feasibility
           </HeroLine>
           <HeroLine delayMs={1100} indent={0} anim="drop">
-            designing consumer products
+            shipping consumer products
           </HeroLine>
           <HeroLine delayMs={1200} indent={1} anim="drift">
-            recognized internationally
+            drawn to be built
           </HeroLine>
         </p>
+      </div>
+      <div className="hero-plate-slot" aria-hidden="true">
+        <HeroMorphPoc />
       </div>
     </div>
   );
@@ -663,36 +790,124 @@ function CinemaPairPlaceholder({
   );
 }
 
-/* ─── Card 07 · Colophon (inquiry) ──────────────────────────────────── */
+/* ─── Card 09 · On Record (closing calling card) ───────────────────── */
 
 /*
- * Closing calling card. Same contained 16:10 white frame as Card 01;
- * book-colophon convention — small, dense, lower-left, signature-like.
- * Mirrors home ContactBody composition; ID-flavored copy.
+ * Closing card-back. Same contained 16:10 white frame as Card 01.
+ *
+ * Layout: eyebrow flush top-left, vast empty middle (the calling-card
+ * back's signature room), then a flush-left cluster at the bottom —
+ * row of monochrome award marks + email line below. No prose, no
+ * captions, no logos with their brand colors — just unified-color
+ * signatures, like sponsor / credit rows on the bottom of a film
+ * poster or LP back.
+ *
+ * Why no ledger / list-of-figures: that grammar fills the card with
+ * uniform-rhythm text and loses the breathing-space discipline of a
+ * card back. The point of this page is that the awards have been
+ * earned — the visual restraint is the confidence.
+ *
+ * Logo assets live in /public/awards/<slug>.svg. Until those land,
+ * mono-caps text placeholders fill in (abbreviated brand name).
+ * Author delivers single-color SVG marks (target color matches the
+ * colophon mono register; gray-12 reads cleanest).
  */
+
+type OnRecordEntry = {
+  slug: string;
+  /** Full canonical name — used for alt text / aria-label. */
+  name: string;
+  /** Short brand display — used as the top line of the text
+   *  placeholder before the SVG mark lands. */
+  abbrev: string;
+  /** Official designation the award gives winners (Winner, Gold,
+   *  Best of the Best, etc.). International design awards require
+   *  this — listing just the body name reads as "I submitted",
+   *  not "I won". Rendered as the second line of the placeholder. */
+  designation: string;
+  /** Path under /public; rendered with next/image at constrained
+   *  height. Leave undefined to render the abbrev + designation
+   *  text placeholder. Once supplied, the logo lockup should
+   *  already include the designation visually, so the two-line
+   *  placeholder is skipped. */
+  logoSrc?: string;
+};
+
+const ON_RECORD: OnRecordEntry[] = [
+  {
+    slug: "red-dot",
+    name: "Red Dot Award: Design Concept 2025",
+    abbrev: "Red Dot",
+    designation: "Design Concept",
+    logoSrc: "/awards/red-dot-concept-2025.png",
+  },
+  {
+    slug: "muse",
+    name: "MUSE Design Awards: Gold",
+    abbrev: "MUSE",
+    designation: "Gold",
+    logoSrc: "/awards/muse-gold.png",
+  },
+  {
+    slug: "ny-product",
+    name: "NY Product Design Awards: Silver",
+    abbrev: "NY Product",
+    designation: "Silver",
+    logoSrc: "/awards/ny-product-silver.jpg",
+  },
+  {
+    slug: "london",
+    name: "London Design Awards: Silver",
+    abbrev: "London",
+    designation: "Silver",
+    logoSrc: "/awards/london-silver.png",
+  },
+];
+
 function ColophonBody() {
   return (
     <div className="facet-colophon">
       <span className="facet-eyebrow clip-line">
         <span>
-          10
+          09
           <span className="facet-eyebrow__separator">·</span>
-          Colophon
+          On Record
         </span>
       </span>
 
-      <div className="facet-colophon__block">
-        <p className="facet-colophon__line clip-line">
-          <span>Selected industrial design work by Ryan Zhang.</span>
-        </p>
-        <p className="facet-colophon__line clip-line">
-          <span>
-            Recognized by Red Dot, MUSE, NY Product, and London Design Awards.
-          </span>
-        </p>
-        <p className="facet-colophon__line clip-line">
-          <span>Available for product briefs and collaborations.</span>
-        </p>
+      <div className="id-onrecord-footer">
+        <span className="id-onrecord__caption clip-line">
+          <span>Named on the record by —</span>
+        </span>
+        <ul className="id-onrecord">
+          {ON_RECORD.map((entry) => (
+            <li key={entry.slug} className="id-onrecord__entry">
+              {entry.logoSrc ? (
+                <Image
+                  src={entry.logoSrc}
+                  alt={entry.name}
+                  width={200}
+                  height={48}
+                  className="id-onrecord__logo"
+                  style={{ width: "auto", height: "auto" }}
+                />
+              ) : (
+                <span
+                  className="id-onrecord__placeholder"
+                  aria-label={`${entry.name}: ${entry.designation}`}
+                >
+                  <span className="id-onrecord__placeholder-name">
+                    {entry.abbrev}
+                  </span>
+                  <span className="id-onrecord__placeholder-level">
+                    {entry.designation}
+                  </span>
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+
         <p className="facet-colophon__line clip-line">
           <span>
             <a
