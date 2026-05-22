@@ -1977,7 +1977,7 @@
  * in IndustrialDeck.tsx.
  */
 .id-deck-slot[data-slot-index="1"],
-.id-deck-slot[data-slot-index="9"] {
+.id-deck-slot[data-slot-index="8"] {
   margin-top: max(
     0px,
     calc(50dvh - var(--card-h) / 2 + var(--space-2))
