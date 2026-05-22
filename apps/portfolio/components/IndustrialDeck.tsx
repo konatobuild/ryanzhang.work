@@ -110,7 +110,7 @@ const SLOT_DEFS: SlotMeta[] = [
     plates: [
       {
         number: 2,
-        imageSrc: "/industrial/plate-02.png",
+        imageSrc: "/industrial/plate-02-v2.png",
         imageAlt: "Translucent rain-shell backpack worn — product detail",
       },
       {
@@ -148,21 +148,28 @@ const SLOT_DEFS: SlotMeta[] = [
     kind: "cinema-pair",
     anchor: "07",
     label: "Plates 07–08",
-    plates: [{ number: 7 }, { number: 8 }],
+    plates: [
+      {
+        number: 7,
+        imageSrc: "/industrial/plate-07.jpg",
+        imageAlt: "Compact desktop speaker on concrete surface — product hero",
+      },
+      {
+        number: 8,
+        imageSrc: "/industrial/plate-08-v2.jpg",
+        imageAlt: "Mechanical keyboard angled on dark ground — product hero",
+      },
+    ],
   },
   {
     kind: "cinema-big",
     anchor: "08",
     label: "Plate 09",
     plateNumber: 9,
+    imageSrc: "/industrial/plate-09.jpg",
+    imageAlt: "Angle grinder cutting steel — workshop maker process",
   },
-  {
-    kind: "cinema-pair",
-    anchor: "09",
-    label: "Plates 10–11",
-    plates: [{ number: 10 }, { number: 11 }],
-  },
-  { kind: "card-colophon", anchor: "10", label: "Inquiry" },
+  { kind: "card-colophon", anchor: "09", label: "Inquiry" },
 ];
 
 export function IndustrialDeck() {
