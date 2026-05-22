@@ -1923,6 +1923,23 @@
   padding-inline-start: clamp(56px, 6.4vw, 96px);
 }
 
+/* Page-load cohort fade for non-hero industrial slots. Mirrors the home
+   deck rule (.deck-card[data-card-index]:not([data-card-index="0"]))
+   so cinema slots and the closing colophon don't paint at full opacity
+   while the hero cascade is still running — the arrival reads as one
+   staged sequence (hero first, then everything else 800ms later). Fires
+   once per page load; JS re-entry replay (in IndustrialDeck.tsx) handles
+   scroll-back. */
+.id-deck-slot[data-slot-index]:not([data-slot-index="0"]) {
+  opacity: 0;
+  animation: id-deck-slot-load-fade 350ms var(--ease-default) 800ms forwards;
+}
+
+@keyframes id-deck-slot-load-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 /* Cinema slots (both variants) — pre-sized at viewport / DECK_SCALE so
    they render at exactly 100vw × 100dvh once the deck settles at the
    browse scale (DECK_SCALE = 0.78, mirrored in IndustrialDeck.tsx).
