@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { HeroMorphPoc } from "@/components/HeroMorphPoc";
 
 /*
  * IndustrialDeck — primary surface for /industrial-design.
@@ -625,12 +626,13 @@ function IDDeckProgress({
 /* ─── Card 01 · Identity ────────────────────────────────────────────── */
 
 /*
- * Mirrors home's IdentityBody hero-text layout — same .hero-* classes
- * so the type rules, hairline rule, and clip-reveal animations in
- * globals.css pick this up without duplication. ID-flavored copy. No
- * right-side plate (HeroMorphPoc is the AI-builder signature; doesn't
- * belong on the ID surface). The text block sits on its own — left-
- * weighted print composition.
+ * Mirrors home's IdentityBody exactly — same .hero-* classes for the
+ * type rules, hairline rule, clip-reveal animations, AND the same
+ * HeroMorphPoc on the right. The morph is a Ryan Zhang signature, not
+ * an AI-builder-only mark (see the 8-archetype refactor in 1d10a3f); the
+ * earlier comment treating it as a home-only motif was wrong. Reusing
+ * it here makes the hero read as the same person's calling card on both
+ * surfaces. Only the manifesto copy differs (industrial-flavored).
  */
 function HeroLine({
   delayMs,
@@ -680,7 +682,7 @@ function HeroLine({
 
 function IdentityBody() {
   return (
-    <div className="hero-layout id-hero-layout">
+    <div className="hero-layout">
       <div className="hero-text">
         <h1 className="hero-name" aria-label="Ryan Zhang">
           <HeroLine delayMs={0} indent={0} anim="rise">Ryan Zhang</HeroLine>
@@ -688,21 +690,24 @@ function IdentityBody() {
         <span className="hero-rule" aria-hidden="true" />
         <p
           className="hero-manifesto"
-          aria-label="trained as an industrial designer, drawing objects before screens, designing consumer products recognized internationally"
+          aria-label="is an industrial designer. Form follows feasibility. Shipping consumer products drawn to be built."
         >
           <HeroLine delayMs={900} indent={0} anim="drop">
-            trained as an industrial designer
+            is an industrial designer
           </HeroLine>
           <HeroLine delayMs={1000} indent={1} anim="drift">
-            drawing objects before screens
+            form follows feasibility
           </HeroLine>
           <HeroLine delayMs={1100} indent={0} anim="drop">
-            designing consumer products
+            shipping consumer products
           </HeroLine>
           <HeroLine delayMs={1200} indent={1} anim="drift">
-            recognized internationally
+            drawn to be built
           </HeroLine>
         </p>
+      </div>
+      <div className="hero-plate-slot" aria-hidden="true">
+        <HeroMorphPoc />
       </div>
     </div>
   );
@@ -785,36 +790,124 @@ function CinemaPairPlaceholder({
   );
 }
 
-/* ─── Card 07 · Colophon (inquiry) ──────────────────────────────────── */
+/* ─── Card 09 · On Record (closing calling card) ───────────────────── */
 
 /*
- * Closing calling card. Same contained 16:10 white frame as Card 01;
- * book-colophon convention — small, dense, lower-left, signature-like.
- * Mirrors home ContactBody composition; ID-flavored copy.
+ * Closing card-back. Same contained 16:10 white frame as Card 01.
+ *
+ * Layout: eyebrow flush top-left, vast empty middle (the calling-card
+ * back's signature room), then a flush-left cluster at the bottom —
+ * row of monochrome award marks + email line below. No prose, no
+ * captions, no logos with their brand colors — just unified-color
+ * signatures, like sponsor / credit rows on the bottom of a film
+ * poster or LP back.
+ *
+ * Why no ledger / list-of-figures: that grammar fills the card with
+ * uniform-rhythm text and loses the breathing-space discipline of a
+ * card back. The point of this page is that the awards have been
+ * earned — the visual restraint is the confidence.
+ *
+ * Logo assets live in /public/awards/<slug>.svg. Until those land,
+ * mono-caps text placeholders fill in (abbreviated brand name).
+ * Author delivers single-color SVG marks (target color matches the
+ * colophon mono register; gray-12 reads cleanest).
  */
+
+type OnRecordEntry = {
+  slug: string;
+  /** Full canonical name — used for alt text / aria-label. */
+  name: string;
+  /** Short brand display — used as the top line of the text
+   *  placeholder before the SVG mark lands. */
+  abbrev: string;
+  /** Official designation the award gives winners (Winner, Gold,
+   *  Best of the Best, etc.). International design awards require
+   *  this — listing just the body name reads as "I submitted",
+   *  not "I won". Rendered as the second line of the placeholder. */
+  designation: string;
+  /** Path under /public; rendered with next/image at constrained
+   *  height. Leave undefined to render the abbrev + designation
+   *  text placeholder. Once supplied, the logo lockup should
+   *  already include the designation visually, so the two-line
+   *  placeholder is skipped. */
+  logoSrc?: string;
+};
+
+const ON_RECORD: OnRecordEntry[] = [
+  {
+    slug: "red-dot",
+    name: "Red Dot Award: Design Concept 2025",
+    abbrev: "Red Dot",
+    designation: "Design Concept",
+    logoSrc: "/awards/red-dot-concept-2025.png",
+  },
+  {
+    slug: "muse",
+    name: "MUSE Design Awards: Gold",
+    abbrev: "MUSE",
+    designation: "Gold",
+    logoSrc: "/awards/muse-gold.png",
+  },
+  {
+    slug: "ny-product",
+    name: "NY Product Design Awards: Silver",
+    abbrev: "NY Product",
+    designation: "Silver",
+    logoSrc: "/awards/ny-product-silver.jpg",
+  },
+  {
+    slug: "london",
+    name: "London Design Awards: Silver",
+    abbrev: "London",
+    designation: "Silver",
+    logoSrc: "/awards/london-silver.png",
+  },
+];
+
 function ColophonBody() {
   return (
     <div className="facet-colophon">
       <span className="facet-eyebrow clip-line">
         <span>
-          10
+          09
           <span className="facet-eyebrow__separator">·</span>
-          Colophon
+          On Record
         </span>
       </span>
 
-      <div className="facet-colophon__block">
-        <p className="facet-colophon__line clip-line">
-          <span>Selected industrial design work by Ryan Zhang.</span>
-        </p>
-        <p className="facet-colophon__line clip-line">
-          <span>
-            Recognized by Red Dot, MUSE, NY Product, and London Design Awards.
-          </span>
-        </p>
-        <p className="facet-colophon__line clip-line">
-          <span>Available for product briefs and collaborations.</span>
-        </p>
+      <div className="id-onrecord-footer">
+        <span className="id-onrecord__caption clip-line">
+          <span>Named on the record by —</span>
+        </span>
+        <ul className="id-onrecord">
+          {ON_RECORD.map((entry) => (
+            <li key={entry.slug} className="id-onrecord__entry">
+              {entry.logoSrc ? (
+                <Image
+                  src={entry.logoSrc}
+                  alt={entry.name}
+                  width={200}
+                  height={48}
+                  className="id-onrecord__logo"
+                  style={{ width: "auto", height: "auto" }}
+                />
+              ) : (
+                <span
+                  className="id-onrecord__placeholder"
+                  aria-label={`${entry.name}: ${entry.designation}`}
+                >
+                  <span className="id-onrecord__placeholder-name">
+                    {entry.abbrev}
+                  </span>
+                  <span className="id-onrecord__placeholder-level">
+                    {entry.designation}
+                  </span>
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+
         <p className="facet-colophon__line clip-line">
           <span>
             <a
