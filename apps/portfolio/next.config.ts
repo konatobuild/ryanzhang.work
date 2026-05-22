@@ -50,15 +50,15 @@ const nextConfig: NextConfig = {
         destination: "https://industrial.ryanzhang.work/",
         permanent: true,
       },
-      // Subdomain is one page only. Any non-root path on the industrial
-      // host bounces to the main domain so /about etc. don't accidentally
-      // render under industrial.ryanzhang.work.
-      {
-        source: "/:path+",
-        has: [{ type: "host", value: INDUSTRIAL_HOST }],
-        destination: "https://ryanzhang.work/:path+",
-        permanent: false,
-      },
+      // NOTE: Earlier this config tried to redirect any non-root path on
+      // industrial.ryanzhang.work back to the apex, on the theory that the
+      // subdomain should be one page only. That rule was too greedy — it
+      // matched `/_next/static/**`, `/industrial/plate-*.png`, fonts, and
+      // every other asset path, sending CSS/JS/image fetches to the apex
+      // (which isn't even live yet). Result: the deck rendered unstyled.
+      // Dropped entirely. If someone manually types industrial.ryanzhang.work
+      // /about, they just see the main-site about page under the wrong
+      // brand — minor cosmetic, acceptable.
     ];
   },
 };
