@@ -1,8 +1,10 @@
 import { cases, type CaseEntry } from "./cases";
 
 /**
- * Facets — three personal-quality narratives shown as Cards 2–4 of the
- * VerticalDeck and expanded as full pages under /facets/[slug].
+ * Facets — three personal-quality narratives, each with its own full page
+ * under /facets/[slug]. (Earlier these were also surfaced as Cards 2–4 of
+ * the home deck; the home rebuild removed them — facets now live only on
+ * their detail pages, reached via direct link.)
  *
  * Each facet is a claim about *me* (not about a product), with project
  * evidence drawn from cases.ts plus side evidence (awards, influences,
@@ -47,7 +49,9 @@ export interface FacetMeta {
   index: number;
   total: number;
 
-  // Surface card copy (rendered on home VerticalDeck card)
+  // Surface-card copy. Originally rendered on the home deck; retained on
+  // the FacetMeta in case a future surface (about page, footer, link
+  // preview) needs the same headline grammar.
   /**
    * Poster HOOK — a short direct sentence rendered at supersized scale
    * above the line drawing on the facet card. Should be a complete

@@ -625,8 +625,8 @@
 /*
  * 1px hairline rule between name and manifesto.
  * Animates scaleX from 0→1 (origin left) shortly after the name's
- * char cascade lands — see VerticalDeck replay logic + CSS @keyframes
- * below for the matching first-load animation.
+ * char cascade lands — see HomeDeck / IndustrialDeck replay logic +
+ * CSS @keyframes below for the matching first-load animation.
  */
 .hero-rule {
   display: block;
@@ -722,8 +722,8 @@
 }
 
 /* --hero-line-delay is set inline per line via the delayMs prop in
-   HeroLine (see VerticalDeck.tsx) so the timing schedule lives in one
-   place — no CSS/JSX delay-mapping drift. */
+   HeroLine (see HomeDeck.tsx / IndustrialDeck.tsx) so the timing
+   schedule lives in one place — no CSS/JSX delay-mapping drift. */
 
 /*
  * All three from states use opacity: 0 — the translateY values aren't
@@ -2080,6 +2080,37 @@
 
 .id-deck-slot--cinema-pair .id-cinema__marker {
   color: var(--color-gray-9);
+}
+
+/*
+ * Optional one-line caption that may sit alongside the marker in a
+ * cinema-pair half — used when a live component preview needs a "what
+ * to notice" sentence so it doesn't get read as decoration. Mono caps,
+ * gray-9, parked at the bottom edge to the right of the marker so the
+ * eye lands on the demo first and reads the caption as a footnote.
+ *
+ * Hidden on touch devices: there's no hover register to pair with on
+ * mobile, so the caption either has to be moved or omitted. Omitted
+ * is the safer default until we know what touch behaviour each demo
+ * needs.
+ */
+.id-cinema__caption {
+  position: absolute;
+  bottom: clamp(var(--space-2), 2.4vw, var(--space-4));
+  left: calc(clamp(var(--space-2), 2.4vw, var(--space-4)) + 3em);
+  max-width: calc(100% - 6em - clamp(var(--space-2), 2.4vw, var(--space-4)) * 2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-10);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gray-9);
+  pointer-events: none;
+}
+
+@media (hover: none) {
+  .id-cinema__caption {
+    display: none;
+  }
 }
 
 /*

@@ -44,17 +44,30 @@ const HOME_SCALE = 1;
 const DECK_SCALE = 0.78;
 const RAMP_PX = 1200;
 
-/** One half of a cinema-pair slot. Mirrors IndustrialDeck.HalfPlate so the
- *  underlying CSS (.id-cinema--pair / .id-cinema__half / .id-cinema__photo
- *  / .id-cinema__marker) renders identically. A pair with no imageSrc on
- *  either half renders as a numbered placeholder — the same "honest empty
- *  slot" pattern as industrial uses for plates that have no photography
- *  yet. Live component previews land via a follow-up pass once the slot
- *  data model accepts ReactNode content. */
+/** One half of a cinema-pair slot. Mirrors IndustrialDeck.HalfPlate for
+ *  the static-photo case so the shared CSS (.id-cinema--pair /
+ *  .id-cinema__half / .id-cinema__photo / .id-cinema__marker) renders
+ *  identically, and extends it with a `preview` slot for live React
+ *  content (component demos, motion specimens, gesture surfaces).
+ *
+ *  Precedence for what fills the half:
+ *    1. `preview` (ReactNode) — wins if present; renders inline inside
+ *       the half. Use for live, interactive component specimens.
+ *    2. `imageSrc` — static photograph rendered with next/image fill.
+ *       Same path as industrial's product-plate halves.
+ *    3. Neither — numbered marker only; the "honest empty slot"
+ *       convention from industrial, signalling "more is coming here"
+ *       without filling space with stub content.
+ *
+ *  An optional `caption` adds a one-line statement at the bottom of the
+ *  half — used when a component demo needs a "what to notice" line so
+ *  it doesn't get read as decoration. */
 type HalfPlate = {
   number: number;
   imageSrc?: string;
   imageAlt?: string;
+  preview?: React.ReactNode;
+  caption?: string;
 };
 
 type SlotMeta =
@@ -399,7 +412,7 @@ export function HomeDeck() {
                 {meta.kind === "card-identity" && <IdentityBody />}
                 {meta.kind === "cinema-specimen" && <MacSpecimen />}
                 {meta.kind === "cinema-pair" && (
-                  <CinemaPairPlaceholder plates={meta.plates} />
+                  <CinemaPair plates={meta.plates} />
                 )}
                 {meta.kind === "card-colophon" && <ContactBody />}
               </article>
@@ -493,10 +506,10 @@ function HomeDeckProgress({
 /* ─── Card 01 · Identity ────────────────────────────────────────────── */
 
 /*
- * Same .hero-* class lineage as VerticalDeck's IdentityBody and
- * IndustrialDeck's IdentityBody — the type rules, hairline rule,
- * clip-reveal animations, and HeroMorphPoc on the right are shared. Only
- * the manifesto copy differs per surface (home flavor here).
+ * Same .hero-* class lineage as IndustrialDeck's IdentityBody — the type
+ * rules, hairline rule, clip-reveal animations, and HeroMorphPoc on the
+ * right are shared. Only the manifesto copy differs per surface (home
+ * flavor here).
  */
 function HeroLine({
   delayMs,
@@ -620,20 +633,30 @@ function MacSpecimen() {
   );
 }
 
-/* ─── Card 03+ · Component pair placeholder ─────────────────────────── */
+/* ─── Card 03+ · Component pair ─────────────────────────────────────── */
 
 /*
- * Empty pair: same geometry as industrial's CinemaPairPlaceholder. Each
- * half is a numbered slot with no image and no caption — the editorial
- * "honest empty" convention that says "more is coming here" without
- * filling the page with stub content.
+ * One row of the catalog spread. Each half can carry one of three things,
+ * resolved in order:
  *
- * Future passes plug live component previews into each half by extending
- * HalfPlate with a `preview: ReactNode` field; the slot CSS already
- * supports both light and dark interior content via the same .id-cinema
- * grammar.
+ *   1. `plate.preview`  — a live ReactNode rendered inside the half.
+ *      Use for component / motion / interaction demos. The half stays
+ *      `position: relative` (via .id-cinema__half) so absolutely-
+ *      positioned demo internals anchor to the half's bounds rather
+ *      than the whole slot.
+ *
+ *   2. `plate.imageSrc` — a static photograph rendered with next/image
+ *      fill. Same path industrial uses for product-plate halves.
+ *
+ *   3. Neither          — the half renders as an honest-empty marker
+ *      only. Carried over from industrial's "say more is coming here
+ *      without filling the page with stub content" convention.
+ *
+ * The numbered marker and optional caption sit above the preview /
+ * photograph (z-order in source = render order) so they stay readable
+ * over any half content.
  */
-function CinemaPairPlaceholder({
+function CinemaPair({
   plates,
 }: {
   plates: [HalfPlate, HalfPlate];
@@ -642,18 +665,23 @@ function CinemaPairPlaceholder({
     <div className="id-cinema id-cinema--pair">
       {plates.map((plate, i) => (
         <div key={i} className="id-cinema__half">
-          {plate.imageSrc && (
-            <Image
-              className="id-cinema__photo"
-              src={plate.imageSrc}
-              alt={plate.imageAlt ?? ""}
-              fill
-              sizes="50vw"
-            />
+          {plate.preview ?? (
+            plate.imageSrc && (
+              <Image
+                className="id-cinema__photo"
+                src={plate.imageSrc}
+                alt={plate.imageAlt ?? ""}
+                fill
+                sizes="50vw"
+              />
+            )
           )}
           <span className="id-cinema__marker">
             {String(plate.number).padStart(2, "0")}
           </span>
+          {plate.caption && (
+            <span className="id-cinema__caption">{plate.caption}</span>
+          )}
         </div>
       ))}
     </div>
@@ -664,9 +692,9 @@ function CinemaPairPlaceholder({
 
 /*
  * Book-style colophon. Eyebrow flush top-left, vast empty middle, flush-
- * left cluster of signature lines at the bottom. Same .facet-colophon
- * class lineage as the previous VerticalDeck.ContactBody so the visual
- * register matches the rest of the deck's print discipline.
+ * left cluster of signature lines at the bottom. Uses the shared
+ * .facet-colophon classes so the visual register matches the rest of
+ * the deck's print discipline.
  */
 function ContactBody() {
   return (
