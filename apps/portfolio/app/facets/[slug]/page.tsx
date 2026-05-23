@@ -5,8 +5,9 @@ import { facets, getFacet, getCasesForFacet, type FacetSlug } from "@/lib/facets
 import { awards } from "@/lib/awards";
 
 /*
- * Facet detail page — the "personal-essay" expansion of one of the three
- * surface cards on the home VerticalDeck.
+ * Facet detail page — the "personal-essay" expansion of each of the three
+ * facet narratives. The home deck no longer surfaces facet cards; these
+ * detail pages are reached via direct link (about page, footer, etc.).
  *
  * Structure (mirrors §6.P3 of the plan):
  *   ① Header        — ordinal, English title, Chinese subhead, back link
