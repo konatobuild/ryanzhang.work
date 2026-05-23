@@ -374,7 +374,7 @@ export function HomeDeck() {
     <>
       <div ref={spacerRef} className="id-deck-spacer" aria-hidden="true" />
 
-      <div ref={stageRef} className="id-deck-stage">
+      <div ref={stageRef} className="id-deck-stage home-deck-stage">
         <HomeDeckChrome
           activeIndex={activeIndex}
           total={SLOT_DEFS.length}

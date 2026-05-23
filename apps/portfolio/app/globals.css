@@ -2227,14 +2227,42 @@
  * aspect (1.305) drives height; vertical placement is centered.
  * ────────────────────────────────────────────────────────────────────── */
 
+/* ──────────────────────────────────────────────────────────────────────
+ * Home deck — one-paper override
+ *
+ * Home reads as a single sheet of cream calling-card paper from open to
+ * close: identity card, mac specimen slot, pair slots, AND the stage
+ * gap between them all paint on the same #fcfbf8. Without this scope,
+ * the deck stage inherits --color-gray-2 (cool light gray) from the
+ * shared .id-deck-stage rule and cinema-pair inherits --color-gray-1
+ * (cool near-white), producing two visible color seams whenever the
+ * cream calling card or specimen sits adjacent to either.
+ *
+ * Scoped via a `.home-deck-stage` class on the stage container (and a
+ * `.home-deck-stage` ancestor for the pair override) so industrial keeps
+ * its cool gray-2 stage + gray-1 pair, which work for product
+ * photography on a cool ground. An earlier draft used a
+ * `[data-deck="home"]` attribute selector here; Turbopack's CSS
+ * processor silently dropped the rule from the compiled stylesheet,
+ * so we use a plain class instead — equivalent semantics, reliably
+ * compiled.
+ * ────────────────────────────────────────────────────────────────────── */
+
+.id-deck-stage.home-deck-stage {
+  background: #fcfbf8;
+}
+
+.home-deck-stage .id-deck-slot--cinema-pair {
+  background: #fcfbf8;
+}
+
 .home-cinema-specimen {
   position: absolute;
   inset: 0;
-  /* Match the Identity / Colophon card's cream ground (#fcfbf8) — the
-     specimen reads as the same physical material as the calling card,
-     not a separate cool-white surface. Using --color-gray-1 here makes
-     a visible cream-vs-cool-white seam between Card 01 and this slot
-     across the gray-3 stage gap. */
+  /* Cream ground matches the Identity / Colophon card and the home
+     deck stage override above. Together they make Card 01, the mac
+     specimen, the pair slots, and the inter-slot stage gap read as one
+     continuous sheet of paper rather than three different whites. */
   background: #fcfbf8;
   display: flex;
   align-items: center;
