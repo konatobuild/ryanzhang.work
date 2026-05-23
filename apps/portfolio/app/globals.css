@@ -2003,13 +2003,19 @@
  * Cinema 01's natural top = (dvh + card-h)/2 (track padding-top +
  * card-h). Pushing it below viewport bottom requires margin-top ≥
  * (dvh - card-h)/2. The +var(--space-2) buffer covers subpixel and
- * scrollbar wiggle. Symmetric rule on the last slot (Card 08, the
- * closing colophon) handles the closing side — its index moves with
- * the slot count, so keep these two selectors in sync with SLOT_DEFS
- * in IndustrialDeck.tsx.
+ * scrollbar wiggle. The closing colophon carries the same margin so
+ * that, when scrolled into focus, the preceding cinema slot has
+ * already cleared the viewport.
+ *
+ * Selector lineage: previously `[data-slot-index="1"]` / `="8"` were
+ * hardcoded to industrial's 9-slot count. They now use kind-based
+ * adjacency so the rule applies correctly to any deck that opens with
+ * an identity card and closes with a colophon — industrial, home, or
+ * future decks — without staying in sync with each deck's SLOT_DEFS.
  */
-.id-deck-slot[data-slot-index="1"],
-.id-deck-slot[data-slot-index="8"] {
+.id-deck-slot--card-identity + .id-deck-slot--cinema-big,
+.id-deck-slot--card-identity + .id-deck-slot--cinema-pair,
+.id-deck-slot--card-colophon {
   margin-top: max(
     0px,
     calc(50dvh - var(--card-h) / 2 + var(--space-2))
@@ -2197,5 +2203,110 @@
   .id-deck-stage {
     --card-w: calc(100vw - var(--space-4));
     --card-gap: clamp(24px, 5vh, 48px);
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+ * Home — macOS specimen variant of cinema-big
+ *
+ * The home deck reuses industrial's cinema-big slot footprint (sized at
+ * 100vw / DECK_SCALE × 100dvh / DECK_SCALE in unscaled pixels) but its
+ * second slot is not a full-bleed product photograph — it is the Pro
+ * Display XDR mockup centered on a light ground, with the InteractionReel
+ * looping inside the screen rect.
+ *
+ * The dark cinema-big background is left as-is at the slot level; this
+ * inner wrapper overlays a light ground so the dark default never shows.
+ * Keeping the slot-level CSS untouched means the same cinema-big rules
+ * (sizing, marker positioning, inter-cinema hairline divider) continue
+ * to apply without a new slot kind.
+ *
+ * Device sizing: capped at min(1400px, 92vw / DECK_SCALE) — equivalent to
+ * roughly 92vw at the browse register (post-scale) so the mockup reads
+ * commanding without bleeding to the edges. The mockup's intrinsic
+ * aspect (1.305) drives height; vertical placement is centered.
+ * ────────────────────────────────────────────────────────────────────── */
+
+/* ──────────────────────────────────────────────────────────────────────
+ * Home deck — one-paper override
+ *
+ * Home reads as a single sheet of cream calling-card paper from open to
+ * close: identity card, mac specimen slot, pair slots, AND the stage
+ * gap between them all paint on the same #fcfbf8. Without this scope,
+ * the deck stage inherits --color-gray-2 (cool light gray) from the
+ * shared .id-deck-stage rule and cinema-pair inherits --color-gray-1
+ * (cool near-white), producing two visible color seams whenever the
+ * cream calling card or specimen sits adjacent to either.
+ *
+ * Scoped via a `.home-deck-stage` class on the stage container (and a
+ * `.home-deck-stage` ancestor for the pair override) so industrial keeps
+ * its cool gray-2 stage + gray-1 pair, which work for product
+ * photography on a cool ground. An earlier draft used a
+ * `[data-deck="home"]` attribute selector here; Turbopack's CSS
+ * processor silently dropped the rule from the compiled stylesheet,
+ * so we use a plain class instead — equivalent semantics, reliably
+ * compiled.
+ * ────────────────────────────────────────────────────────────────────── */
+
+.id-deck-stage.home-deck-stage {
+  background: #fcfbf8;
+}
+
+.home-deck-stage .id-deck-slot--cinema-pair {
+  background: #fcfbf8;
+}
+
+.home-cinema-specimen {
+  position: absolute;
+  inset: 0;
+  /* Cream ground matches the Identity / Colophon card and the home
+     deck stage override above. Together they make Card 01, the mac
+     specimen, the pair slots, and the inter-slot stage gap read as one
+     continuous sheet of paper rather than three different whites. */
+  background: #fcfbf8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-cinema-specimen__device {
+  position: relative;
+  width: min(1400px, calc(92vw / 0.78));
+  aspect-ratio: 3994 / 3060;
+  /* No max-height: the slot itself is sized to the viewport, and the
+     device's aspect ratio is wider than tall so width is the binding
+     dimension on every reasonable viewport. */
+}
+
+.home-cinema-specimen__plate {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+}
+
+.home-cinema-specimen__screen {
+  position: absolute;
+  overflow: hidden;
+  /* No border-radius: the mockup PNG already provides the bezel +
+     corner curvature; the screen rect inside is mathematically
+     rectangular (per SCREEN_BOUNDS in InteractionPlate.tsx). */
+}
+
+/* Marker on the specimen slot sits at the same bottom-left corner as on
+ * industrial's cinema-big — but here it carries a short label rather
+ * than a bare ordinal since the slot is sole-purpose, not part of a
+ * numbered plate sequence. */
+.id-deck-slot--cinema-big .home-cinema-specimen .id-cinema__marker {
+  position: absolute;
+  left: clamp(var(--space-2), 2.4vw, var(--space-4));
+  bottom: clamp(var(--space-2), 2.4vw, var(--space-4));
+  color: var(--color-gray-9);
+}
+
+@media (max-width: 768px) {
+  .home-cinema-specimen__device {
+    width: calc(96vw / 0.78);
   }
 }
