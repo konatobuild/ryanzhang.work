@@ -2230,7 +2230,12 @@
 .home-cinema-specimen {
   position: absolute;
   inset: 0;
-  background: var(--color-gray-1);
+  /* Match the Identity / Colophon card's cream ground (#fcfbf8) — the
+     specimen reads as the same physical material as the calling card,
+     not a separate cool-white surface. Using --color-gray-1 here makes
+     a visible cream-vs-cool-white seam between Card 01 and this slot
+     across the gray-3 stage gap. */
+  background: #fcfbf8;
   display: flex;
   align-items: center;
   justify-content: center;
