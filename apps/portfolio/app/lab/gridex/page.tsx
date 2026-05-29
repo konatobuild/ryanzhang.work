@@ -2,9 +2,9 @@ import Link from "next/link";
 import GridexHeroStage from "@/components/specimens/gridex/GridexHeroStage";
 
 export const metadata = {
-  title: "Gridex hero stage — craft specimen",
+  title: "Gridex home hero — a design note",
   description:
-    "The animated workspace stage I built for the Gridex home page: three agent cursors working real-looking tools, lifted out of the product and shown on its own.",
+    "How I tried to show an AI product's capability without the usual glow or industry photos: a legible, cursor-led workspace you can just watch. Lifted out of the Gridex home page and shown on its own.",
 };
 
 export default function Page() {
@@ -15,10 +15,11 @@ export default function Page() {
         padding: "var(--space-9) 64px var(--space-9)",
         display: "flex",
         flexDirection: "column",
+        alignItems: "center",
         gap: "var(--space-8)",
       }}
     >
-      <header style={{ maxWidth: 760 }}>
+      <header style={{ width: "100%", maxWidth: 760 }}>
         <Link
           href="/"
           style={{
@@ -42,7 +43,7 @@ export default function Page() {
             color: "var(--color-gray-11)",
           }}
         >
-          Specimen · Gridex hero stage
+          Design note · Gridex home hero
         </p>
         <h1
           style={{
@@ -53,7 +54,7 @@ export default function Page() {
             color: "var(--color-gray-12)",
           }}
         >
-          Three agents, one desk
+          An interface you can just watch
         </h1>
         <p
           style={{
@@ -64,12 +65,31 @@ export default function Page() {
             color: "var(--color-gray-11)",
           }}
         >
-          The Gridex home hero is a live workspace: three agent cursors move
-          through real-looking tools—an inbox, a Slack thread, a voice
-          transcript, a contract, a reconciliation sheet—picking up work,
-          handling it, and logging each result to a running Done pile. I lifted
-          the whole stage out of the product and set it on a neutral ground so
-          the motion can be read on its own.
+          Most AI companies prove themselves two ways: line up photos of
+          whatever industry they sell into, or wrap the screen in glow, glass,
+          and gradients. Both buy the same feeling—new, technical—and neither
+          tells you what the product actually does. The over-engineered
+          alternative isn&rsquo;t any better: an architecture diagram with every
+          box and arrow. I wanted a third option—a visual that shows there are
+          agents and that there&rsquo;s design behind them, yet stays legible to
+          someone who doesn&rsquo;t follow AI. They should be able to just watch
+          it and understand the work.
+        </p>
+        <p
+          style={{
+            margin: "var(--space-4) 0 0",
+            maxWidth: 620,
+            fontSize: "var(--fs-18, 18px)",
+            lineHeight: 1.5,
+            color: "var(--color-gray-11)",
+          }}
+        >
+          The way in was the cursor. So the home hero is something you read over
+          someone&rsquo;s shoulder: cursors pick up real tasks—an email, a Slack
+          thread, a voice note, a contract, a reconciliation sheet—work them,
+          and log each result to a running pile. I lifted the whole thing out of
+          the product and set it on neutral ground so the craft can be read on
+          its own.
         </p>
       </header>
 
@@ -84,6 +104,75 @@ export default function Page() {
       >
         <GridexHeroStage />
       </div>
+
+      <section style={{ width: "100%", maxWidth: 760 }}>
+        <p
+          style={{
+            fontFamily: "var(--font-geist-mono)",
+            fontSize: 12,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: "var(--color-gray-11)",
+          }}
+        >
+          What I decided, and why
+        </p>
+
+        <dl
+          style={{
+            margin: "var(--space-6) 0 0",
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--space-7)",
+          }}
+        >
+          {[
+            {
+              term: "A cursor, not a diagram",
+              detail:
+                "The cursor is the one piece of an interface everyone already knows how to read. Borrow it and the scene explains itself: you watch a hand pick something up, do something to it, and set it down. No legend, no onboarding, no AI vocabulary required.",
+            },
+            {
+              term: "Real tasks, named plainly",
+              detail:
+                "Each card is a job you'd recognize from your own week—an email to answer, a Slack thread to catch up on, a voice note to write down, a contract to check, a sheet to reconcile. Recognizable inputs carry the meaning that an “our AI does X” headline usually has to spell out.",
+            },
+            {
+              term: "Paper, not glow",
+              detail:
+                "The palette is paper, sage, and a single lime accent—no glass, no gradient, no product-shot lighting. The restraint is the argument: if the work is legible, it doesn't need the packaging to feel new.",
+            },
+            {
+              term: "The pile is the proof",
+              detail:
+                "Every finished task drops a receipt onto a growing stack, and that stack is the only metric on screen. It says the agents are actually producing—without a chart, a counter, or a claim.",
+            },
+          ].map((note) => (
+            <div key={note.term}>
+              <dt
+                style={{
+                  fontSize: "var(--fs-20, 20px)",
+                  letterSpacing: "-0.01em",
+                  color: "var(--color-gray-12)",
+                }}
+              >
+                {note.term}
+              </dt>
+              <dd
+                style={{
+                  margin: "var(--space-3) 0 0",
+                  maxWidth: 620,
+                  fontSize: "var(--fs-18, 18px)",
+                  lineHeight: 1.5,
+                  color: "var(--color-gray-11)",
+                }}
+              >
+                {note.detail}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
     </main>
   );
 }

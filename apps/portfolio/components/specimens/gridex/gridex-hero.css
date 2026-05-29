@@ -22,12 +22,11 @@
 }
 
 /* ── Stage root — fixed natural size so offsetParent math works ─────────
-   540px wide × 720px tall matches the source card geometry.
-   overflow: visible so wide cards (.ws-contract, .ws-spreadsheet at 600px)
-   can spill beyond the 540px stage width without clipping. */
+   620px wide × 720px tall matches the source .brand-hero-stage max-width.
+   overflow: visible so cursors/receipts can travel past the edges. */
 .gridex-stage .brand-hero-stage {
   position: relative;
-  width: 540px;
+  width: 620px;
   height: 720px;
   overflow: visible;
 }
