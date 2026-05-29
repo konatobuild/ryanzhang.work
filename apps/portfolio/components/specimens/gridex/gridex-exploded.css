@@ -1,0 +1,177 @@
+/*
+ * gridex-exploded.css — axonometric "exploded" presentation of the Gridex
+ * workspace. Reuses the .gridex-stage / .ws-* card styles from
+ * gridex-hero.css; this file only adds the 3D scene: a tilted blueprint
+ * baseplane, per-card Z-lift off that plane, and a fanned tool-stack per slot.
+ *
+ * It is a STATIC diagram — no animation engine. The point is to let the desk
+ * be read as layers: every surface lifts to show there's a designed object
+ * underneath, and each swap-slot fans into the stack of tools an agent rotates
+ * through.
+ *
+ * ── Tunable knobs (set on .gridex-exploded) ──────────────────────────────
+ *   --ex-tilt-x   how far the desk tilts back toward the viewer
+ *   --ex-tilt-z   in-plane spin (the "axonometric" yaw)
+ *   --ex-z        global multiplier on every card's lift (explode amount)
+ *   --ex-scale    overall fit scale of the projected scene
+ *   --ex-foot     opacity of the baseplane footprint outlines
+ */
+
+.gridex-exploded {
+  --ex-tilt-x: 54deg;
+  --ex-tilt-z: -38deg;
+  --ex-z: 1;
+  --ex-scale: 0.82;
+  --ex-foot: 0.75;
+
+  position: relative;
+  width: 620px;
+  height: 720px;
+  /* Orthographic projection: no `perspective` — lifted layers shift by a
+     constant screen vector regardless of Z, so the explode reads as a true
+     axonometric with no near/far foreshortening.
+     translateY pushes the projected scene back down into frame: the rotateX
+     tilt throws the plane's far edge (and the high-Z layers) up past the box
+     origin, so without this the top card clips. */
+  transform: translateY(90px) scale(var(--ex-scale));
+  transform-origin: center center;
+}
+
+/* The desk plane — everything lives in its 3D space. */
+.gridex-exploded .brand-hero-stage {
+  transform-style: preserve-3d;
+  transform: rotateX(var(--ex-tilt-x)) rotateZ(var(--ex-tilt-z));
+  transition: transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ── Blueprint baseplane — footprint outlines at each real slot position ── */
+.gridex-exploded .ex-baseplane {
+  position: absolute;
+  inset: 0;
+  transform: translateZ(0);
+  pointer-events: none;
+}
+
+.gridex-exploded .ex-foot {
+  position: absolute;
+  border: 1px dashed rgba(244, 239, 226, 0.4);
+  border-radius: 8px;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(244, 239, 226, 0.05) 0,
+      rgba(244, 239, 226, 0.05) 6px,
+      transparent 6px,
+      transparent 12px
+    );
+  opacity: var(--ex-foot);
+}
+
+.gridex-exploded .ex-foot--topleft { left: 0;    top: 4px;   width: 220px; height: 268px; }
+.gridex-exploded .ex-foot--topright{ left: 235px; top: 18px; width: 380px; height: 290px; }
+.gridex-exploded .ex-foot--midleft { left: 30px;  top: 264px; width: 290px; height: 170px; }
+.gridex-exploded .ex-foot--done    { left: 350px; top: 318px; width: 248px; height: 130px; }
+.gridex-exploded .ex-foot--bottom  { left: 0;    top: 458px; width: 600px; height: 248px; }
+
+/* ── Lift the static surfaces off the plane ─────────────────────────────── */
+.gridex-exploded .ws-card,
+.gridex-exploded .ws-done-pile {
+  transform: translateZ(calc(var(--lift, 0) * var(--ex-z) * 1px)) !important;
+  backdrop-filter: none;
+}
+
+/* swap-variant cards are hidden in the live stage; the diagram shows them */
+.gridex-exploded .ws-doc,
+.gridex-exploded .ws-spreadsheet {
+  display: flex !important;
+}
+
+/* Bottom wide slot — the document tools fan upward as a stack. */
+.gridex-exploded .ws-contract     { --lift: 26; }
+.gridex-exploded .ws-doc          { --lift: 58; }
+.gridex-exploded .ws-spreadsheet  { --lift: 90; }
+
+/* Done pile sits just above the desk, mid-right. */
+.gridex-exploded .ws-done-pile    { --lift: 86; }
+
+/* Top-left narrow column — inbox / slack channels stack. */
+.gridex-exploded .ws-inbox          { --lift: 122; }
+.gridex-exploded .ws-slack-channels { --lift: 154; }
+
+/* Mid-left — voice transcript / CRM stack. */
+.gridex-exploded .ws-voice  { --lift: 178; }
+.gridex-exploded .ws-crm    { --lift: 210; }
+
+/* Top-right hero card — compose / slack chat stack, highest surface. */
+.gridex-exploded .ws-compose    { --lift: 236; }
+.gridex-exploded .ws-slack-chat { --lift: 268; }
+
+/* ── Live agent cursors ─────────────────────────────────────────────────
+   No CSS keyframes here on purpose: initGridexExplodedStage.ts drives each
+   cursor's translate3d(x, y, z) directly, walking a loop of layers. x/y are
+   real slot centers (offset-chain math, transform-agnostic) and z is the
+   target card's --lift × --ex-z + a small bump, so the cursor stays glued to
+   its layer's height in the axonometric scene. CSS rules here only style the
+   resting state + the per-layer reveal the JS triggers via .is-probing. */
+.gridex-exploded .stage-cursor {
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.3));
+  transition: filter 240ms ease;
+  will-change: transform;
+}
+
+/* The pin gives a soft settle each time a cursor lands on a surface. */
+.gridex-exploded .stage-cursor .cursor-pin {
+  transition: transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.gridex-exploded .stage-cursor.is-landing .cursor-pin {
+  transform: translateY(2px) scale(0.82);
+}
+.gridex-exploded .stage-cursor.is-landing {
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.4));
+}
+
+/* ── Probe reveal — the layer a cursor is reading lifts, rings, and warms ──
+   This is the shared "you are being read" affordance. The distinct per-layer
+   effects below ride on top of it. */
+.gridex-exploded .ws-card.is-probing,
+.gridex-exploded .ws-done-pile.is-probing {
+  transform: translateZ(calc((var(--lift, 0) * var(--ex-z) + 16) * 1px)) !important;
+  transition: transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  outline: 1px solid rgba(215, 235, 117, 0.55);
+  outline-offset: 2px;
+  box-shadow:
+    0 0 0 3px rgba(215, 235, 117, 0.12),
+    0 26px 50px -24px rgba(0, 0, 0, 0.55);
+}
+
+/* Per-layer distinct accents — each surface reveals its own kind of work. */
+.gridex-exploded .ws-spreadsheet.is-probing .ws-sheet-delta.is-variance {
+  background: rgba(215, 235, 117, 0.22);
+  box-shadow: 0 0 0 2px rgba(215, 235, 117, 0.5) inset;
+  border-radius: 4px;
+}
+.gridex-exploded .ws-contract.is-probing .ws-clause--target,
+.gridex-exploded .ws-contract.is-probing .ws-margin-note {
+  box-shadow: 0 0 0 2px rgba(215, 235, 117, 0.45);
+  border-radius: 4px;
+}
+.gridex-exploded .ws-done-pile.is-probing .ws-done-row--alpha {
+  background: rgba(215, 235, 117, 0.18);
+  border-radius: 4px;
+}
+.gridex-exploded .ws-inbox.is-probing .ws-email.is-selected,
+.gridex-exploded .ws-compose.is-probing .ws-compose-sent,
+.gridex-exploded .ws-slack-chat.is-probing .ws-slack-reaction,
+.gridex-exploded .ws-voice.is-probing .ws-voice-line.is-active,
+.gridex-exploded .ws-crm.is-probing .ws-crm-field[data-field="status"] {
+  box-shadow: 0 0 0 2px rgba(215, 235, 117, 0.45);
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gridex-exploded .stage-cursor .cursor-pin,
+  .gridex-exploded .ws-card.is-probing,
+  .gridex-exploded .ws-done-pile.is-probing {
+    transition: none;
+  }
+}

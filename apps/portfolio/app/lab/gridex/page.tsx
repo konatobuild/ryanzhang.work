@@ -1,5 +1,6 @@
 import Link from "next/link";
 import GridexHeroStage from "@/components/specimens/gridex/GridexHeroStage";
+import GridexExplodedStage from "@/components/specimens/gridex/GridexExplodedStage";
 
 export const metadata = {
   title: "Gridex home hero — a design note",
@@ -98,8 +99,10 @@ export default function Page() {
           alignSelf: "center",
           padding: "var(--space-7)",
           borderRadius: 16,
-          background: "var(--color-gray-1, #fcfbf8)",
-          border: "1px solid var(--color-hairline, rgba(0,0,0,0.08))",
+          background:
+            "radial-gradient(circle at 20% 30%, rgba(215,235,117,0.05) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(183,146,100,0.04) 0%, transparent 50%), #1c2b27",
+          border: "1px solid rgba(244,239,226,0.1)",
+          boxShadow: "0 24px 60px -28px rgba(28,43,39,0.45)",
         }}
       >
         <GridexHeroStage />
@@ -173,6 +176,55 @@ export default function Page() {
           ))}
         </dl>
       </section>
+
+      <section style={{ width: "100%", maxWidth: 760 }}>
+        <p
+          style={{
+            fontFamily: "var(--font-geist-mono)",
+            fontSize: 12,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: "var(--color-gray-11)",
+          }}
+        >
+          The same desk, pulled apart
+        </p>
+        <p
+          style={{
+            margin: "var(--space-4) 0 0",
+            maxWidth: 620,
+            fontSize: "var(--fs-18, 18px)",
+            lineHeight: 1.5,
+            color: "var(--color-gray-11)",
+          }}
+        >
+          One more way to read it. The dashed outlines are where each surface
+          sits in the assembled scene; above them, the slots an agent rotates
+          through fan out into the stack of tools it actually picks up. The three
+          cursors keep working through the layers—each one riding its own loop of
+          surfaces.
+        </p>
+      </section>
+
+      <div
+        style={{
+          alignSelf: "center",
+          width: "100%",
+          maxWidth: 900,
+          minHeight: 840,
+          padding: "var(--space-8) var(--space-7)",
+          borderRadius: 16,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background:
+            "radial-gradient(circle at 20% 30%, rgba(215,235,117,0.05) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(183,146,100,0.04) 0%, transparent 50%), #1c2b27",
+          boxShadow: "0 24px 60px -28px rgba(28,43,39,0.45)",
+          overflow: "hidden",
+        }}
+      >
+        <GridexExplodedStage />
+      </div>
     </main>
   );
 }
