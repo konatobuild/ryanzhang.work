@@ -4191,3 +4191,235 @@
     transition: none;
   }
 }
+
+/* ── Grammar Board specimen (ported from claude/pedantic-torvalds-9a203d 61882ae) ── */
+/* Grammar board specimen — reorderable Braun-grammar cards.
+ * Transforms are JS-driven (rAF spring); CSS only owns chrome + the
+ * lift treatment when a card is picked up. */
+.gb-board {
+  position: relative;
+  width: 100%;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.gb-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-gray-1);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-3);
+  cursor: grab;
+  will-change: transform;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 180ms var(--ease-snappy);
+  overflow: hidden;
+}
+
+.gb-card--dragging {
+  cursor: grabbing;
+  box-shadow: var(--shadow-card-hover);
+  z-index: 5;
+}
+
+.gb-card__art {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 16%;
+  min-height: 0;
+}
+
+.gb-card__art svg {
+  width: 100%;
+  height: 100%;
+}
+
+.gb-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1);
+  padding: 8px 12px;
+  border-top: 1px solid var(--color-hairline);
+  font-family: var(--font-mono);
+  font-size: var(--fs-10);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.gb-card__rank {
+  color: var(--color-klein);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sort control bar */
+.gb-shell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.gb-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.gb-controls__label {
+  margin-right: 4px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-10);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.gb-controls__btn {
+  padding: 6px 14px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.02em;
+  color: var(--color-gray-11);
+  background: transparent;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition:
+    color 140ms var(--ease-snappy),
+    border-color 140ms var(--ease-snappy),
+    background 140ms var(--ease-snappy);
+}
+
+.gb-controls__btn:hover {
+  border-color: var(--color-gray-8);
+  color: var(--color-gray-12);
+}
+
+.gb-controls__btn.is-active {
+  color: var(--color-gray-1);
+  background: var(--color-klein);
+  border-color: var(--color-klein);
+}
+
+/* Inspect overlay + shared-element detail */
+.gb-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background: rgba(10, 10, 10, 0.42);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  animation: gb-fade 200ms var(--ease-snappy);
+}
+
+/* Closing: fade the whole overlay (scrim + panel) out in step with the
+ * artwork morphing back to its card, so the panel never sits empty. */
+.gb-overlay.is-closing {
+  opacity: 0;
+  transition: opacity 300ms var(--ease-snappy);
+}
+
+.gb-detail {
+  position: relative;
+  width: min(420px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  background: var(--color-gray-1);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.gb-detail__close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  width: 28px;
+  height: 28px;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--color-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 140ms var(--ease-snappy);
+}
+
+.gb-detail__close:hover {
+  color: var(--color-gray-12);
+}
+
+.gb-detail__art {
+  flex: 0 0 auto;
+  width: 200px;
+  height: 200px;
+  display: grid;
+  place-items: center;
+  will-change: transform;
+}
+
+.gb-detail__art svg {
+  width: 100%;
+  height: 100%;
+}
+
+.gb-detail__body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.gb-detail__title {
+  font-size: var(--fs-24);
+  line-height: var(--lh-28);
+  color: var(--color-gray-12);
+}
+
+.gb-detail__sub {
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-klein);
+}
+
+.gb-detail__text {
+  font-size: var(--fs-14);
+  line-height: 1.55;
+  color: var(--color-gray-11);
+}
+
+@keyframes gb-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gb-card {
+    transition: none;
+  }
+  .gb-overlay {
+    animation: none;
+  }
+}
+
