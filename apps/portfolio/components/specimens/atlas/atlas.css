@@ -1,0 +1,596 @@
+/*
+ * Atlas — a zoomable desk for tidying files. (Neutral dark-grey glass skin.)
+ *
+ * One continuous canvas. The same files render as three things depending on
+ * how close you are: distant = a diagnostic terrain (size = footprint, dim =
+ * stale, shimmer = duplicates); mid = labelled trays; close = real file cards.
+ * The cross-fade is driven by a single --s custom property set on .atlas-world
+ * each animation frame, so CSS clamp() does the blending with zero React churn.
+ *
+ * GLASS RECIPE (researched, neutral — no colour cast):
+ *   1. translucent neutral-grey fill (no blue tint)
+ *   2. backdrop-filter blur + brightness; saturate kept LOW + grayscale to
+ *      kill the blue push that saturate() introduces on dark surfaces
+ *   3. layered box-shadow: inset top-left highlight + inset bottom-right
+ *      crease (directional light) + three outset depth tiers
+ *   4. a fine feTurbulence grain (::after) to defeat the "plastic" look
+ * Accent is a single warm amber for "duplicate / attention"; everything
+ * else is greyscale.
+ */
+
+.atlas-stage {
+  --at-bg: #161616;
+  --at-bg-2: #1f1f1f;
+  --at-text: #ededed;
+  --at-mut: #a6a6a6;
+  --at-faint: #6d6d6d;
+
+  --at-line: rgba(255, 255, 255, 0.1);
+  --at-line-soft: rgba(255, 255, 255, 0.06);
+
+  /* neutral glass fills — pure grey, slightly warm to resist a cold cast */
+  --at-glass: rgba(232, 232, 230, 0.07);
+  --at-glass-2: rgba(232, 232, 230, 0.1);
+  --at-glass-3: rgba(236, 236, 234, 0.13);
+
+  --at-blur: 16px;
+  --at-filter: blur(var(--at-blur)) brightness(1.08) saturate(105%) grayscale(30%);
+
+  --at-stale: #6f6f6f;
+  --at-dup: #d6a25a;
+  --at-dup-soft: rgba(214, 162, 90, 0.4);
+
+  /* the directional-light shadow stack, shared by every glass surface */
+  --at-glass-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 1.5px 2px 0 -1.5px rgba(255, 255, 255, 0.5),
+    inset -1.5px -2px 0 -1.5px rgba(255, 255, 255, 0.22),
+    inset 0 3px 5px -3px rgba(0, 0, 0, 0.5),
+    inset -1px -2px 4px -2px rgba(0, 0, 0, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    0 10px 24px -6px rgba(0, 0, 0, 0.45),
+    0 24px 50px -16px rgba(0, 0, 0, 0.5);
+
+  position: relative;
+  width: 100%;
+  height: 600px;
+  max-height: 78vh;
+  overflow: hidden;
+  border-radius: 16px;
+  /* neutral dark ground: a soft top-light vignette, no colour */
+  background:
+    radial-gradient(130% 90% at 30% 0%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+    radial-gradient(120% 120% at 80% 100%, rgba(0, 0, 0, 0.35) 0%, transparent 55%),
+    linear-gradient(165deg, var(--at-bg-2) 0%, var(--at-bg) 72%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 30px 80px -40px rgba(0, 0, 0, 0.8);
+  cursor: grab;
+  touch-action: none;
+  overscroll-behavior: contain;
+  user-select: none;
+  color: var(--at-text);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+}
+/* faint engineering grid floating over the ground */
+.atlas-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 47px, rgba(255, 255, 255, 0.022) 47px 48px),
+    repeating-linear-gradient(90deg, transparent 0 47px, rgba(255, 255, 255, 0.022) 47px 48px);
+  pointer-events: none;
+  z-index: 0;
+}
+.atlas-stage[data-panning="true"],
+.atlas-stage[data-holding="true"] {
+  cursor: grabbing;
+}
+
+/* The transformed world. Origin (0,0) sits at translate(tx,ty); scaled by s. */
+.atlas-world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+  z-index: 1;
+}
+
+/* shared grain overlay — defeats the plastic look on any glass surface */
+.atlas-blob::after,
+.atlas-tray::after,
+.atlas-file-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.1;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* ── ZONE ─────────────────────────────────────────────────────────────── */
+.atlas-zone {
+  position: absolute;
+  box-sizing: border-box;
+}
+
+/* distant terrain blob — a thick frosted slab, visible only when far out */
+.atlas-blob {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: var(--at-glass-2);
+  backdrop-filter: var(--at-filter);
+  -webkit-backdrop-filter: var(--at-filter);
+  box-shadow: var(--at-glass-shadow);
+  opacity: clamp(0, calc((0.82 - var(--s, 1)) / 0.27), 1);
+  transition: box-shadow 220ms ease, background 220ms ease;
+}
+.atlas-blob[data-stale="true"] {
+  background: rgba(160, 160, 158, 0.05);
+}
+.atlas-blob[data-hot="true"] {
+  /* bigger folders catch more light — brighter rim, no colour */
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 1.5px 2px 0 -1.5px rgba(255, 255, 255, 0.65),
+    inset -1.5px -2px 0 -1.5px rgba(255, 255, 255, 0.28),
+    inset 0 3px 5px -3px rgba(0, 0, 0, 0.5),
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    0 14px 30px -6px rgba(0, 0, 0, 0.5),
+    0 28px 60px -16px rgba(0, 0, 0, 0.55);
+}
+/* duplicate shimmer marker on the terrain — the only accent */
+.atlas-blob[data-dup="true"] > .atlas-dup-glow {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(214, 162, 90, 0.75) 0%, transparent 70%);
+  animation: atlas-shimmer 2s ease-in-out infinite;
+}
+@keyframes atlas-shimmer {
+  0%, 100% { opacity: 0.4; transform: scale(0.82); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+.atlas-blob-label {
+  position: absolute;
+  left: 18px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 2;
+}
+.atlas-blob-name {
+  font-size: 22px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--at-text);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
+}
+.atlas-blob-meta {
+  font-size: 13px;
+  color: var(--at-mut);
+  letter-spacing: 0.02em;
+}
+.atlas-blob[data-stale="true"] .atlas-blob-name {
+  color: var(--at-stale);
+}
+.atlas-blob[data-stale="true"] .atlas-blob-meta {
+  color: var(--at-faint);
+}
+
+/* mid-distance tray frame + header — a thinner sheet of glass */
+.atlas-tray {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: var(--at-glass);
+  backdrop-filter: var(--at-filter);
+  -webkit-backdrop-filter: var(--at-filter);
+  box-shadow: var(--at-glass-shadow);
+  opacity: clamp(0, calc((var(--s, 1) - 0.58) / 0.24), 1);
+  transition: box-shadow 180ms ease, background 180ms ease;
+}
+.atlas-zone[data-drop="true"] .atlas-tray {
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.28),
+    inset 1.5px 2px 0 -1.5px rgba(255, 255, 255, 0.7),
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    0 14px 34px -8px rgba(0, 0, 0, 0.5);
+}
+.atlas-tray-head {
+  position: absolute;
+  left: 18px;
+  top: 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  z-index: 2;
+}
+.atlas-tray-name {
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--at-text);
+}
+.atlas-tray-count {
+  font-size: 12px;
+  color: var(--at-mut);
+}
+.atlas-tray-flags {
+  position: absolute;
+  right: 16px;
+  top: 14px;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+.atlas-flag {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  background: rgba(255, 255, 255, 0.04);
+}
+.atlas-flag--dup { color: var(--at-dup); }
+.atlas-flag--stale { color: var(--at-stale); }
+.atlas-flag--big { color: var(--at-mut); }
+
+/* ── FILE CARD ────────────────────────────────────────────────────────── */
+/* The preview content IS the thumbnail (.atlas-file-content), present from the
+   moment the card appears. A filename chip (.atlas-file-foot) sits over it and
+   fades out as you push in; a glass rim (.atlas-file-frame) frames it without
+   ever covering it. The container only carries the float shadow + terrain
+   fade-in. */
+.atlas-file {
+  position: absolute;
+  width: 132px;
+  height: 158px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  overflow: hidden;
+  opacity: clamp(0, calc((var(--s, 1) - 0.7) / 0.3), 1);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    0 12px 28px -10px rgba(0, 0, 0, 0.5),
+    0 26px 54px -18px rgba(0, 0, 0, 0.5);
+  cursor: grab;
+  transition: box-shadow 160ms ease, transform 160ms ease;
+}
+.atlas-file[data-stale="true"] {
+  opacity: clamp(0, calc((var(--s, 1) - 0.7) / 0.3), 0.66);
+}
+.atlas-file[data-held="true"] {
+  visibility: hidden;
+}
+.atlas-stage[data-layer="files"] .atlas-file:hover,
+.atlas-stage[data-layer="zone"] .atlas-file:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    0 16px 34px -10px rgba(0, 0, 0, 0.55),
+    0 30px 60px -18px rgba(0, 0, 0, 0.6);
+}
+
+/* content face — the actual file, IS the thumbnail. Always opaque once the
+   card has appeared; the preview a far reader sees is the same artifact a
+   close reader reads, just smaller. */
+.atlas-file-content {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  background: #f4f3ef;
+  color: #1d1d1b;
+  z-index: 1;
+}
+
+/* glass rim — material framing only; transparent center so it never hides the
+   preview. Top-left highlight + bottom-right crease read as a pane of glass
+   sitting over the paper. */
+.atlas-file-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 3;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+    inset 1.5px 2px 0 -1.5px rgba(255, 255, 255, 0.6),
+    inset -1.5px -2px 0 -1.5px rgba(255, 255, 255, 0.28),
+    inset 0 8px 18px -10px rgba(255, 255, 255, 0.4),
+    inset 0 -10px 22px -12px rgba(0, 0, 0, 0.35);
+}
+.atlas-file[data-dup="true"] .atlas-file-frame {
+  box-shadow:
+    inset 0 0 0 1px var(--at-dup-soft),
+    inset 1.5px 2px 0 -1.5px rgba(255, 255, 255, 0.45);
+}
+
+/* image preview fill — used by .atlas-doc-photo (a fake photo gradient) */
+.atlas-thumb--image {
+  background:
+    linear-gradient(135deg, #8a8f98 0%, #4a4d54 55%, #2a2c31 100%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05) 0 8px, transparent 8px 16px);
+}
+.atlas-thumb-dup {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--at-dup);
+  box-shadow: 0 0 0 3px rgba(214, 162, 90, 0.2), 0 0 10px rgba(214, 162, 90, 0.55);
+}
+/* filename label — a chip pinned to the card foot, over the preview. Fades out
+   as you push in so the deepest view is clean full-bleed content. */
+.atlas-file-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 8px 10px 9px;
+  background: linear-gradient(0deg, rgba(8, 8, 8, 0.82) 30%, rgba(8, 8, 8, 0));
+  z-index: 2;
+  opacity: clamp(0, calc((2.3 - var(--s, 1)) / 0.5), 1);
+  pointer-events: none;
+}
+.atlas-file-name {
+  font-size: 11px;
+  color: #f3f3f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.atlas-file-meta {
+  margin-top: 3px;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ── READ LAYER — the actual file content (paper, not glass) ───────────── */
+/* Sized in world px; only ever read when zoomed in, so base type is small and
+   becomes legible once the world scale lifts it. */
+.atlas-doc {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-size: 4.6px;
+  line-height: 1.5;
+}
+
+/* image — full-bleed frame with an EXIF strip */
+.atlas-doc--image {
+  position: relative;
+  background: #000;
+}
+.atlas-doc-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.atlas-doc-exif {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 6px;
+  font-size: 4px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.92);
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.6), transparent);
+}
+
+/* zip — a manifest listing */
+.atlas-doc--zip {
+  padding: 8px 9px;
+  background: #1c1c1a;
+  color: #e7e7e3;
+}
+.atlas-doc-ziphead {
+  display: flex;
+  justify-content: space-between;
+  font-size: 4.4px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--at-dup);
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.16);
+}
+.atlas-doc-manifest {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.atlas-doc-manifest li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.atlas-doc-mfile {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #cfcfca;
+}
+.atlas-doc-msize {
+  color: #8a8a85;
+  flex: 0 0 auto;
+}
+
+/* pdf — a billed page */
+.atlas-doc--pdf {
+  padding: 9px 9px;
+  background: #fbfbf8;
+  display: flex;
+  flex-direction: column;
+}
+.atlas-doc-billhead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.atlas-doc-billmark {
+  font-size: 6.5px;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+.atlas-doc-billno {
+  font-size: 4.4px;
+  color: #6a6a66;
+}
+.atlas-doc-billto {
+  margin: 5px 0 7px;
+  font-size: 4.2px;
+  color: #6a6a66;
+  padding-bottom: 6px;
+  border-bottom: 0.5px solid #dcdcd6;
+}
+.atlas-doc-lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4.5px;
+}
+.atlas-doc-lines li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.atlas-doc-total {
+  margin-top: auto;
+  padding-top: 6px;
+  border-top: 0.5px solid #dcdcd6;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 5px;
+}
+
+/* doc — body text */
+.atlas-doc--text {
+  padding: 9px 10px;
+  background: #fbfbf8;
+}
+.atlas-doc-h1 {
+  font-size: 6.4px;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.atlas-doc-byline {
+  margin: 3px 0 6px;
+  font-size: 3.8px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #9a9a95;
+}
+.atlas-doc-p {
+  margin: 0 0 4.5px;
+  color: #34342f;
+}
+
+/* the file currently riding the cursor */
+.atlas-held {
+  position: absolute;
+  z-index: 50;
+  pointer-events: none;
+  transform-origin: center;
+  filter: drop-shadow(0 22px 30px rgba(0, 0, 0, 0.55));
+  transition: none;
+}
+
+/* ── OVERLAY CHROME ───────────────────────────────────────────────────── */
+.atlas-hud {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--at-mut);
+  pointer-events: none;
+  z-index: 10;
+}
+.atlas-hud-step {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--at-line);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--at-faint);
+}
+.atlas-hud-step[data-active="true"] {
+  color: var(--at-text);
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.1);
+}
+.atlas-hint {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--at-faint);
+  pointer-events: none;
+  z-index: 10;
+}
+.atlas-reset {
+  position: absolute;
+  right: 16px;
+  top: 14px;
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--at-mut);
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--at-line);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  z-index: 10;
+}
+.atlas-reset:hover {
+  color: var(--at-text);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atlas-blob[data-dup="true"] > .atlas-dup-glow { animation: none; }
+}
