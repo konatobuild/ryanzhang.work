@@ -1961,7 +1961,8 @@
    Keeping the two constants in sync is what lets the cinema slot fill
    the viewport without exposing stage background at its edges. */
 .id-deck-slot--cinema-big,
-.id-deck-slot--cinema-pair {
+.id-deck-slot--cinema-pair,
+.id-deck-slot--cinema-grid {
   width: calc(100vw / 0.78);
   height: calc(100dvh / 0.78);
   overflow: hidden;
@@ -1975,7 +1976,8 @@
 
 /* Catalog pair — light ground, mirrors TE's product-grid sections that
    follow each hero. Two halves split 50/50 inside .id-cinema--pair. */
-.id-deck-slot--cinema-pair {
+.id-deck-slot--cinema-pair,
+.id-deck-slot--cinema-grid {
   background: var(--color-gray-1);
 }
 
@@ -2051,6 +2053,42 @@
   position: relative;
   flex: 1 1 0;
   min-width: 0;
+}
+
+/* Component grid (Card 03) — a 2×2 grid of specimen video tiles. Gaps (not
+   dividers) separate the tiles, no borders or rounding; the warm deck
+   ground shows through the gaps and the side margins.
+
+   Centering wrap fills the slot and holds the grid block in the middle;
+   its outer padding keeps the grid off the slot edges. */
+.id-cinema-grid-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 2vw, 44px);
+  box-sizing: border-box;
+}
+
+/* The grid is a centered 5:4 block so 2×2 1fr tracks yield slightly-wide
+   (~5:4) tiles; the landscape slot leaves calm margin on the sides. Larger
+   gap so the tiles read as separate cards. */
+.id-cinema-grid {
+  height: 100%;
+  aspect-ratio: 5 / 4;
+  max-width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: clamp(20px, 2.6vw, 48px);
+  box-sizing: border-box;
+}
+
+.id-cinema-grid__cell {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: #000;
 }
 
 .id-cinema__half + .id-cinema__half {
@@ -2283,7 +2321,8 @@
   background: #fcfbf8;
 }
 
-.home-deck-stage .id-deck-slot--cinema-pair {
+.home-deck-stage .id-deck-slot--cinema-pair,
+.home-deck-stage .id-deck-slot--cinema-grid {
   background: #fcfbf8;
 }
 
