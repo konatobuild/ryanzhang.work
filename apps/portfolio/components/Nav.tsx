@@ -10,7 +10,12 @@ export function Nav() {
 
   // Deck surfaces render their own minimal chrome and take the whole
   // viewport. Hide the standard nav on every deck-driven page.
-  if (pathname === "/" || pathname === "/industrial-design") return null;
+  if (
+    pathname === "/" ||
+    pathname === "/industrial-design" ||
+    pathname === "/lab/gridex"
+  )
+    return null;
 
   return (
     <>
