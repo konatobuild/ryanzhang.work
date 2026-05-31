@@ -2085,10 +2085,29 @@
 
 .id-cinema-grid__cell {
   position: relative;
+  display: block;
   min-width: 0;
   min-height: 0;
   overflow: hidden;
   background: #000;
+  text-decoration: none;
+  transition:
+    transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.id-cinema-grid__cell:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 34px -14px rgba(28, 43, 39, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .id-cinema-grid__cell {
+    transition: none;
+  }
+  .id-cinema-grid__cell:hover {
+    transform: none;
+  }
 }
 
 .id-cinema__half + .id-cinema__half {

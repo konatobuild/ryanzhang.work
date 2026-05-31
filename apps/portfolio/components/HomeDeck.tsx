@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { HeroMorphPoc } from "@/components/HeroMorphPoc";
 import {
   InteractionPlate,
@@ -61,7 +62,7 @@ type SlotMeta =
       kind: "cinema-grid";
       anchor: string;
       label: string;
-      tiles: React.ReactNode[];
+      tiles: { src: string; label: string; href: string }[];
     }
   | { kind: "card-colophon"; anchor: string; label: string };
 
@@ -77,26 +78,26 @@ const SLOT_DEFS: SlotMeta[] = [
     anchor: "03",
     label: "Components",
     tiles: [
-      <VideoReel
-        key="gridex"
-        src="/specimens/gridex.mp4"
-        label="Gridex — an agentic workspace you can just watch"
-      />,
-      <VideoReel
-        key="agent-cursor"
-        src="/specimens/agent-cursor.mp4"
-        label="A guide cursor that points instead of talking"
-      />,
-      <VideoReel
-        key="atlas"
-        src="/specimens/atlas.mp4"
-        label="Atlas — a zoomable file canvas"
-      />,
-      <VideoReel
-        key="command-palette"
-        src="/specimens/command-palette.mp4"
-        label="An optical command palette with a glass loupe"
-      />,
+      {
+        src: "/specimens/gridex.mp4",
+        label: "Gridex — an agentic workspace you can just watch",
+        href: "/lab/gridex",
+      },
+      {
+        src: "/specimens/agent-cursor.mp4",
+        label: "A guide cursor that points instead of talking",
+        href: "/lab/agent-cursor",
+      },
+      {
+        src: "/specimens/atlas.mp4",
+        label: "Atlas — a zoomable file canvas",
+        href: "/lab/atlas",
+      },
+      {
+        src: "/specimens/command-palette.mp4",
+        label: "An optical command palette with a glass loupe",
+        href: "/lab/command-palette",
+      },
     ],
   },
   { kind: "card-colophon", anchor: "04", label: "Colophon" },
@@ -634,14 +635,23 @@ function MacSpecimen() {
  * are landscape (the slot is ~viewport-shaped, halved on each axis), which
  * is the framing the recordings are cut for.
  */
-function CinemaGrid({ tiles }: { tiles: React.ReactNode[] }) {
+function CinemaGrid({
+  tiles,
+}: {
+  tiles: { src: string; label: string; href: string }[];
+}) {
   return (
     <div className="id-cinema id-cinema-grid-wrap">
       <div className="id-cinema-grid">
-        {tiles.map((tile, i) => (
-          <div key={i} className="id-cinema-grid__cell">
-            {tile}
-          </div>
+        {tiles.map((tile) => (
+          <Link
+            key={tile.href}
+            href={tile.href}
+            className="id-cinema-grid__cell"
+            aria-label={tile.label}
+          >
+            <VideoReel src={tile.src} label={tile.label} />
+          </Link>
         ))}
       </div>
     </div>
