@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import Link from "next/link";
 import { HeroMorphPoc } from "@/components/HeroMorphPoc";
 import {
   InteractionPlate,
@@ -44,32 +44,6 @@ const HOME_SCALE = 1;
 const DECK_SCALE = 0.78;
 const RAMP_PX = 1200;
 
-/** One half of a cinema-pair slot. Mirrors IndustrialDeck.HalfPlate for
- *  the static-photo case so the shared CSS (.id-cinema--pair /
- *  .id-cinema__half / .id-cinema__photo / .id-cinema__marker) renders
- *  identically, and extends it with a `preview` slot for live React
- *  content (component demos, motion specimens, gesture surfaces).
- *
- *  Precedence for what fills the half:
- *    1. `preview` (ReactNode) — wins if present; renders inline inside
- *       the half. Use for live, interactive component specimens.
- *    2. `imageSrc` — static photograph rendered with next/image fill.
- *       Same path as industrial's product-plate halves.
- *    3. Neither — numbered marker only; the "honest empty slot"
- *       convention from industrial, signalling "more is coming here"
- *       without filling space with stub content.
- *
- *  An optional `caption` adds a one-line statement at the bottom of the
- *  half — used when a component demo needs a "what to notice" line so
- *  it doesn't get read as decoration. */
-type HalfPlate = {
-  number: number;
-  imageSrc?: string;
-  imageAlt?: string;
-  preview?: React.ReactNode;
-  caption?: string;
-};
-
 type SlotMeta =
   | { kind: "card-identity"; anchor: string; label: string }
   | {
@@ -82,10 +56,13 @@ type SlotMeta =
       label: string;
     }
   | {
-      kind: "cinema-pair";
+      /** A single full-viewport card holding a 2×2 grid of specimen video
+       *  tiles — small gaps, no dividers, the grid filling the slot so the
+       *  recordings carry the screen instead of floating in whitespace. */
+      kind: "cinema-grid";
       anchor: string;
       label: string;
-      plates: [HalfPlate, HalfPlate];
+      tiles: { src: string; label: string; href: string }[];
     }
   | { kind: "card-colophon"; anchor: string; label: string };
 
@@ -97,18 +74,33 @@ const SLOT_DEFS: SlotMeta[] = [
     label: "Specimen — Pro Display XDR",
   },
   {
-    kind: "cinema-pair",
+    kind: "cinema-grid",
     anchor: "03",
-    label: "Components 01–02",
-    plates: [{ number: 1 }, { number: 2 }],
+    label: "Components",
+    tiles: [
+      {
+        src: "/specimens/gridex.mp4",
+        label: "Gridex — an agentic workspace you can just watch",
+        href: "/lab/gridex",
+      },
+      {
+        src: "/specimens/agent-cursor.mp4",
+        label: "A guide cursor that points instead of talking",
+        href: "/lab/agent-cursor",
+      },
+      {
+        src: "/specimens/atlas.mp4",
+        label: "Atlas — a zoomable file canvas",
+        href: "/lab/atlas",
+      },
+      {
+        src: "/specimens/command-palette.mp4",
+        label: "An optical command palette with a glass loupe",
+        href: "/lab/command-palette",
+      },
+    ],
   },
-  {
-    kind: "cinema-pair",
-    anchor: "04",
-    label: "Components 03–04",
-    plates: [{ number: 3 }, { number: 4 }],
-  },
-  { kind: "card-colophon", anchor: "05", label: "Colophon" },
+  { kind: "card-colophon", anchor: "04", label: "Colophon" },
 ];
 
 export function HomeDeck() {
@@ -397,7 +389,7 @@ export function HomeDeck() {
         <div ref={trackRef} className="id-deck-track">
           {SLOT_DEFS.map((meta, i) => {
             const isCinema =
-              meta.kind === "cinema-specimen" || meta.kind === "cinema-pair";
+              meta.kind === "cinema-specimen" || meta.kind === "cinema-grid";
             return (
               <article
                 key={meta.anchor}
@@ -411,8 +403,8 @@ export function HomeDeck() {
               >
                 {meta.kind === "card-identity" && <IdentityBody />}
                 {meta.kind === "cinema-specimen" && <MacSpecimen />}
-                {meta.kind === "cinema-pair" && (
-                  <CinemaPair plates={meta.plates} />
+                {meta.kind === "cinema-grid" && (
+                  <CinemaGrid tiles={meta.tiles} />
                 )}
                 {meta.kind === "card-colophon" && <ContactBody />}
               </article>
@@ -633,57 +625,35 @@ function MacSpecimen() {
   );
 }
 
-/* ─── Card 03+ · Component pair ─────────────────────────────────────── */
+/* ─── Card 03 · Component grid ──────────────────────────────────────── */
 
 /*
- * One row of the catalog spread. Each half can carry one of three things,
- * resolved in order:
- *
- *   1. `plate.preview`  — a live ReactNode rendered inside the half.
- *      Use for component / motion / interaction demos. The half stays
- *      `position: relative` (via .id-cinema__half) so absolutely-
- *      positioned demo internals anchor to the half's bounds rather
- *      than the whole slot.
- *
- *   2. `plate.imageSrc` — a static photograph rendered with next/image
- *      fill. Same path industrial uses for product-plate halves.
- *
- *   3. Neither          — the half renders as an honest-empty marker
- *      only. Carried over from industrial's "say more is coming here
- *      without filling the page with stub content" convention.
- *
- * The numbered marker and optional caption sit above the preview /
- * photograph (z-order in source = render order) so they stay readable
- * over any half content.
+ * A 2×2 grid of specimen video tiles filling the slot. No dividers — small
+ * gaps separate the tiles — and only a slim outer margin, so the four
+ * recordings carry the screen instead of floating in whitespace. Each tile
+ * is a rounded card; the deck's own ground shows through the gaps. Tiles
+ * are landscape (the slot is ~viewport-shaped, halved on each axis), which
+ * is the framing the recordings are cut for.
  */
-function CinemaPair({
-  plates,
+function CinemaGrid({
+  tiles,
 }: {
-  plates: [HalfPlate, HalfPlate];
+  tiles: { src: string; label: string; href: string }[];
 }) {
   return (
-    <div className="id-cinema id-cinema--pair">
-      {plates.map((plate, i) => (
-        <div key={i} className="id-cinema__half">
-          {plate.preview ?? (
-            plate.imageSrc && (
-              <Image
-                className="id-cinema__photo"
-                src={plate.imageSrc}
-                alt={plate.imageAlt ?? ""}
-                fill
-                sizes="50vw"
-              />
-            )
-          )}
-          <span className="id-cinema__marker">
-            {String(plate.number).padStart(2, "0")}
-          </span>
-          {plate.caption && (
-            <span className="id-cinema__caption">{plate.caption}</span>
-          )}
-        </div>
-      ))}
+    <div className="id-cinema id-cinema-grid-wrap">
+      <div className="id-cinema-grid">
+        {tiles.map((tile) => (
+          <Link
+            key={tile.href}
+            href={tile.href}
+            className="id-cinema-grid__cell"
+            aria-label={tile.label}
+          >
+            <VideoReel src={tile.src} label={tile.label} />
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
@@ -741,7 +711,20 @@ function ContactBody() {
  * `autoplay` HTML attribute — drives playback so we can react to runtime
  * preference changes (OS-level toggle while the page is open).
  */
-function InteractionReel() {
+/** A muted, looping video reel that fills its (relatively-positioned)
+ *  parent. Pauses on the first frame under prefers-reduced-motion. Used
+ *  for the XDR specimen (drag-electron) and the component-pair specimen
+ *  recordings — pre-rendered so they never compete with the deck's scroll
+ *  animation for frame budget. */
+function VideoReel({
+  src,
+  label,
+  objectFit = "cover",
+}: {
+  src: string;
+  label: string;
+  objectFit?: "cover" | "contain";
+}) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -770,20 +753,26 @@ function InteractionReel() {
     <div style={{ position: "absolute", inset: 0, background: "#000" }}>
       <video
         ref={videoRef}
-        src="/interaction/drag-electron.mp4"
+        src={src}
         muted
         loop
         playsInline
         preload="auto"
-        aria-label="Drag interaction"
+        aria-label={label}
         style={{
           position: "absolute",
           inset: 0,
           width: "100%",
           height: "100%",
-          objectFit: "cover",
+          objectFit,
         }}
       />
     </div>
+  );
+}
+
+function InteractionReel() {
+  return (
+    <VideoReel src="/interaction/drag-electron.mp4" label="Drag interaction" />
   );
 }

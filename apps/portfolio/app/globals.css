@@ -1961,7 +1961,8 @@
    Keeping the two constants in sync is what lets the cinema slot fill
    the viewport without exposing stage background at its edges. */
 .id-deck-slot--cinema-big,
-.id-deck-slot--cinema-pair {
+.id-deck-slot--cinema-pair,
+.id-deck-slot--cinema-grid {
   width: calc(100vw / 0.78);
   height: calc(100dvh / 0.78);
   overflow: hidden;
@@ -1975,7 +1976,8 @@
 
 /* Catalog pair — light ground, mirrors TE's product-grid sections that
    follow each hero. Two halves split 50/50 inside .id-cinema--pair. */
-.id-deck-slot--cinema-pair {
+.id-deck-slot--cinema-pair,
+.id-deck-slot--cinema-grid {
   background: var(--color-gray-1);
 }
 
@@ -2051,6 +2053,61 @@
   position: relative;
   flex: 1 1 0;
   min-width: 0;
+}
+
+/* Component grid (Card 03) — a 2×2 grid of specimen video tiles. Gaps (not
+   dividers) separate the tiles, no borders or rounding; the warm deck
+   ground shows through the gaps and the side margins.
+
+   Centering wrap fills the slot and holds the grid block in the middle;
+   its outer padding keeps the grid off the slot edges. */
+.id-cinema-grid-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 2vw, 44px);
+  box-sizing: border-box;
+}
+
+/* The grid is a centered 5:4 block so 2×2 1fr tracks yield slightly-wide
+   (~5:4) tiles; the landscape slot leaves calm margin on the sides. Larger
+   gap so the tiles read as separate cards. */
+.id-cinema-grid {
+  height: 100%;
+  aspect-ratio: 5 / 4;
+  max-width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: clamp(20px, 2.6vw, 48px);
+  box-sizing: border-box;
+}
+
+.id-cinema-grid__cell {
+  position: relative;
+  display: block;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: #000;
+  text-decoration: none;
+  transition:
+    transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.id-cinema-grid__cell:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 34px -14px rgba(28, 43, 39, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .id-cinema-grid__cell {
+    transition: none;
+  }
+  .id-cinema-grid__cell:hover {
+    transform: none;
+  }
 }
 
 .id-cinema__half + .id-cinema__half {
@@ -2283,7 +2340,8 @@
   background: #fcfbf8;
 }
 
-.home-deck-stage .id-deck-slot--cinema-pair {
+.home-deck-stage .id-deck-slot--cinema-pair,
+.home-deck-stage .id-deck-slot--cinema-grid {
   background: #fcfbf8;
 }
 
@@ -4191,3 +4249,235 @@
     transition: none;
   }
 }
+
+/* ── Grammar Board specimen (ported from claude/pedantic-torvalds-9a203d 61882ae) ── */
+/* Grammar board specimen — reorderable Braun-grammar cards.
+ * Transforms are JS-driven (rAF spring); CSS only owns chrome + the
+ * lift treatment when a card is picked up. */
+.gb-board {
+  position: relative;
+  width: 100%;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.gb-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-gray-1);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-3);
+  cursor: grab;
+  will-change: transform;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 180ms var(--ease-snappy);
+  overflow: hidden;
+}
+
+.gb-card--dragging {
+  cursor: grabbing;
+  box-shadow: var(--shadow-card-hover);
+  z-index: 5;
+}
+
+.gb-card__art {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 16%;
+  min-height: 0;
+}
+
+.gb-card__art svg {
+  width: 100%;
+  height: 100%;
+}
+
+.gb-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1);
+  padding: 8px 12px;
+  border-top: 1px solid var(--color-hairline);
+  font-family: var(--font-mono);
+  font-size: var(--fs-10);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.gb-card__rank {
+  color: var(--color-klein);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sort control bar */
+.gb-shell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.gb-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.gb-controls__label {
+  margin-right: 4px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-10);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.gb-controls__btn {
+  padding: 6px 14px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.02em;
+  color: var(--color-gray-11);
+  background: transparent;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition:
+    color 140ms var(--ease-snappy),
+    border-color 140ms var(--ease-snappy),
+    background 140ms var(--ease-snappy);
+}
+
+.gb-controls__btn:hover {
+  border-color: var(--color-gray-8);
+  color: var(--color-gray-12);
+}
+
+.gb-controls__btn.is-active {
+  color: var(--color-gray-1);
+  background: var(--color-klein);
+  border-color: var(--color-klein);
+}
+
+/* Inspect overlay + shared-element detail */
+.gb-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background: rgba(10, 10, 10, 0.42);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  animation: gb-fade 200ms var(--ease-snappy);
+}
+
+/* Closing: fade the whole overlay (scrim + panel) out in step with the
+ * artwork morphing back to its card, so the panel never sits empty. */
+.gb-overlay.is-closing {
+  opacity: 0;
+  transition: opacity 300ms var(--ease-snappy);
+}
+
+.gb-detail {
+  position: relative;
+  width: min(420px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  background: var(--color-gray-1);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.gb-detail__close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  width: 28px;
+  height: 28px;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--color-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 140ms var(--ease-snappy);
+}
+
+.gb-detail__close:hover {
+  color: var(--color-gray-12);
+}
+
+.gb-detail__art {
+  flex: 0 0 auto;
+  width: 200px;
+  height: 200px;
+  display: grid;
+  place-items: center;
+  will-change: transform;
+}
+
+.gb-detail__art svg {
+  width: 100%;
+  height: 100%;
+}
+
+.gb-detail__body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.gb-detail__title {
+  font-size: var(--fs-24);
+  line-height: var(--lh-28);
+  color: var(--color-gray-12);
+}
+
+.gb-detail__sub {
+  font-family: var(--font-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-klein);
+}
+
+.gb-detail__text {
+  font-size: var(--fs-14);
+  line-height: 1.55;
+  color: var(--color-gray-11);
+}
+
+@keyframes gb-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gb-card {
+    transition: none;
+  }
+  .gb-overlay {
+    animation: none;
+  }
+}
+
