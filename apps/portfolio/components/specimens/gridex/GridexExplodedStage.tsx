@@ -428,6 +428,18 @@ export default function GridexExplodedStage() {
           </ul>
         </div>
 
+        {/* Association trails — geometry + transform set by the engine. The
+            faint loop is each agent's known association map; the bright edge
+            draws itself along the leg the cursor is currently traversing. */}
+        <svg className="ex-trails" aria-hidden="true">
+          <path className="ex-trail-loop ex-trail-loop--alpha" />
+          <path className="ex-trail-loop ex-trail-loop--beta" />
+          <path className="ex-trail-loop ex-trail-loop--gamma" />
+          <path className="ex-trail-edge ex-trail-edge--alpha" />
+          <path className="ex-trail-edge ex-trail-edge--beta" />
+          <path className="ex-trail-edge ex-trail-edge--gamma" />
+        </svg>
+
         {/* ── 3 agent cursors, floating highest ── */}
         <div className="stage-cursor stage-cursor--alpha">
           <div className="cursor-pin">

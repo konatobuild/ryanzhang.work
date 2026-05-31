@@ -116,6 +116,21 @@ export function initGridexExplodedStage(stageRoot: HTMLElement): () => void {
     });
   const cursorZ = maxLift + TOP_MARGIN;
 
+  // The association trails live in the same plane as the cursors (a hair
+  // below, so a cursor always paints over its own trail). Because that plane
+  // floats above the tallest card, a line connecting probe stops is never
+  // occluded by a layer.
+  const trails = stage.querySelector<SVGSVGElement>(".ex-trails");
+  if (trails) {
+    trails.setAttribute("width", String(stage.offsetWidth));
+    trails.setAttribute("height", String(stage.offsetHeight));
+    trails.style.transform = `translateZ(${cursorZ - 0.5}px)`;
+  }
+  const trailKey = (sel: string) => sel.split("--")[1] ?? "";
+  const loopD = (pts: { pose: Pose }[]) =>
+    pts.map((p, i) => `${i ? "L" : "M"} ${p.pose.x} ${p.pose.y}`).join(" ") +
+    " Z";
+
   function offsetWithinStage(el: HTMLElement) {
     let left = 0;
     let top = 0;
@@ -158,28 +173,40 @@ export function initGridexExplodedStage(stageRoot: HTMLElement): () => void {
     el.style.transform = `translate3d(${p.x}px, ${p.y}px, ${p.z}px)`;
   }
 
-  function animate(el: HTMLElement, from: Pose, to: Pose): Promise<void> {
+  function travelDuration(from: Pose, to: Pose) {
+    const dist = Math.hypot(to.x - from.x, to.y - from.y);
+    return Math.max(620, (dist / 340) * 1000);
+  }
+
+  function animate(
+    el: HTMLElement,
+    from: Pose,
+    to: Pose,
+    onFrame?: (p: Pose) => void,
+  ): Promise<void> {
     const dx = to.x - from.x;
     const dy = to.y - from.y;
     const dz = to.z - from.z;
-    const dist = Math.hypot(dx, dy);
-    const duration = Math.max(620, (dist / 340) * 1000);
+    const duration = travelDuration(from, to);
     const start = performance.now();
     return new Promise<void>((resolve) => {
       function tick(now: number) {
         if (!alive) return;
         if (document.hidden) {
           setPose(el, to);
+          onFrame?.(to);
           resolve();
           return;
         }
         const k = Math.min(1, (now - start) / duration);
         const e = easeInOut(k);
-        setPose(el, {
+        const p = {
           x: from.x + dx * e,
           y: from.y + dy * e,
           z: from.z + dz * e,
-        });
+        };
+        setPose(el, p);
+        onFrame?.(p);
         if (k < 1) {
           const id = requestAnimationFrame(tick);
           trackedRaf.add(id);
@@ -199,10 +226,16 @@ export function initGridexExplodedStage(stageRoot: HTMLElement): () => void {
   if (reduceMotion) {
     for (const chain of CHAINS) {
       const el = stage.querySelector<HTMLElement>(chain.cursorSel);
-      const pose = poseFor(chain.probes[0]);
+      const poses = chain.probes
+        .map((p) => ({ pose: poseFor(p) }))
+        .filter((x): x is { pose: Pose } => x.pose !== null);
       const card = stage.querySelector<HTMLElement>(chain.probes[0].cardSel);
-      if (el && pose) setPose(el, pose);
+      const loop = stage.querySelector<SVGPathElement>(
+        `.ex-trail-loop--${trailKey(chain.cursorSel)}`,
+      );
+      if (el && poses[0]) setPose(el, poses[0].pose);
       if (card) card.classList.add("is-probing");
+      if (loop && poses.length >= 2) loop.setAttribute("d", loopD(poses));
     }
     return () => {
       stage
@@ -220,6 +253,13 @@ export function initGridexExplodedStage(stageRoot: HTMLElement): () => void {
       .map((p) => ({ probe: p, pose: poseFor(p) }))
       .filter((x): x is { probe: Probe; pose: Pose } => x.pose !== null);
     if (!poses.length) return;
+
+    // The faint full loop is the agent's known association map; the bright
+    // edge draws itself one leg at a time as the cursor traverses it.
+    const key = trailKey(chain.cursorSel);
+    const loop = stage.querySelector<SVGPathElement>(`.ex-trail-loop--${key}`);
+    const edge = stage.querySelector<SVGPathElement>(`.ex-trail-edge--${key}`);
+    if (loop && poses.length >= 2) loop.setAttribute("d", loopD(poses));
 
     // Start parked on the first layer.
     setPose(el, poses[0].pose);
@@ -246,8 +286,15 @@ export function initGridexExplodedStage(stageRoot: HTMLElement): () => void {
       if (!alive) return;
       card?.classList.remove("is-probing");
 
+      // The dotted edge grows out of the start stop and follows the cursor as
+      // it flies — dots accumulate into a line, tracing the link the agent
+      // just found. The dot pattern itself lives in CSS (stroke-dasharray), so
+      // as the line lengthens its dots appear one by one.
       const next = poses[(idx + 1) % poses.length];
-      await animate(el, cur.pose, next.pose);
+      const from = cur.pose;
+      await animate(el, from, next.pose, (p) => {
+        edge?.setAttribute("d", `M ${from.x} ${from.y} L ${p.x} ${p.y}`);
+      });
       idx = (idx + 1) % poses.length;
     }
   }
@@ -264,5 +311,8 @@ export function initGridexExplodedStage(stageRoot: HTMLElement): () => void {
     stage
       .querySelectorAll(".is-probing, .is-landing")
       .forEach((n) => n.classList.remove("is-probing", "is-landing"));
+    stage
+      .querySelectorAll<SVGPathElement>(".ex-trail-edge")
+      .forEach((e) => e.removeAttribute("d"));
   };
 }

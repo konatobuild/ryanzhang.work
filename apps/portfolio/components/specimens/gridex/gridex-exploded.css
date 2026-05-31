@@ -130,6 +130,53 @@
   filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.4));
 }
 
+/* ── Association trails ─────────────────────────────────────────────────
+   The line connecting a chain's probe stops. Rendered as one flat SVG that
+   the engine parks at the cursors' Z (see initGridexExplodedStage.ts), so it
+   floats above every card and is never occluded. The faint dashed loop is the
+   agent's full association map; the solid edge draws itself (stroke-dashoffset
+   transition) along whichever leg the cursor is traversing. No glow — a plain
+   drawn line, in keeping with the paper-not-glow read. */
+.gridex-exploded .ex-trails {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+  fill: none;
+}
+.gridex-exploded .ex-trail-loop {
+  stroke-width: 1;
+  stroke-dasharray: 2.5 5;
+  stroke-linecap: round;
+  opacity: 0.2;
+}
+.gridex-exploded .ex-trail-edge {
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 0.1 7; /* round-cap zero-dashes = dots; the line grows
+                              point-by-point as the engine extends its d */
+  opacity: 0.95;
+}
+.gridex-exploded .ex-trail-loop--alpha,
+.gridex-exploded .ex-trail-edge--alpha {
+  stroke: #d7eb75;
+}
+.gridex-exploded .ex-trail-loop--beta,
+.gridex-exploded .ex-trail-edge--beta {
+  stroke: #c8a473;
+}
+.gridex-exploded .ex-trail-loop--gamma,
+.gridex-exploded .ex-trail-edge--gamma {
+  stroke: #7e9a8c;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gridex-exploded .ex-trail-edge {
+    display: none;
+  }
+}
+
 /* ── Probe reveal — the layer a cursor is reading lifts, rings, and warms ──
    This is the shared "you are being read" affordance. The distinct per-layer
    effects below ride on top of it. */
