@@ -9,16 +9,19 @@
  *   - Scenario chips : suggested questions; clicking one starts the scenario
  *   - Text input     : freeform question → resolveQuestion → scenario
  *
- * Scenario runner:
- *   1. User clicks a chip or submits a question.
- *   2. resolveQuestion() returns a Scenario (or null).
- *   3. runScenario() steps through each Step sequentially:
- *      a. If step.section != activeSection, call setActiveSection(step.section).
- *      b. Wait one rAF for layout to settle.
- *      c. Call getTargetRect(step.targetId) — fails gracefully if null.
- *      d. Call cursorRef.current.goTo(rect, step.mode, step.text).
- *      e. Wait STEP_DELAY_MS before next step.
- *   4. After all steps, wait IDLE_DELAY_MS then dismiss the cursor.
+ * Scenario runner — the cursor POINTS; the human ACTS. It never clicks or
+ * navigates for the user:
+ *   1. User clicks a chip or submits a question → resolveQuestion() → Scenario.
+ *   2. runScenario() steps through each Step:
+ *      - If the target's section isn't active, the cursor points at the nav
+ *        item and WAITS for the user to click it (guideToSection). Navigation
+ *        happens via the nav's own handler — never setActiveSection here.
+ *      - Once on the right section, it scrolls the console panel to reveal the
+ *        target and points at it.
+ *      - A terminal "do it yourself" step (awaitAction) waits for the user to
+ *        click the real control, then plays the celebrate beat.
+ *      - An answer step just dwells so the user can read it.
+ *   3. After the last step (or a timeout / abort), the cursor dismisses.
  *
  * AgentCursor interface (WHAT THE ORCHESTRATOR NEEDS TO IMPLEMENT):
  *   - Exported as `AgentCursorHandle` below.
@@ -52,6 +55,15 @@ const IDLE_DELAY_MS = 3000;  // ms before cursor auto-dismisses after last step
 const LAYOUT_RAF_COUNT = 2;  // rAF cycles to wait after section switch before rect query
 const AWAIT_TIMEOUT_MS = 16000; // how long the cursor waits for the user to act
 const CELEBRATE_HOLD_MS = 1900;  // how long the "done ✓" celebration holds before exit
+
+const SECTION_LABELS: Record<SectionId, string> = {
+  overview: "Overview",
+  environments: "Environments",
+  "api-keys": "API Keys",
+  team: "Team",
+  billing: "Billing",
+  settings: "Settings",
+};
 
 // ─── AgentCursor interface ────────────────────────────────────────────────────
 
@@ -121,6 +133,30 @@ function waitForUserAction(targetId: string, timeoutMs: number): Promise<boolean
   });
 }
 
+/** Poll for a target element to appear in the DOM (e.g. after the user
+ *  navigates to a new section and React needs a beat to render it). */
+async function findTargetEl(
+  targetId: string,
+  timeoutMs: number,
+): Promise<HTMLElement | null> {
+  const sel = `[data-target="${targetId}"]`;
+  let el = document.querySelector<HTMLElement>(sel);
+  let waited = 0;
+  while (!el && waited < timeoutMs) {
+    await waitMs(40);
+    waited += 40;
+    el = document.querySelector<HTMLElement>(sel);
+  }
+  return el;
+}
+
+/** True if the section's nav item is currently the active one — read straight
+ *  from the committed DOM, so there is no stale-ref / post-paint timing race. */
+function isSectionActive(section: SectionId): boolean {
+  const nav = document.querySelector(`[data-target="nav-${section}"]`);
+  return nav?.getAttribute("data-active") === "true";
+}
+
 // ─── Stage component ──────────────────────────────────────────────────────────
 
 export function AgentCursorStage() {
@@ -130,66 +166,103 @@ export function AgentCursorStage() {
   const [activeScenarioId, setActiveScenarioId] = useState<string | null>(null);
 
   const cursorRef = useRef<AgentCursorHandle>(null);
-  // Used to abort in-flight scenario if user clicks another chip
+  // Abort an in-flight scenario when the user starts another.
   const abortRef = useRef(false);
+  const runningRef = useRef(false);
 
   const runScenario = useCallback(
     async (steps: Step[], scenarioId: string) => {
-      if (isRunning) {
-        // Abort current scenario
+      if (runningRef.current) {
         abortRef.current = true;
-        await waitMs(50); // let current step yield
+        await waitMs(50); // let the current step yield
       }
       abortRef.current = false;
+      runningRef.current = true;
       setIsRunning(true);
       setActiveScenarioId(scenarioId);
       let celebrated = false;
 
-      // Bring the stage into view once so the user watches the agent work
-      // (all later target reveals scroll only the console's own panel).
       const reduceMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
       ).matches;
+
+      // Bring the console into view once so the user watches the agent work.
       document.querySelector(".acs-console-wrap")?.scrollIntoView({
         block: "center",
         behavior: reduceMotion ? "auto" : "smooth",
       });
       await waitMs(reduceMotion ? 16 : 440);
 
+      // POINT at a nav item and WAIT for the user to click it. The cursor never
+      // navigates for you — it only shows the way; the user does the clicking.
+      // Returns false if the user never followed (timeout) or it was aborted.
+      const guideToSection = async (
+        section: SectionId,
+        text: string,
+      ): Promise<boolean> => {
+        if (isSectionActive(section)) return true; // already there (DOM truth)
+        const navId = `nav-${section}`;
+        const navRect = getTargetRect(navId);
+        if (!navRect) return true; // nav not found — don't block the scenario
+        cursorRef.current?.goTo(navRect, "guide", text);
+        const navigated = await waitForUserAction(navId, AWAIT_TIMEOUT_MS);
+        if (abortRef.current || !navigated) return false;
+        // Wait until the section has actually committed to the DOM (poll), not
+        // a fixed number of frames — React's section swap + passive effects can
+        // land a beat late.
+        const deadline = 2000;
+        let waited = 0;
+        while (!isSectionActive(section) && waited < deadline) {
+          await waitMs(40);
+          waited += 40;
+        }
+        return true;
+      };
+
       for (const step of steps) {
         if (abortRef.current) break;
 
-        // 1. Switch section if needed
-        if (step.section && step.section !== activeSection) {
-          setActiveSection(step.section);
-          // Wait for React to re-render + layout to settle
-          await waitFrames(LAYOUT_RAF_COUNT);
+        // A nav step's only job is to send the user to a section: point at the
+        // nav item, the user clicks, navigation happens via the nav's own
+        // handler. Skip if already there.
+        if (step.targetId.startsWith("nav-")) {
+          if (!step.section) continue;
+          if (!(await guideToSection(step.section, step.text))) break;
+          continue;
+        }
+
+        // Content step: if its section isn't active yet, guide the user there
+        // first (covers scenarios with no explicit nav step, e.g. a pure
+        // answer). The cursor points at the nav; the user navigates.
+        if (step.section) {
+          const guided = await guideToSection(
+            step.section,
+            `First, head into ${SECTION_LABELS[step.section]}.`,
+          );
+          if (!guided) break;
         }
 
         if (abortRef.current) break;
 
-        // 2. Reveal the target: a real guide brings the thing on-screen before
-        //    pointing. We scroll ONLY the console's own scroll panel (.mc-main),
-        //    never the window — so the page stays put and the fixed-position
-        //    cursor always lands on a target that's visible inside the console.
-        //    Recompute the rect AFTER the scroll settles.
-        const el = document.querySelector<HTMLElement>(
-          `[data-target="${step.targetId}"]`,
-        );
+        // Reveal the target inside the console's own scroll panel (never the
+        // window), then recompute its rect after the scroll settles. Poll for
+        // it — it may have just been navigated to and not painted yet.
+        const el = await findTargetEl(step.targetId, 2000);
+        if (abortRef.current) break;
         if (!el) {
           console.warn(`[agent-cursor] target "${step.targetId}" not found`);
           continue;
         }
-        const reduce = window.matchMedia(
-          "(prefers-reduced-motion: reduce)",
-        ).matches;
         const panel = el.closest<HTMLElement>(".mc-main");
         if (panel) {
           const pr = panel.getBoundingClientRect();
           const er = el.getBoundingClientRect();
           const delta = er.top + er.height / 2 - (pr.top + pr.height / 2);
-          panel.scrollBy({ top: delta, behavior: reduce ? "auto" : "smooth" });
-          await waitMs(reduce ? 16 : 380); // let the panel settle
+          panel.scrollBy({
+            top: delta,
+            behavior: reduceMotion ? "auto" : "smooth",
+          });
+          await waitMs(reduceMotion ? 16 : 380); // let the panel settle
         } else {
           await waitFrames(LAYOUT_RAF_COUNT);
         }
@@ -198,12 +271,10 @@ export function AgentCursorStage() {
 
         const rect = getTargetRect(step.targetId);
         if (!rect) continue;
-
-        // 3. Drive cursor
         cursorRef.current?.goTo(rect, step.mode, step.text);
 
-        // 4a. Terminal "do it yourself" step: wait for the user to act, then
-        //     celebrate. This is the payoff that closes the loop.
+        // Terminal "do it yourself" step: point, then WAIT for the user to act,
+        // then celebrate. The cursor never performs the action itself.
         if (step.awaitAction) {
           const acted = await waitForUserAction(step.targetId, AWAIT_TIMEOUT_MS);
           if (abortRef.current) break;
@@ -215,7 +286,7 @@ export function AgentCursorStage() {
           break; // awaitAction is always the last beat
         }
 
-        // 4b. Otherwise pause so the user can read the caption, then continue.
+        // Answer / explanatory step: dwell so the user can read it.
         await waitMs(STEP_DELAY_MS);
       }
 
@@ -224,11 +295,11 @@ export function AgentCursorStage() {
         cursorRef.current?.dismiss();
       }
 
+      runningRef.current = false;
       setIsRunning(false);
       setActiveScenarioId(null);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeSection],
+    [],
   );
 
   const handleChipClick = (id: string) => {
