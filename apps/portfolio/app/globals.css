@@ -2389,8 +2389,15 @@
  * numbered plate sequence. */
 .id-deck-slot--cinema-big .home-cinema-specimen .id-cinema__marker {
   position: absolute;
-  left: clamp(var(--space-2), 2.4vw, var(--space-4));
+  /* Align under the centered device's left edge instead of the slot's
+     far-left gutter, so the label captions the specimen rather than
+     floating in the empty side margin. Mirrors the device width formula
+     in .home-cinema-specimen__device above so it tracks every viewport. */
+  left: calc((100vw / 0.78 - min(1400px, 92vw / 0.78)) / 2);
   bottom: clamp(var(--space-2), 2.4vw, var(--space-4));
+  /* Match the colophon eyebrow's size so the two bookend captions read at
+     the same register (base .id-cinema__marker is fs-10; eyebrow is fs-12). */
+  font-size: var(--fs-12);
   color: var(--color-gray-9);
 }
 

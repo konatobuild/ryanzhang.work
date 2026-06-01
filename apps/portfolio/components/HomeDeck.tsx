@@ -176,11 +176,28 @@ export function HomeDeck() {
       return true;
     };
 
+    // Initial measurement + resilient re-measurement.
+    //
+    // Root cause this guards against: card slots get their height from the
+    // card WIDTH (resolves on first layout), but cinema slots are sized off
+    // 100dvh (calc(100dvh / 0.78)). The dynamic viewport height can resolve
+    // a beat AFTER first layout, so an early recalc() can "succeed" while the
+    // cinema slots are still collapsed — locking in a too-short spacer and
+    // scrollPositions that never match the settled layout, leaving the deck
+    // stuck in the unscaled fallback (a manual window resize was the only
+    // thing that recovered it). recalc() is idempotent, so we re-measure on
+    // every signal that layout might have changed and let the last correct
+    // measurement win.
+    let tryRaf = 0;
     let attempts = 0;
+    const MAX_ATTEMPTS = 180;
     const tryRecalc = () => {
-      if (recalc() || attempts >= 10) return;
+      if (recalc() || attempts >= MAX_ATTEMPTS) {
+        tryRaf = 0;
+        return;
+      }
       attempts++;
-      requestAnimationFrame(tryRecalc);
+      tryRaf = requestAnimationFrame(tryRecalc);
     };
     tryRecalc();
 
@@ -195,10 +212,29 @@ export function HomeDeck() {
     const ro = new ResizeObserver(scheduleRecalc);
     if (trackRef.current) ro.observe(trackRef.current);
     window.addEventListener("resize", scheduleRecalc);
+    window.addEventListener("load", scheduleRecalc);
+    let fontsCancelled = false;
+    document.fonts?.ready.then(() => {
+      if (!fontsCancelled) scheduleRecalc();
+    });
+
+    // Timed backstop. setTimeout fires regardless of tab visibility or rAF
+    // throttling (unlike the rAF retry and the rAF-wrapped scheduleRecalc),
+    // so a correct measurement still lands after dvh settles even if the
+    // event-driven paths miss it. Each call re-measures and overwrites; the
+    // last one wins once layout is stable.
+    const timers = [120, 300, 600, 1000, 1600, 2600].map((ms) =>
+      window.setTimeout(recalc, ms),
+    );
+
     return () => {
+      if (tryRaf) cancelAnimationFrame(tryRaf);
       if (recalcRaf) cancelAnimationFrame(recalcRaf);
+      fontsCancelled = true;
+      timers.forEach(clearTimeout);
       ro.disconnect();
       window.removeEventListener("resize", scheduleRecalc);
+      window.removeEventListener("load", scheduleRecalc);
     };
   }, []);
 
@@ -620,7 +656,7 @@ function MacSpecimen() {
           <InteractionReel />
         </div>
       </div>
-      <span className="id-cinema__marker">Specimen · 02</span>
+      <span className="id-cinema__marker">Specimen</span>
     </div>
   );
 }
@@ -670,11 +706,7 @@ function ContactBody() {
   return (
     <div className="facet-colophon">
       <span className="facet-eyebrow clip-line">
-        <span>
-          05
-          <span className="facet-eyebrow__separator">·</span>
-          Colophon
-        </span>
+        <span>Colophon</span>
       </span>
 
       <div className="facet-colophon__block">
