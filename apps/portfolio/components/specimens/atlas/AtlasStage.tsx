@@ -42,10 +42,21 @@ interface FileItem {
   ageMonths: number;
   dup: boolean;
   zone: string;
-  wx: number;
-  wy: number;
 }
 
+// A zone's geometry is DERIVED, never authored — it always re-flows to fit the
+// files currently inside it (see computeLayout). The static part is only its
+// identity and where it sits in the column grid.
+interface ZoneDef {
+  id: string;
+  name: string;
+  cols: number;
+  col: number; // which column it stacks in (staging spans all → -1)
+  order: number; // vertical order within that column
+  staging?: boolean;
+}
+
+// Resolved geometry produced by computeLayout each time files change.
 interface Zone {
   id: string;
   name: string;
@@ -57,25 +68,31 @@ interface Zone {
   staging?: boolean;
 }
 
-// Zone box sizes are computed from a fixed grid capacity so a zone is always
-// snug around its contents — never a vast empty frame. (cols, rows) → px:
+// Zone box sizes are computed from the live row count so a zone is always snug
+// around its contents — never a vast empty frame, never a cramped one that
+// overlaps cards. (cols, rows) → px:
 const zw = (cols: number) => cols * FILE_W + (cols - 1) * GAP + PAD * 2;
 const zh = (rows: number) => HEAD + rows * FILE_H + (rows - 1) * GAP + PAD;
 
-const ZONES: Zone[] = [
-  { id: "downloads", name: "Downloads", x: 48, y: 48, cols: 3, w: zw(3), h: zh(3) },
-  { id: "screenshots", name: "Screenshots", x: 560, y: 48, cols: 3, w: zw(3), h: zh(1) },
-  { id: "invoices", name: "Invoices", x: 560, y: 314, cols: 2, w: zw(2), h: zh(1) },
-  { id: "projects", name: "Projects", x: 1076, y: 48, cols: 3, w: zw(3), h: zh(1) },
-  { id: "archive", name: "Archive 2019", x: 1076, y: 314, cols: 3, w: zw(3), h: zh(1) },
-  { id: "loose", name: "Loose pile — drop here", x: 48, y: 670, cols: 8, w: 1504, h: 200, staging: true },
+// Column grid: three stacking columns + a full-width staging strip beneath.
+const COL_X = [48, 560, 1076];
+const TOP = 48;
+const VGAP = 32; // vertical gap between stacked zones in a column
+const LOOSE_X = 48;
+const LOOSE_W = 1504;
+const WORLD_MIN_W = 1600;
+
+const ZONE_DEFS: ZoneDef[] = [
+  { id: "downloads", name: "Downloads", cols: 3, col: 0, order: 0 },
+  { id: "screenshots", name: "Screenshots", cols: 3, col: 1, order: 0 },
+  { id: "invoices", name: "Invoices", cols: 2, col: 1, order: 1 },
+  { id: "projects", name: "Projects", cols: 3, col: 2, order: 0 },
+  { id: "archive", name: "Archive 2019", cols: 3, col: 2, order: 1 },
+  { id: "loose", name: "Loose pile — drop here", cols: 8, col: -1, order: 0, staging: true },
 ];
 
-const WORLD_W = 1600;
-const WORLD_H = 918;
-
 // Deterministic file set (no Math.random — keeps SSR/StrictMode stable).
-const RAW: Omit<FileItem, "wx" | "wy">[] = [
+const RAW: FileItem[] = [
   // Downloads — the mess: mixed kinds, some dup screenshots leaked in, big zips
   { id: "f1", name: "invoice-acme-q3.pdf", kind: "pdf", sizeMB: 0.4, ageMonths: 2, dup: false, zone: "downloads" },
   { id: "f2", name: "Screenshot 2026-04-12.png", kind: "image", sizeMB: 3.1, ageMonths: 1, dup: true, zone: "downloads" },
@@ -103,22 +120,79 @@ const RAW: Omit<FileItem, "wx" | "wy">[] = [
   { id: "f20", name: "resume-2019.docx", kind: "doc", sizeMB: 0.1, ageMonths: 72, dup: false, zone: "archive" },
 ];
 
-// Lay files out on a tidy grid inside their zone, snug under the header.
-function layout(items: Omit<FileItem, "wx" | "wy">[]): FileItem[] {
-  const perZone: Record<string, number> = {};
-  return items.map((it) => {
-    const z = ZONES.find((zz) => zz.id === it.zone)!;
-    const i = perZone[it.zone] ?? 0;
-    perZone[it.zone] = i + 1;
-    const col = i % z.cols;
-    const row = Math.floor(i / z.cols);
-    return {
-      ...it,
-      wx: z.x + PAD + col * (FILE_W + GAP),
-      wy: z.y + HEAD + row * (FILE_H + GAP),
-    };
-  });
+interface LayoutResult {
+  zones: Zone[];
+  pos: Record<string, { wx: number; wy: number }>;
+  worldW: number;
+  worldH: number;
 }
+
+// The whole layout is a pure function of which files sit in which zone. Every
+// drop just re-runs this: zones grow to fit their row count, lower zones in the
+// same column are pushed down, and files re-tile into a clean grid. No file is
+// ever placed at an arbitrary point, so cards can never overlap (and therefore
+// hover never thrashes). "Dropping" and "tidying" become the same gesture.
+function computeLayout(files: FileItem[]): LayoutResult {
+  // group files by zone, preserving array order (drop pushes to the end)
+  const byZone: Record<string, FileItem[]> = {};
+  for (const f of files) (byZone[f.zone] ??= []).push(f);
+
+  const geo: Record<string, Zone> = {};
+  const colBottom = [TOP, TOP, TOP];
+
+  // stack the column zones top-to-bottom; each one's height follows its content
+  for (const d of ZONE_DEFS) {
+    if (d.staging) continue;
+    const count = byZone[d.id]?.length ?? 0;
+    const rows = Math.max(1, Math.ceil(count / d.cols));
+    const w = zw(d.cols);
+    const h = zh(rows);
+    const x = COL_X[d.col];
+    const y = colBottom[d.col];
+    geo[d.id] = { id: d.id, name: d.name, x, y, cols: d.cols, w, h };
+    colBottom[d.col] = y + h + VGAP;
+  }
+
+  // the staging strip spans full width, parked just below the tallest column
+  const looseDef = ZONE_DEFS.find((d) => d.staging)!;
+  const looseTop = Math.max(...colBottom);
+  const looseCount = byZone[looseDef.id]?.length ?? 0;
+  const looseH = zh(Math.max(1, Math.ceil(looseCount / looseDef.cols)));
+  geo[looseDef.id] = {
+    id: looseDef.id,
+    name: looseDef.name,
+    x: LOOSE_X,
+    y: looseTop,
+    cols: looseDef.cols,
+    w: LOOSE_W,
+    h: looseH,
+    staging: true,
+  };
+
+  // tile each zone's files into its grid, snug under the header
+  const pos: Record<string, { wx: number; wy: number }> = {};
+  for (const id in byZone) {
+    const z = geo[id];
+    if (!z) continue;
+    byZone[id].forEach((f, i) => {
+      const col = i % z.cols;
+      const row = Math.floor(i / z.cols);
+      pos[f.id] = {
+        wx: z.x + PAD + col * (FILE_W + GAP),
+        wy: z.y + HEAD + row * (FILE_H + GAP),
+      };
+    });
+  }
+
+  // render in stable ZONE_DEFS order so React keys never reshuffle
+  const zones = ZONE_DEFS.map((d) => geo[d.id]);
+  const worldW = Math.max(WORLD_MIN_W, LOOSE_X + LOOSE_W + 48);
+  const worldH = looseTop + looseH + 48;
+  return { zones, pos, worldW, worldH };
+}
+
+// Fresh copy of the seed set — used for initial state and "reset desk".
+const seed = (): FileItem[] => RAW.map((f) => ({ ...f }));
 
 const clamp = (v: number, lo: number, hi: number) =>
   Math.min(hi, Math.max(lo, v));
@@ -134,12 +208,26 @@ export default function AtlasStage() {
   const worldRef = useRef<HTMLDivElement>(null);
   const heldRef = useRef<HTMLDivElement>(null);
 
-  const [files, setFiles] = useState<FileItem[]>(() => layout(RAW));
+  const [files, setFiles] = useState<FileItem[]>(seed);
   const [layer, setLayer] = useState<"atlas" | "zone" | "files">("atlas");
   const [heldId, setHeldId] = useState<string | null>(null);
   const [dropZone, setDropZone] = useState<string | null>(null);
   const [didMove, setDidMove] = useState(false);
   const [panning, setPanning] = useState(false);
+
+  // Geometry is fully derived from `files`; re-run on every move/drop.
+  const { zones, pos, worldW, worldH } = useMemo(
+    () => computeLayout(files),
+    [files],
+  );
+  // Pointer handlers run outside render and need the live geometry for hit
+  // testing + fit bounds, so mirror it into refs after each layout change.
+  const zonesRef = useRef(zones);
+  const worldSize = useRef({ w: worldW, h: worldH });
+  useEffect(() => {
+    zonesRef.current = zones;
+    worldSize.current = { w: worldW, h: worldH };
+  }, [zones, worldW, worldH]);
 
   const view = useRef<ViewT>({ s: 0.5, tx: 0, ty: 0 });
   const target = useRef<ViewT>({ s: 0.5, tx: 0, ty: 0 });
@@ -163,14 +251,15 @@ export default function AtlasStage() {
     const el = stageRef.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
+    const { w: wW, h: wH } = worldSize.current;
     const pad = 28;
     const s = clamp(
-      Math.min((r.width - pad * 2) / WORLD_W, (r.height - pad * 2) / WORLD_H),
+      Math.min((r.width - pad * 2) / wW, (r.height - pad * 2) / wH),
       MIN_S,
       MAX_S,
     );
-    const tx = (r.width - WORLD_W * s) / 2;
-    const ty = (r.height - WORLD_H * s) / 2;
+    const tx = (r.width - wW * s) / 2;
+    const ty = (r.height - wH * s) / 2;
     target.current = { s, tx, ty };
     view.current = { s, tx, ty };
   }, []);
@@ -346,7 +435,7 @@ export default function AtlasStage() {
 
       if (mode.current === "hold") {
         const { wx, wy } = screenToWorld(sx, sy);
-        const hz = ZONES.find(
+        const hz = zonesRef.current.find(
           (z) => wx >= z.x && wx <= z.x + z.w && wy >= z.y && wy <= z.y + z.h,
         );
         setDropZone((cur) => (cur === (hz?.id ?? null) ? cur : hz?.id ?? null));
@@ -367,24 +456,24 @@ export default function AtlasStage() {
         const sx = e.clientX - r.left;
         const sy = e.clientY - r.top;
         const { wx, wy } = screenToWorld(sx, sy);
-        const z = ZONES.find(
+        const z = zonesRef.current.find(
           (zz) =>
             wx >= zz.x && wx <= zz.x + zz.w && wy >= zz.y && wy <= zz.y + zz.h,
         );
         const dropped = heldFile.current;
-        if (z) {
-          setFiles((prev) =>
-            prev.map((f) =>
-              f.id === dropped.id
-                ? {
-                    ...f,
-                    zone: z.id,
-                    wx: clamp(wx - FILE_W / 2, z.x + 12, z.x + z.w - FILE_W - 12),
-                    wy: clamp(wy - FILE_H / 2, z.y + 40, z.y + z.h - FILE_H - 12),
-                  }
-                : f,
-            ),
-          );
+        // A drop into a *different* zone re-flows: the file is appended to the
+        // destination (moved to the end of the list so it tiles last) and the
+        // whole layout re-runs. computeLayout grows the zone + pushes lower
+        // zones down, so cards snap into a clean grid — never overlap.
+        if (z && z.id !== dropped.zone) {
+          setFiles((prev) => {
+            const moved = prev.find((f) => f.id === dropped.id);
+            if (!moved) return prev;
+            return [
+              ...prev.filter((f) => f.id !== dropped.id),
+              { ...moved, zone: z.id },
+            ];
+          });
           setDidMove(true);
         }
       }
@@ -400,7 +489,7 @@ export default function AtlasStage() {
   );
 
   const onReset = useCallback(() => {
-    setFiles(layout(RAW));
+    setFiles(seed());
     setDidMove(false);
     fitView();
   }, [fitView]);
@@ -411,7 +500,7 @@ export default function AtlasStage() {
       string,
       { count: number; size: number; avgAge: number; dups: number }
     > = {};
-    for (const z of ZONES) m[z.id] = { count: 0, size: 0, avgAge: 0, dups: 0 };
+    for (const z of ZONE_DEFS) m[z.id] = { count: 0, size: 0, avgAge: 0, dups: 0 };
     for (const f of files) {
       const s = m[f.zone];
       if (!s) continue;
@@ -438,8 +527,12 @@ export default function AtlasStage() {
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
     >
-      <div ref={worldRef} className="atlas-world">
-        {ZONES.map((z) => {
+      <div
+        ref={worldRef}
+        className="atlas-world"
+        style={{ width: worldW, height: worldH }}
+      >
+        {zones.map((z) => {
           const st = zoneStats[z.id];
           const stale = st.count > 0 && st.avgAge > 24;
           const big = st.size > 200;
@@ -495,9 +588,17 @@ export default function AtlasStage() {
           );
         })}
 
-        {/* file cards live in world space, above the trays */}
+        {/* file cards live in world space, above the trays. Position comes from
+            the layout engine (pos), so a drop re-tiles them into a clean grid —
+            they glide to their slot (transitioned in CSS) rather than overlap. */}
         {files.map((f) => (
-          <FileCard key={f.id} file={f} held={f.id === heldId} />
+          <FileCard
+            key={f.id}
+            file={f}
+            held={f.id === heldId}
+            wx={pos[f.id]?.wx ?? 0}
+            wy={pos[f.id]?.wy ?? 0}
+          />
         ))}
       </div>
 
@@ -542,10 +643,14 @@ function FileCard({
   file,
   held,
   ghost,
+  wx = 0,
+  wy = 0,
 }: {
   file: FileItem;
   held: boolean;
   ghost?: boolean;
+  wx?: number;
+  wy?: number;
 }) {
   return (
     <div
@@ -557,7 +662,7 @@ function FileCard({
       style={
         ghost
           ? { position: "relative", left: 0, top: 0, opacity: 1 }
-          : { left: file.wx, top: file.wy }
+          : { left: wx, top: wy }
       }
     >
       {/* the real preview IS the thumbnail — present from the moment the card

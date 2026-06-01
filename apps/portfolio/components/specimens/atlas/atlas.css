@@ -118,6 +118,13 @@
 .atlas-zone {
   position: absolute;
   box-sizing: border-box;
+  /* a drop re-flows the layout: the destination grows, lower zones slide down.
+     Animate the geometry so the rearrangement reads as tidying, not a jump. */
+  transition:
+    top 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    left 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* distant terrain blob — a thick frosted slab, visible only when far out */
@@ -268,7 +275,14 @@
     0 12px 28px -10px rgba(0, 0, 0, 0.5),
     0 26px 54px -18px rgba(0, 0, 0, 0.5);
   cursor: grab;
-  transition: box-shadow 160ms ease, transform 160ms ease;
+  /* left/top glide so a re-tile (after a drop) slides cards into their grid
+     slot — they never jump, and because positions come from the grid they can
+     never overlap, which is what was causing the hover flicker. */
+  transition:
+    left 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    top 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 160ms ease,
+    transform 160ms ease;
 }
 .atlas-file[data-stale="true"] {
   opacity: clamp(0, calc((var(--s, 1) - 0.7) / 0.3), 0.66);
@@ -593,4 +607,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .atlas-blob[data-dup="true"] > .atlas-dup-glow { animation: none; }
+  .atlas-zone,
+  .atlas-file { transition: none; }
 }
