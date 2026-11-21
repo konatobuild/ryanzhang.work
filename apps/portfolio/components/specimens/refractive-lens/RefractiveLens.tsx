@@ -558,7 +558,8 @@ function renderPage(
         ctx.fillStyle = ACCENT;
         // Letter-spacing by hand.
         drawTracked(ctx, block.text, marginX, y, 2.4);
-        y += 30;
+        // The title is set on its baseline: leave room for its cap height.
+        y += 54;
         break;
       }
       case "title": {
@@ -574,7 +575,8 @@ function renderPage(
         ctx.font = `700 ${capSize}px ${fontFamily}`;
         ctx.fillStyle = INK;
         const capW = ctx.measureText(initial).width;
-        ctx.fillText(initial, marginX, y + capSize * 0.74);
+        // The cap sits on the second line's baseline, so it clears the third.
+        ctx.fillText(initial, marginX, y + 30);
         wrapText(rest, `400 19px ${fontFamily}`, 30, INK, {
           firstLineIndent: capW + 12,
           indentLines: 2,

@@ -1,0 +1,202 @@
+{
+  "slug": "ofx-rebrand",
+  "title": "OFX Rebrand: OzForex Global Brand Standards",
+  "subtitle": "A brand identity study and 36-page standards guide for OFX",
+  "year": "2024",
+  "context": "Designing Brand Identity, USC Iovine and Young Academy, Fall 2024",
+  "role": "Brand strategy and personas, lettermark sketches, logo construction, colour and type system, stationery, app and web screens, application mockups, and the 36-page guideline",
+  "team": "Solo",
+  "tools": [
+    "Adobe Illustrator",
+    "Adobe InDesign",
+    "Adobe Photoshop"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "In 2024 I worked on a brand identity study for OFX, an online foreign-exchange and money-transfer platform, and compiled the system into a 36-page OzForex Global Brand Standards guide. It is an independent identity study I set myself, not commissioned by or made with OFX. Working from written strategy and pencil lettermarks through to a blue isometric cube, I carried the identity across stationery, screens, vehicles and street signage.",
+  "sections": [
+    {
+      "heading": "Writing before drawing",
+      "body": "The early work stayed entirely in words. I defined the company goal around fast, secure and convenient cross-border transfers and anchored the direction to six adjectives, Innovative, Transparent, Reliable, Simple, Global and Inclusive.\n\nTwo personas grounded those abstractions in specific transfers. Sophia Huang, a 28-year-old software engineer in Sydney, sends money home to her family. Michael Rivera, a 42-year-old business owner in New York, pays suppliers in Europe. In the finished standards guide, that framing opens with the mission line \"Bridging currencies, connecting lives.\" and ten design tenets.",
+      "images": [
+        "logo-evolution.webp"
+      ]
+    },
+    {
+      "heading": "One-inch squares to a cube",
+      "body": "Drawing began with pages of small pencil lettermarks, each confined to a one-inch square to force clear silhouettes. From those grids I pulled three candidates into marker and vector refinement, testing a block-letter OFX, a thin-line OFX, and a cube carrying letters across its faces.\n\nThe cube held together best across scales. Building it in Illustrator, I tested four multi-colour palettes ranging from royal blue to navy with sky blue and paired purples before stripping the mark back to a single blue.",
+      "images": [
+        "lettermark-sketches.webp",
+        "lettermark-refinement.webp",
+        "color-studies.webp"
+      ]
+    },
+    {
+      "heading": "Grid, colour and type",
+      "body": "The final mark sets O, F and X onto the three visible faces of an isometric cube beside the OzForex wordmark and tagline. Visually it moves away from the existing orange lettering toward a structured blue system built on Pantone 7686 C (#2C439C) and dark grey text (#363639). The guide fixes lockup spacing, a clear zone of at least 50% of the logomark width, and blue, dark and white versions for varying grounds.\n\nFor typography I chose Bai Jamjuree from ExtraLight to SemiBold with italic, restricted strictly to lining figures so exchange rates and amounts stay aligned. It reads cleanly across sizes and is freely available through Google Fonts.",
+      "images": [
+        "logo-anatomy.webp",
+        "logo-system.webp",
+        "typography.webp"
+      ]
+    },
+    {
+      "heading": "Paper, app and web",
+      "body": "On paper, the stationery suite covers a letterhead, a blue-flap envelope and a two-sided business card that crops the cube large across one face and places the full lockup on a blue band on the reverse.\n\nIn digital screens, the mobile app opens with a white cube on blue before moving into a live rate chart with send and receive figures and a cards view. On the web, the landing page pairs \"Bridging currencies, connecting lives\" with a transfer calculator, followed by secondary layouts shown on laptops.",
+      "images": [
+        "stationery.webp",
+        "business-card.webp",
+        "app-screens.webp",
+        "web-pages.webp"
+      ]
+    },
+    {
+      "heading": "Signage, vehicles and a kiosk",
+      "body": "The closing pages test how the cube holds up in physical space across reception signage, a delivery truck livery, backlit street displays and merchandise. For an unconventional advertising piece, I proposed a currency vending machine for airports, universities and trade shows that displays live exchange rates and dispenses coupons or app credits for foreign currency.",
+      "images": [
+        "cover.webp",
+        "vending-machine.webp",
+        "vehicle.webp",
+        "street-advertising.webp"
+      ]
+    }
+  ],
+  "hero": "street.webp",
+  "cover": "cover.webp",
+  "images": {
+    "hero.webp": {
+      "w": 2200,
+      "h": 1237,
+      "kind": "identity",
+      "alt": "White cube logomark with the letters O, F and X on its faces, drawn over dashed isometric construction lines on a dark gray field, beside the heading Logomark Construction.",
+      "caption": "Guideline page 8: the cube logomark on its construction grid.",
+      "bg": "light"
+    },
+    "cover.webp": {
+      "w": 2000,
+      "h": 1290,
+      "kind": "identity",
+      "alt": "Blue cube logo and OzForex wordmark applied to the front of a white reception desk with a wood-panelled wall behind.",
+      "caption": "Reception signage mockup with the final logo lockup.",
+      "bg": "light"
+    },
+    "logo-system.webp": {
+      "w": 1387,
+      "h": 1345,
+      "kind": "identity",
+      "alt": "Three versions of the OzForex logo stacked: blue cube with dark wordmark, all dark gray, and all white on a blue panel.",
+      "caption": "Blue, dark and white logo versions (cropped from guideline page 17).",
+      "bg": "light"
+    },
+    "logo-evolution.webp": {
+      "w": 2200,
+      "h": 1237,
+      "kind": "slide",
+      "alt": "Guideline page titled Logomark Evolution showing the orange OFX wordmark, an arrow, and the new blue cube with the OzForex wordmark.",
+      "caption": "Guideline page 7: from the orange OFX lettering to the blue cube.",
+      "bg": "light"
+    },
+    "logo-anatomy.webp": {
+      "w": 2200,
+      "h": 1237,
+      "kind": "slide",
+      "alt": "Guideline page labelling the three parts of the logo: the cube logomark, the OzForex typography and the tagline line beneath it.",
+      "caption": "Guideline page 9: logomark, typography and tagline.",
+      "bg": "light"
+    },
+    "lettermark-sketches.webp": {
+      "w": 2000,
+      "h": 1545,
+      "kind": "identity",
+      "alt": "A sheet of 35 pencil sketches in small squares, each a different way of drawing the letters OFX or FX.",
+      "caption": "One of three pages of pencil lettermark sketches.",
+      "bg": "light"
+    },
+    "lettermark-refinement.webp": {
+      "w": 1545,
+      "h": 2000,
+      "kind": "identity",
+      "alt": "Three pencil sketches at the top and, below them, three columns of refinements: block-letter OFX marks, thin-line OFX marks, and a cube with a diagonal stroke shown in black, blue and reversed in a blue circle.",
+      "caption": "Three sketches taken forward and redrawn; the cube is the right-hand column.",
+      "bg": "light"
+    },
+    "color-studies.webp": {
+      "w": 2000,
+      "h": 1545,
+      "kind": "identity",
+      "alt": "Four colour studies of an earlier cube mark with the wordmark OFX and the line Moving money globally, each next to its swatches: two blues, navy and sky blue, two purples, and blue with sky blue and navy.",
+      "caption": "Colour palette studies on an earlier version of the cube.",
+      "bg": "light"
+    },
+    "typography.webp": {
+      "w": 2200,
+      "h": 1237,
+      "kind": "slide",
+      "alt": "Guideline page titled Corporate Typefaces listing Bai Jamjuree ExtraLight, Regular, Medium, SemiBold and Italic, with lining figures shown and old-style figures struck through.",
+      "caption": "Guideline page 19: Bai Jamjuree weights and figure style.",
+      "bg": "light"
+    },
+    "stationery.webp": {
+      "w": 2200,
+      "h": 1237,
+      "kind": "slide",
+      "alt": "Guideline page showing a letterhead and an envelope with a blue flap and the cube logo, photographed on a light desk with a pen.",
+      "caption": "Guideline page 22: letterhead and envelope.",
+      "bg": "light"
+    },
+    "business-card.webp": {
+      "w": 2200,
+      "h": 1237,
+      "kind": "slide",
+      "alt": "Guideline page showing two textured business cards: one with a large cropped cube, one with the OzForex logo on a blue band above a name and address.",
+      "caption": "Guideline page 23: business card, both sides.",
+      "bg": "light"
+    },
+    "app-screens.webp": {
+      "w": 2200,
+      "h": 1467,
+      "kind": "ui",
+      "alt": "Three phone screens: a blue launch screen with the white cube, a Home screen showing a rate chart with 1316.67 and 1000 amounts, and a Cards screen with two bank cards.",
+      "caption": "Mobile app: launch, home and cards screens.",
+      "bg": "light"
+    },
+    "web-pages.webp": {
+      "w": 2200,
+      "h": 1237,
+      "kind": "slide",
+      "alt": "Guideline page showing two website layouts: a landing page headed Bridging Currencies Connecting Lives with a transfer calculator, and a second page with feature blocks and a city skyline banner.",
+      "caption": "Guideline page 34: website landing page and a secondary page.",
+      "bg": "light"
+    },
+    "vending-machine.webp": {
+      "w": 2200,
+      "h": 1237,
+      "kind": "slide",
+      "alt": "Guideline page titled Unconventional Advertising showing a white vending machine with a touchscreen displaying a map, a 100 dollar note and the amount 70.33 USD, next to a second screen with a world map and Swiss Franc notes.",
+      "caption": "Guideline page 27: the currency vending machine concept.",
+      "bg": "light"
+    },
+    "vehicle.webp": {
+      "w": 2200,
+      "h": 1467,
+      "kind": "identity",
+      "alt": "A delivery truck parked in front of an office building, its cab blue with the white cube logo and its side reading Fast, low-cost global transfers next to the letters OFX over a city skyline.",
+      "caption": "Vehicle livery mockup.",
+      "bg": "light"
+    },
+    "street-advertising.webp": {
+      "w": 2200,
+      "h": 1237,
+      "kind": "slide",
+      "alt": "Guideline page showing a large backlit street display with blue shapes, the cube logo and the line Fast, low-cost global transfers, with two blurred pedestrians walking past.",
+      "caption": "Guideline page 36: street advertising.",
+      "bg": "light"
+    },
+    "street.webp": {
+      "w": 1600,
+      "h": 1200,
+      "kind": "photo",
+      "alt": "A street billboard in the OFX identity: the cube mark and “Fast, low-cost global transfers” on a wall of blue panels, two people walking past"
+    }
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "slug": "xr-keyboard",
+  "title": "A keyboard for XR that reads the hands",
+  "subtitle": "Typing in a headset with nothing under the fingers",
+  "year": "2024",
+  "context": "",
+  "role": "Concept, interaction and interface design, and the working prototype of the recognition logic",
+  "team": "",
+  "tools": [
+    "Figma",
+    "Open-source hand tracking"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "This is a 2024 concept and working prototype for typing inside an XR headset without a physical keyboard and without pointing at floating keys. A camera watches both hands, treats each finger as a small group of letters, and surfaces the matching words above the hands. I designed the interaction and built the working recognition logic.",
+  "sections": [
+    {
+      "heading": "Keeping the typing habit",
+      "body": "Text entry in headsets still feels awkward. A physical keyboard anchors a person to a desk. A floating keyboard turns typing into aiming at one key at a time and looking down to hit each target.\n\nPeople already know how to type; their fingers know where to go before the eyes check. The starting idea was to keep that finger habit intact and take the physical board away.",
+      "images": []
+    },
+    {
+      "heading": "Eight fingers, one word list",
+      "body": "The prototype watches both hands through a camera and tracks 21 landmarks on each hand. Whenever a fingertip dips, the system registers a press. Eight fingers carry the alphabet, excluding the thumbs, with three or four letters assigned to each finger.\n\nA single finger dip is ambiguous because it could mean a, b or c. A sequence of dips narrows rapidly. The prototype scans a list of common words and keeps every word whose letters fall inside those finger groups in that order, trimming the list with every press.\n\nThe panel below runs the same recognition logic inside this page. Click a finger to bend it, or press 1 to 8 on the keyboard.",
+      "images": [
+        "prototype.mp4"
+      ],
+      "demo": "finger-keys"
+    },
+    {
+      "heading": "Picking the matching word",
+      "body": "Some sequences still match more than one word. Home, good and gone share the exact same four fingers. To settle those collisions without breaking flow, the matching candidates appear in a quiet row floating above the hands, and a pinch confirms the highlighted word. Keeping the row directly in front of the hands lets the eyes stay up.",
+      "images": [
+        "concept-typing.webp",
+        "concept-typing-front.webp"
+      ]
+    },
+    {
+      "heading": "Adapting to each typist",
+      "body": "No two people distribute keys across their fingers in quite the same way. In the full interaction flow, first-time setup asks the wearer to type a sentence on any physical keyboard while the headset watches their hands, learning which finger hits which letters so the eight groups follow their own habit. In the current prototype, those groups stay fixed in alphabetical order.\n\nRight now, the recognition logic runs as a desktop prototype using a laptop camera and open-source hand tracking. The headset views are Figma frames laid over press photographs of a headset in use.",
+      "images": [
+        "sketch-setup.webp",
+        "concept-setup.webp",
+        "concept-training.webp",
+        "concept-key-mapping.webp",
+        "flow.webp"
+      ]
+    }
+  ],
+  "hero": "pick-main.webp",
+  "cover": "cover.webp",
+  "images": {
+    "hero.webp": {
+      "w": 1773,
+      "h": 998,
+      "kind": "concept",
+      "alt": "Two hands resting on a lap; above them float three candidate words, home, good and gone, with good highlighted",
+      "caption": "Picking a word: three words fit the same four fingers, and a pinch confirms one."
+    },
+    "cover.webp": {
+      "w": 1773,
+      "h": 998,
+      "kind": "concept",
+      "alt": "Two hands resting on a lap with three candidate words floating above them"
+    },
+    "prototype.mp4": {
+      "w": 1200,
+      "h": 900,
+      "kind": "video",
+      "alt": "Screen recording of the prototype: a camera view of two hands, the candidate letters for the last press, and a list of matching words that narrows with each press",
+      "caption": "The prototype on a laptop camera. Two presses narrow the list to among, amount, analysis, and.",
+      "poster": "prototype-poster.webp"
+    },
+    "concept-typing.webp": {
+      "w": 1773,
+      "h": 998,
+      "kind": "concept",
+      "alt": "A person typing in the air on a sofa, with three candidate words floating in front of their hands",
+      "caption": "The candidates float in front of the hands."
+    },
+    "concept-typing-front.webp": {
+      "w": 1773,
+      "h": 998,
+      "kind": "concept",
+      "alt": "A person wearing a headset, seen from the front, typing in the air; the candidate words are seen from behind",
+      "caption": "The same row seen from the other side."
+    },
+    "sketch-setup.webp": {
+      "w": 2400,
+      "h": 631,
+      "kind": "sketch",
+      "alt": "Four line drawings: picking up the headset, putting it on, typing on a real keyboard, and the headset watching the hands as they type",
+      "caption": "Setting up: put the headset on, type on a real keyboard, and let it watch."
+    },
+    "concept-setup.webp": {
+      "w": 2400,
+      "h": 1350,
+      "kind": "concept",
+      "alt": "A dim living room with two hand outlines and the line Look at your hands to set up",
+      "caption": "The first screen of setup."
+    },
+    "concept-training.webp": {
+      "w": 1182,
+      "h": 665,
+      "kind": "concept",
+      "alt": "Hands typing on a real keyboard inside a capture frame, with the sentence being typed shown above",
+      "caption": "Recording: the person types a sentence while their hands are captured."
+    },
+    "concept-key-mapping.webp": {
+      "w": 1773,
+      "h": 998,
+      "kind": "concept",
+      "alt": "A person in a headset holding up both hands, with the letters each finger types floating beside it",
+      "caption": "Key mapping: each finger with the letters it types."
+    },
+    "flow.webp": {
+      "w": 1907,
+      "h": 2066,
+      "kind": "diagram",
+      "alt": "User flow chart: wear the headset, log in or register, add an input method, type on any keyboard to train, complete, get started",
+      "caption": "The flow from first use to typing."
+    },
+    "detail-sketch.webp": {
+      "w": 1000,
+      "h": 750,
+      "kind": "sketch",
+      "alt": "Line drawing of a person in a headset typing on a keyboard while the headset watches their hands"
+    },
+    "detail-training.webp": {
+      "w": 800,
+      "h": 600,
+      "kind": "concept",
+      "alt": "Hands typing on a keyboard inside a capture frame"
+    },
+    "prototype-poster.webp": {
+      "w": 1200,
+      "h": 900,
+      "kind": "photo",
+      "alt": "The prototype window: a camera view of two hands above a list of matching words"
+    },
+    "pick-main.webp": {
+      "w": 1773,
+      "h": 998,
+      "kind": "photo",
+      "alt": "Two hands resting on a lap; above them float three candidate words, home, good and gone, with good highlighted"
+    }
+  }
+}
