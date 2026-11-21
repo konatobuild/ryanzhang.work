@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { backdrops, type BackdropKey, type Shot, type WorkEntry } from "@/lib/work";
 import { AutoVideo } from "./AutoVideo";
 import { Icon } from "./Marks";
@@ -133,6 +133,38 @@ export function Showcase({ groups }: { groups: Group[] }) {
     e.preventDefault();
   }
 
+  // On phones the index is one rail that scrolls sideways under the picture.
+  // Whichever way a piece is chosen, its name is brought to the middle of
+  // the rail. Where the index is a column, nothing scrolls.
+  useEffect(() => {
+    const rail = nav.current;
+    const btn = rail?.querySelector<HTMLButtonElement>(`[data-i="${index}"]`);
+    if (!rail || !btn || rail.scrollWidth <= rail.clientWidth + 1) return;
+    const r = rail.getBoundingClientRect();
+    const b = btn.getBoundingClientRect();
+    rail.scrollTo({
+      left: rail.scrollLeft + (b.left - r.left) - (r.width - b.width) / 2,
+      behavior: "smooth",
+    });
+  }, [index]);
+
+  // A sideways swipe on the picture steps to the next or previous piece.
+  const touch = useRef<{ x: number; y: number } | null>(null);
+  function onTouchStart(e: React.TouchEvent) {
+    const p = e.touches[0];
+    touch.current = { x: p.clientX, y: p.clientY };
+  }
+  function onTouchEnd(e: React.TouchEvent) {
+    const from = touch.current;
+    touch.current = null;
+    if (!from) return;
+    const p = e.changedTouches[0];
+    const dx = p.clientX - from.x;
+    const dy = p.clientY - from.y;
+    if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    choose(index + (dx < 0 ? 1 : -1));
+  }
+
   const go = !item.href ? (
     <span className="muted">{item.cta}</span>
   ) : item.external ? (
@@ -177,7 +209,7 @@ export function Showcase({ groups }: { groups: Group[] }) {
       </div>
 
       <div className="show__main">
-        <div className="show__stage">
+        <div className="show__stage" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
           {paints.map((key) => (
             <Image
               key={key}
