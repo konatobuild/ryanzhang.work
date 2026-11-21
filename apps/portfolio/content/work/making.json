@@ -1,0 +1,206 @@
+{
+  "slug": "making",
+  "title": "Making, DIY and Drawing",
+  "subtitle": "Foam models, custom keyboards, a 3D-printer rebuild, drawing",
+  "year": "2021-2024",
+  "context": "Models made for school projects, personal builds and drawing practice",
+  "role": "Model maker, builder and illustrator",
+  "team": "Solo",
+  "tools": [
+    "Yellow modelling foam",
+    "High-density red foam",
+    "3D printing",
+    "Laser-cut acrylic",
+    "Ender 3 (Core XY conversion)",
+    "Hand drawing and painting"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "This page collects the hands-on work behind my projects: foam and 3D-printed models for an angle grinder, a car and a hair dryer, keyboards I designed and built, and an upgrade kit for an older 3D printer. It ends with drawing, colour and art-history exercises.",
+  "sections": [
+    {
+      "heading": "Angle grinder models",
+      "body": "For the electric angle grinder project, yellow foam was used for modeling iteration, and the final model was made with red high-density foam.",
+      "images": [
+        "hero.webp",
+        "grinder-foam-iterations.webp",
+        "grinder-sanding.webp"
+      ]
+    },
+    {
+      "heading": "Car model",
+      "body": "For the car project, the base is handcrafted from high-density red foam, and the exterior is 3D printed.",
+      "images": [
+        "cover.webp",
+        "car-model-display.webp"
+      ]
+    },
+    {
+      "heading": "Hair dryer model",
+      "body": "The entire model is handmade from high-density red foam.",
+      "images": [
+        "hairdryer-foam.webp",
+        "hairdryer-painted.webp"
+      ]
+    },
+    {
+      "heading": "Custom keyboards",
+      "body": "Because I am interested in the craftsmanship and structure of keyboards, I spent a lot of time researching them and then tried different processes, such as 3D printing and laser-cut acrylic, to make my own. I did all the design drawings and processing drawings myself.",
+      "images": [
+        "keyboard-builds.webp",
+        "keyboard-acrylic-case.webp"
+      ]
+    },
+    {
+      "heading": "Upgrading an older 3D printer",
+      "body": "I have a basic Ender 3. The idea of this project was to let Ender 3 enthusiasts upgrade the machine to a high-speed printer with a Core XY structure just by buying some new accessories and printing their own structural parts.",
+      "images": [
+        "printer-frame.webp",
+        "printer-cad.webp",
+        "printer-electronics.webp"
+      ]
+    },
+    {
+      "heading": "Drawing and colour",
+      "body": "These include some of my earliest paintings and colour works, and some product hand-drawing exercises.\n\nThe art-history practice followed the course of art history: I researched and analysed the styles and painting methods of artists in different periods and imitated them. It is an exercise to learn art history and feel the development of painting.",
+      "images": [
+        "drawing-colour-study.webp",
+        "drawing-portrait.webp",
+        "drawing-art-history.webp",
+        "drawing-product-sketches.webp"
+      ]
+    }
+  ],
+  "hero": "hero.webp",
+  "cover": "cover.webp",
+  "images": {
+    "hero.webp": {
+      "w": 2400,
+      "h": 1800,
+      "kind": "photo",
+      "alt": "A person in a face mask and white long-sleeved top leaning over a workbench, cutting a block of pale yellow foam with a knife; foam shavings and tools on the bench.",
+      "caption": "Cutting yellow modelling foam at the workshop bench.",
+      "bg": "light"
+    },
+    "cover.webp": {
+      "w": 1706,
+      "h": 1278,
+      "kind": "photo",
+      "alt": "Silver and dark blue scale model of a compact concept car with a glazed cabin and red brake calipers, on a grey cloth in front of presentation boards.",
+      "caption": "Model of the car project.",
+      "bg": "light"
+    },
+    "car-model-display.webp": {
+      "w": 1278,
+      "h": 1706,
+      "kind": "photo",
+      "alt": "Exhibition table with the car model, white foam models and printed boards pinned to a partition behind it.",
+      "caption": "The car model on display with its boards.",
+      "bg": "light"
+    },
+    "grinder-foam-iterations.webp": {
+      "w": 1280,
+      "h": 1706,
+      "kind": "photo",
+      "alt": "Six foam handle models laid in a row on a wooden board, five in pale yellow foam and one grey with white filler.",
+      "caption": "Foam iterations for the angle grinder body.",
+      "bg": "light"
+    },
+    "grinder-sanding.webp": {
+      "w": 1024,
+      "h": 768,
+      "kind": "photo",
+      "alt": "A person in a face mask working on a small model part under a ring-light magnifier at a workshop table.",
+      "caption": "Working on a grinder model part under a magnifier lamp.",
+      "bg": "light"
+    },
+    "hairdryer-foam.webp": {
+      "w": 1278,
+      "h": 1706,
+      "kind": "photo",
+      "alt": "A hand holding a rough, unpainted foam model of a hair dryer with a split round head.",
+      "caption": "Hair dryer model, shaped foam before finishing.",
+      "bg": "dark"
+    },
+    "hairdryer-painted.webp": {
+      "w": 768,
+      "h": 1024,
+      "kind": "photo",
+      "alt": "A hand holding the finished hair dryer model: matte dark grey body with a pink ribbed end cap.",
+      "caption": "Hair dryer model, painted.",
+      "bg": "light"
+    },
+    "keyboard-builds.webp": {
+      "w": 1024,
+      "h": 768,
+      "kind": "photo",
+      "alt": "Two mechanical keyboards on a desk mat: a white one with grey and yellow keycaps, and one in a green case with translucent green and white keycaps lit from below.",
+      "caption": "Two keyboard builds.",
+      "bg": "dark"
+    },
+    "keyboard-acrylic-case.webp": {
+      "w": 1024,
+      "h": 768,
+      "kind": "photo",
+      "alt": "A keyboard with black keycaps in a clear acrylic case, in front of a white keyboard with grey and yellow keycaps.",
+      "caption": "Keyboard in a clear acrylic case.",
+      "bg": "dark"
+    },
+    "printer-frame.webp": {
+      "w": 1590,
+      "h": 2400,
+      "kind": "photo",
+      "alt": "Black aluminium-extrusion printer frame with white printed corner brackets, standing on a white table.",
+      "caption": "Printer frame with printed structural parts.",
+      "bg": "light"
+    },
+    "printer-electronics.webp": {
+      "w": 2400,
+      "h": 1590,
+      "kind": "photo",
+      "alt": "A blue controller board with stepper drivers, sleeved wiring looms and a red printed motor mount on a white table.",
+      "caption": "Controller board and wiring for the printer.",
+      "bg": "light"
+    },
+    "printer-cad.webp": {
+      "w": 2400,
+      "h": 1061,
+      "kind": "render",
+      "alt": "CAD render of the printer: black frame, gold-coloured rails on top, grey bed and white printed parts.",
+      "caption": "CAD model of the Core XY conversion.",
+      "bg": "light"
+    },
+    "drawing-colour-study.webp": {
+      "w": 1706,
+      "h": 1280,
+      "kind": "drawing",
+      "alt": "Flat-colour painting of a mountain ridge in orange, grey-blue and brown with a column of eight colour swatches beside it.",
+      "caption": "Colour exercise with its palette.",
+      "bg": "light"
+    },
+    "drawing-portrait.webp": {
+      "w": 1279,
+      "h": 1706,
+      "kind": "drawing",
+      "alt": "Charcoal or pencil profile portrait of a young man in a hooded top.",
+      "caption": "Portrait drawing.",
+      "bg": "light"
+    },
+    "drawing-art-history.webp": {
+      "w": 1280,
+      "h": 1842,
+      "kind": "drawing",
+      "alt": "Grid of sixteen ink drawings of the same street scene, moving row by row from realistic shading to cubist-like fragments to sparse abstract lines.",
+      "caption": "Art-history practice: one street scene redrawn in different period styles.",
+      "bg": "light"
+    },
+    "drawing-product-sketches.webp": {
+      "w": 1530,
+      "h": 1050,
+      "kind": "drawing",
+      "alt": "Hand-drawn ink sketches of a high-top sneaker from four angles with red marker on the side panels.",
+      "caption": "Product hand-drawing exercise: sneakers.",
+      "bg": "light"
+    }
+  }
+}

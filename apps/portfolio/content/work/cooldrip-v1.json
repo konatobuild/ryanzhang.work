@@ -1,0 +1,182 @@
+{
+  "slug": "cooldrip-v1",
+  "title": "CoolDrip, first version",
+  "subtitle": "An upright ice-drip coffee machine with a phone and watch app",
+  "year": "2023",
+  "context": "Final-year project at SIVA DeTao School of Design, Shanghai. The first version of what became my 2024 graduation project.",
+  "role": "Industrial designer: research, interviews, sketches, product design, app UI, coffee packaging, physical model",
+  "team": "Solo",
+  "tools": [
+    "3D printing",
+    "Spray painting"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "This is the first version of CoolDrip from 2023, an upright ice-drip coffee machine with a removable water tank, an internal cooling fan and an electronic valve, paired with a phone and watch app. Earlier than the hourglass maker, this project began while I was studying how different coffee machines are built and making my first exploration into low-temperature coffee extraction.",
+  "sections": [
+    {
+      "heading": "First look at cold extraction",
+      "body": "The later hourglass CoolDrip grew directly out of this piece, though the work here was more exploratory and structural. I was studying how different coffee machines are put together and testing viable ways to extract coffee at low temperature before the later form took shape.\n\nThe background research looked at how coffee had become a tool for staying awake. Caffeine peaks 30 to 60 minutes after a cup and carries a half-life of up to five hours, so cups through the day accumulate. Four coffee drinkers I interviewed captured the strain of wanting the flavour without the reliance. One said, \"I love feeling the flavor of coffee, but I don't want to rely on it as much as I do now.\" Comparing five types of coffee maker pointed toward ice drip, which is slow and involved, with lower caffeine, a distinct flavour and drops falling like sand in an hourglass.",
+      "images": [
+        "board-background.webp",
+        "board-caffeine-research.webp",
+        "board-sketches.webp"
+      ]
+    },
+    {
+      "heading": "Working out the upright machine",
+      "body": "Studying machine architecture led to an upright layout that can run through the app or be set directly with a physical knob, like winding a mechanical timer. Because ice needs storage and cleaning access, the upper water tank lifts off.\n\nInside the body, a mid-mounted fan exhausts inward to stay quiet alongside electronic temperature control, while an electronic valve controls flow rate because faster flow lowers extraction. A water mesh spreads drops evenly over the filter paper, and the extractor head lowers during brewing so an unfinished brew is clear at a glance. The material callouts pair glossy plastic, matte plastic and matte metal.",
+      "images": [
+        "board-features.webp",
+        "render-scene.webp"
+      ]
+    },
+    {
+      "heading": "App, filter box and model",
+      "body": "Around the machine, the phone app asks how many cups a person drinks each day, plots estimated caffeine in the body as a curve, pairs it with an \"I'm sleepy\" button, and folds coffee breaks into a daily to-do list. On the watch, chosen from three layout studies, the wearer can record sleepiness, view exercise data and take breaks paced by vibration. I also designed a coffee box that doubles as the filter, using a water filter cloth for uniform drip speed and a bean-and-leaf logo around de-instrumentalising coffee.\n\nTo test the structure at full scale, I 3D printed the parts, then ground, bonded, filled, primed, spray painted and sealed them with glossy and matte clear coats. Standing that upright model on a real counter gave me the groundwork that led into the hourglass CoolDrip the following year.",
+      "images": [
+        "app-phone-watch.webp",
+        "board-app-wireframe.webp",
+        "board-packaging.webp",
+        "board-model-making.webp",
+        "model-photo-side.webp",
+        "model-photo-three-quarter.webp",
+        "model-photo-front.webp",
+        "model-photo-detail.webp",
+        "model-photo-counter.webp"
+      ]
+    }
+  ],
+  "hero": "hero.webp",
+  "cover": "cover.webp",
+  "images": {
+    "hero.webp": {
+      "w": 2400,
+      "h": 1408,
+      "kind": "render",
+      "alt": "Render of a white upright coffee machine seen from the side in a wood-panelled room: a rounded water tank on a curved arm with a black knob, and a white cup below.",
+      "caption": "The upright CoolDrip, side view.",
+      "bg": "dark"
+    },
+    "cover.webp": {
+      "w": 1590,
+      "h": 2400,
+      "kind": "photo",
+      "alt": "Photo of the physical model from the side: white tank on a curved white arm with a black knob, silver drip ring and a square base.",
+      "caption": "Physical model, side view.",
+      "bg": "light"
+    },
+    "render-scene.webp": {
+      "w": 2400,
+      "h": 1586,
+      "kind": "render",
+      "alt": "Render of the white coffee machine on a round black side table beside a black sofa and window blinds, with dark coffee in the glass below.",
+      "caption": "The machine brewing on a side table.",
+      "bg": "dark"
+    },
+    "model-photo-side.webp": {
+      "w": 1590,
+      "h": 2400,
+      "kind": "photo",
+      "alt": "Photo of the physical model from the side: white tank on a curved white arm with a black knob, silver drip ring and a square base.",
+      "caption": "Physical model, side view.",
+      "bg": "light"
+    },
+    "model-photo-front.webp": {
+      "w": 2400,
+      "h": 1590,
+      "kind": "photo",
+      "alt": "Front photo of the model's upper half: white tank with a vertical slot, clear chamber and silver ring.",
+      "caption": "Tank and extraction chamber from the front.",
+      "bg": "light"
+    },
+    "model-photo-three-quarter.webp": {
+      "w": 1590,
+      "h": 2400,
+      "kind": "photo",
+      "alt": "Photo of the model from behind and above, showing the curved back of the arm, the black knob and the lid of the tank.",
+      "caption": "Rear three-quarter view with the control knob.",
+      "bg": "light"
+    },
+    "model-photo-detail.webp": {
+      "w": 2400,
+      "h": 1590,
+      "kind": "photo",
+      "alt": "Close-up photo of the tank lid with its grey tab, the vent slots on the tank and the black knob on the arm.",
+      "caption": "Lid, vent and knob, close up.",
+      "bg": "light"
+    },
+    "model-photo-counter.webp": {
+      "w": 2400,
+      "h": 1886,
+      "kind": "photo",
+      "alt": "Photo of the model on a kitchen counter next to a black espresso machine, a grinder and glasses.",
+      "caption": "The model on a counter beside an espresso machine.",
+      "bg": "light"
+    },
+    "board-background.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Research board: how attitudes to coffee have changed, four causes of caffeine intake, dangers of excessive intake, withdrawal symptoms and benefits of coffee.",
+      "caption": "Background research: coffee as a tool, overuse and withdrawal.",
+      "bg": "light"
+    },
+    "board-caffeine-research.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Research board: caffeine tolerance, a 5-hour half-life curve, three charts of caffeine accumulation over a day, and a planned-intake timeline.",
+      "caption": "Half-life, accumulation over a day, and why intake needs planning.",
+      "bg": "light"
+    },
+    "board-sketches.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "sketch",
+      "alt": "Sketch board: a wall of paper thumbnails, pages of coffee machine sketches, a comparison of five coffee maker types, and shaded sketches of the upright machine.",
+      "caption": "Sketches and the comparison of coffee maker types.",
+      "bg": "light"
+    },
+    "board-app-wireframe.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Board with the app flow chart, low-fidelity phone and watch layouts, a stakeholder map and the purple, beige and green colour palette.",
+      "caption": "App wireframe, low-fidelity layouts, stakeholder map and palette.",
+      "bg": "light"
+    },
+    "board-packaging.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "packaging",
+      "alt": "Board: bean-and-leaf logo, printed coffee box mock-ups, four photos of hands opening a kraft box filter, and a render of the machine on a side table.",
+      "caption": "Logo, coffee box that doubles as the filter, and a scene render.",
+      "bg": "light"
+    },
+    "board-features.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Feature board: render of the machine, an exploded view with cooling fan, electronic valve, knob and mainboard labelled, and a side view with material callouts.",
+      "caption": "Functions, internal layout and CMF callouts.",
+      "bg": "light"
+    },
+    "app-phone-watch.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "ui",
+      "alt": "Two phones and a smartwatch showing the app, with four phone screens (registration, main interface, record sleepiness, to do) and three watch screens.",
+      "caption": "Phone and watch app screens.",
+      "bg": "light"
+    },
+    "board-model-making.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Board titled Model-making process: eight photos from 3D printing through grinding, filling and spray painting to assembly, and a close-up of the finished model.",
+      "caption": "Model making, from 3D printing to assembly.",
+      "bg": "light"
+    }
+  }
+}

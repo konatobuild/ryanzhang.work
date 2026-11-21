@@ -35,16 +35,6 @@ export function Nav() {
 
           {/* Right: status + hamburger */}
           <div className="justify-self-end inline-flex items-center gap-6">
-            <span
-              className="hidden sm:inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] uppercase text-[color:var(--color-ink)]"
-              aria-label="Availability status"
-            >
-              <span
-                aria-hidden="true"
-                className="inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--color-klein)]"
-              />
-              Opening Q2 2026
-            </span>
 
             <button
               type="button"

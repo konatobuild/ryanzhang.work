@@ -1,0 +1,112 @@
+{
+  "slug": "insole",
+  "title": "3D-printed insole",
+  "subtitle": "A thin sports insole printed in two materials",
+  "year": "2025",
+  "context": "",
+  "role": "Product design, KeyShot renders and the print animation",
+  "team": "",
+  "tools": [
+    "KeyShot",
+    "Blender",
+    "3D printing"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "This is a thin 3D-printed sports insole made from two materials, PEBA and TPU, with an open heel that sits on top of the insole already inside a shoe. When I worked on it in 2025, I was doing a great deal of 3D printing and exploring how combining two materials could produce a specific function. It felt like another way of understanding function.",
+  "sections": [
+    {
+      "heading": "Function through material combination",
+      "body": "Earlier projects had led me to think about function mostly through mechanisms and overall form. Here the work grew directly out of multi-material 3D printing. I wanted to study how two materials affect and support each other, how they connect functionally in one part, and what that pairing does biomechanically.\n\nThe insole is meant for sport and is not a medical corrective insert. Because it rests on top of the shoe's existing insole instead of replacing it, the heel stays open, adding structure under the arch and forefoot without lifting the heel.",
+      "images": [
+        "render-redesign-top.webp"
+      ]
+    },
+    {
+      "heading": "Frame, body and animation",
+      "body": "A firmer frame branches forward from the heel opening toward the forefoot, while a softer body fills the spaces between its arms. In the first concept, a green frame sat beneath a translucent shell with a dark oval pad at the forefoot. I rendered that version as a turntable in KeyShot and animated the print layer by layer in Blender.\n\nIn the later redesign, the green branching frame sits over a black body, with open windows where the frame crosses the arch and cream cushioned zones set into the top.",
+      "images": [
+        "rotating.mp4",
+        "printing.mp4",
+        "render-top.webp"
+      ]
+    },
+    {
+      "heading": "Learning through test prints",
+      "body": "Because this was design done as exploration, the form moved forward through printed parts. I started with small test sections, moved to half-length pieces, and then printed full-length insoles. Later prototypes shifted the softer body to a clear honeycomb lattice alongside the branching frame.",
+      "images": [
+        "photo-prototypes.webp"
+      ]
+    }
+  ],
+  "hero": "render-redesign-underside.webp",
+  "cover": "render-redesign-underside.webp",
+  "images": {
+    "rotating.mp4": {
+      "w": 1200,
+      "h": 1200,
+      "kind": "video",
+      "alt": "The insole turning one full rotation on a black background, showing the translucent top and the green frame underneath.",
+      "caption": "Turntable of the first concept. Rendered in KeyShot.",
+      "bg": "dark",
+      "poster": "rotating-poster.webp"
+    },
+    "rotating-poster.webp": {
+      "w": 1200,
+      "h": 1200,
+      "kind": "render",
+      "alt": "First frame of the turntable: the insole seen from above at an angle, translucent with a dark pad at the forefoot.",
+      "caption": "Poster frame for the turntable video.",
+      "bg": "dark"
+    },
+    "printing.mp4": {
+      "w": 1600,
+      "h": 900,
+      "kind": "video",
+      "alt": "Animation of the insole building up layer by layer on a white background, with the newest layers shown in green.",
+      "caption": "The print, layer by layer. Animated in Blender.",
+      "bg": "light",
+      "poster": "printing-poster.webp"
+    },
+    "printing-poster.webp": {
+      "w": 1600,
+      "h": 900,
+      "kind": "render",
+      "alt": "Last frame of the print animation: the finished grey lattice insole seen low from the side on white.",
+      "caption": "Poster frame for the print animation (final frame).",
+      "bg": "light"
+    },
+    "render-top.webp": {
+      "w": 2000,
+      "h": 2000,
+      "kind": "render",
+      "alt": "The insole seen edge-on from above on black: translucent shell, dark oval forefoot pad, green ribs showing through, open heel ring.",
+      "caption": "First concept, top. KeyShot render, March 2025.",
+      "bg": "dark"
+    },
+    "render-redesign-top.webp": {
+      "w": 2400,
+      "h": 1712,
+      "kind": "render",
+      "alt": "Top view of a redesigned insole on white: black frame with cream cushioned zones, small green inserts and an open heel.",
+      "caption": "Redesign, top. KeyShot render, May 2025.",
+      "bg": "light"
+    },
+    "render-redesign-underside.webp": {
+      "w": 2400,
+      "h": 1712,
+      "kind": "render",
+      "alt": "Underside of the redesigned insole on white: a green branching frame over a black body with an open heel.",
+      "caption": "Redesign, underside. KeyShot render, May 2025.",
+      "bg": "light"
+    },
+    "photo-prototypes.webp": {
+      "w": 1920,
+      "h": 919,
+      "kind": "photo",
+      "alt": "Black and white photos of printed insole prototypes: a row of about a dozen on a carpet, and several held in the hand",
+      "caption": "Printed prototypes, from the first test pieces to full insoles.",
+      "bg": "light"
+    }
+  }
+}

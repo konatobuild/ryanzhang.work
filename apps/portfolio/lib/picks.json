@@ -1,0 +1,324 @@
+{
+ "cooldrip": {
+  "include": true,
+  "wide": {
+   "src": "/work/cooldrip/hero.webp",
+   "w": 2400,
+   "h": 1440,
+   "alt": "White brewing unit and glass carafe with a wooden handle standing side by side on a white base tray, against a dark red backdrop."
+  },
+  "cover": {
+   "src": "/work/cooldrip/cover.webp",
+   "w": 2400,
+   "h": 2400,
+   "alt": "Front view of the assembled coffee maker: a white cone-shaped brewing unit on top of a glass cone carafe, forming an hourglass."
+  },
+  "details": [
+   {
+    "src": "/work/cooldrip/detail-lid.webp",
+    "w": 1000,
+    "h": 750,
+    "alt": "The lid of the printed model, with its indicator light and red pull tab",
+    "name": "Lid"
+   },
+   {
+    "src": "/work/cooldrip/proto-photo-2.webp",
+    "w": 2400,
+    "h": 1574,
+    "alt": "The printed model taken apart: the brewing unit lying on its side beside the glass carafe with its wooden handle",
+    "name": "Model"
+   },
+   {
+    "src": "/work/cooldrip/pick-detail-3.webp",
+    "w": 1200,
+    "h": 899,
+    "alt": "Line drawings of the brewing unit, the carafe, the base tray and two cups",
+    "name": "Drawing"
+   },
+   {
+    "src": "/work/cooldrip/detail.webp",
+    "w": 1000,
+    "h": 750,
+    "alt": "The CoolDrip app held in a hand, showing 92 mg of caffeine remaining",
+    "name": "App"
+   }
+  ]
+ },
+ "insole": {
+  "include": true,
+  "wide": {
+   "src": "/work/insole/render-redesign-underside.webp",
+   "w": 2400,
+   "h": 1712,
+   "alt": "Underside of the redesigned insole on white: a green branching frame over a black body with an open heel."
+  },
+  "cover": {
+   "src": "/work/insole/render-redesign-underside.webp",
+   "w": 2400,
+   "h": 1712,
+   "alt": "Underside of the redesigned insole on white: a green branching frame over a black body with an open heel."
+  },
+  "details": [
+   {
+    "src": "/work/insole/printing-poster.webp",
+    "w": 1600,
+    "h": 900,
+    "alt": "Last frame of the print animation: the finished grey lattice insole seen low from the side on white.",
+    "name": "Printing",
+    "video": "/work/insole/printing.mp4"
+   }
+  ]
+ },
+ "backtech-elite": {
+  "include": true,
+  "wide": {
+   "src": "/work/backtech-elite/pick-main.webp",
+   "w": 1428,
+   "h": 1013,
+   "alt": "Person in a black T-shirt holding a white transparent backpack by its top handle, showing the grey frame and orange tab at the base"
+  },
+  "cover": {
+   "src": "/work/backtech-elite/cover.webp",
+   "w": 1849,
+   "h": 2400,
+   "alt": "White transparent backpack carried in one hand by its top handle, with a grey frame around the base and an orange tab"
+  },
+  "details": [
+   {
+    "src": "/work/backtech-elite/photo-laptop-loading.webp",
+    "w": 2400,
+    "h": 2054,
+    "alt": "Hands sliding a laptop into the open top of the backpack",
+    "name": "Loading"
+   },
+   {
+    "src": "/work/backtech-elite/pick-detail-2.webp",
+    "w": 1200,
+    "h": 900,
+    "alt": "The backpack worn on one shoulder over a black T-shirt",
+    "name": "Worn"
+   },
+   {
+    "src": "/work/backtech-elite/pick-detail-3.webp",
+    "w": 1200,
+    "h": 900,
+    "alt": "The backpack on the back, seen from the side, with its grey frame",
+    "name": "Side"
+   }
+  ]
+ },
+ "snapjoy": {
+  "include": true,
+  "wide": {
+   "src": "/work/snapjoy/cover.webp",
+   "w": 1795,
+   "h": 2400,
+   "alt": "Hand holding a beige SnapJoy gimbal with a phone mounted horizontally on its unfolded arm, recording video"
+  },
+  "cover": {
+   "src": "/work/snapjoy/hero.webp",
+   "w": 2400,
+   "h": 1590,
+   "alt": "Hand holding the SnapJoy physical model: white folded gimbal head, dark green grip and a translucent green airbag handle"
+  },
+  "details": [
+   {
+    "src": "/work/snapjoy/pick-detail-1.webp",
+    "w": 1076,
+    "h": 806,
+    "alt": "Close render of the gimbal's head: the phone clamp, the joystick and the record button",
+    "name": "Head"
+   }
+  ]
+ },
+ "organic-oasis": {
+  "include": true,
+  "wide": {
+   "src": "/work/organic-oasis/pick-main.webp",
+   "w": 1880,
+   "h": 1440,
+   "alt": "The same kitchen at night; only the planter's light panels and a strip light above the counter are on, lighting the plants."
+  },
+  "cover": {
+   "src": "/work/organic-oasis/cover.webp",
+   "w": 1736,
+   "h": 1852,
+   "alt": "Front view of the white OrganicOasis tower on a grey gradient: two raised light panels on Z-shaped arms above a rounded square base."
+  },
+  "details": [
+   {
+    "src": "/work/organic-oasis/pick-detail-1.webp",
+    "w": 1200,
+    "h": 900,
+    "alt": "The two planting tiers lifted on their scissor arms",
+    "name": "Tiers"
+   },
+   {
+    "src": "/work/organic-oasis/pick-detail-2.webp",
+    "w": 1200,
+    "h": 900,
+    "alt": "The base of the tower: the composter's front panel and side handle",
+    "name": "Base"
+   },
+   {
+    "src": "/work/organic-oasis/pick-detail-3.webp",
+    "w": 1200,
+    "h": 900,
+    "alt": "The light panels under two stacked tiers, seen from below",
+    "name": "Lights"
+   }
+  ]
+ },
+ "adula": {
+  "include": true,
+  "wide": {
+   "src": "/work/adula/pick-main.webp",
+   "w": 2400,
+   "h": 1799,
+   "alt": "The ADULA grinder in use: gloved hands holding it against a steel beam as sparks fly"
+  },
+  "cover": {
+   "src": "/work/adula/model-photo-1.webp",
+   "w": 1368,
+   "h": 1026,
+   "alt": "Painted red and black physical model of the grinder lying on a wooden shelf in front of a pegboard holding calipers and a steel rule."
+  },
+  "details": [
+   {
+    "src": "/work/adula/pick-detail-1.webp",
+    "w": 856,
+    "h": 642,
+    "alt": "Exploded render of an earlier version: the red body shells pulled apart around the motor and handle",
+    "name": "Exploded"
+   },
+   {
+    "src": "/work/adula/detail-blade.webp",
+    "w": 1000,
+    "h": 750,
+    "alt": "The grinder fitted with a saw blade",
+    "name": "Blade"
+   }
+  ]
+ },
+ "cooldrip-v1": {
+  "include": true,
+  "wide": {
+   "src": "/work/cooldrip-v1/hero.webp",
+   "w": 2400,
+   "h": 1408,
+   "alt": "Render of a white upright coffee machine seen from the side in a wood-panelled room: a rounded water tank on a curved arm with a black knob, and a white cup below."
+  },
+  "cover": {
+   "src": "/work/cooldrip-v1/hero.webp",
+   "w": 2400,
+   "h": 1408,
+   "alt": "Render of a white upright coffee machine seen from the side in a wood-panelled room: a rounded water tank on a curved arm with a black knob, and a white cup below."
+  },
+  "details": [
+   {
+    "src": "/work/cooldrip-v1/pick-detail-1.webp",
+    "w": 1200,
+    "h": 900,
+    "alt": "The physical model from the side: the white water tank on its arm above the glass chamber",
+    "name": "Model"
+   },
+   {
+    "src": "/work/cooldrip-v1/pick-detail-2.webp",
+    "w": 1200,
+    "h": 900,
+    "alt": "The model from behind and above, showing the tank and the black dial",
+    "name": "Rear"
+   },
+   {
+    "src": "/work/cooldrip-v1/pick-detail-3.webp",
+    "w": 1200,
+    "h": 900,
+    "alt": "The upper half of the model from the front",
+    "name": "Front"
+   },
+   {
+    "src": "/work/cooldrip-v1/model-photo-counter.webp",
+    "w": 2400,
+    "h": 1886,
+    "alt": "Photo of the model on a kitchen counter next to a black espresso machine, a grinder and glasses.",
+    "name": "Counter"
+   }
+  ]
+ },
+ "ofx-rebrand": {
+  "include": true,
+  "wide": {
+   "src": "/work/ofx-rebrand/street.webp",
+   "w": 1600,
+   "h": 1200,
+   "alt": "A street billboard in the OFX identity: the cube mark and “Fast, low-cost global transfers” on a wall of blue panels, two people walking past"
+  },
+  "cover": {
+   "src": "/work/ofx-rebrand/street.webp",
+   "w": 1600,
+   "h": 1200,
+   "alt": "A street billboard in the OFX identity: the cube mark and “Fast, low-cost global transfers” on a wall of blue panels, two people walking past"
+  },
+  "details": [
+   {
+    "src": "/work/ofx-rebrand/detail-card.webp",
+    "w": 900,
+    "h": 675,
+    "alt": "The business card, with the mark cropped across the back",
+    "name": "Card"
+   },
+   {
+    "src": "/work/ofx-rebrand/detail-app.webp",
+    "w": 1120,
+    "h": 840,
+    "alt": "The app's home and cards screens",
+    "name": "App"
+   },
+   {
+    "src": "/work/ofx-rebrand/pick-detail-3.webp",
+    "w": 1200,
+    "h": 900,
+    "alt": "The logo lockup with its parts labelled: cube mark, typography and tag line",
+    "name": "Logo"
+   }
+  ]
+ },
+ "xr-keyboard": {
+  "include": true,
+  "wide": {
+   "src": "/work/xr-keyboard/pick-main.webp",
+   "w": 1773,
+   "h": 998,
+   "alt": "Two hands resting on a lap; above them float three candidate words, home, good and gone, with good highlighted"
+  },
+  "cover": {
+   "src": "/work/xr-keyboard/pick-card.webp",
+   "w": 1600,
+   "h": 901,
+   "alt": "Two hands resting on a lap with three candidate words floating above them"
+  },
+  "details": [
+   {
+    "src": "/work/xr-keyboard/pick-detail-1.webp",
+    "w": 1200,
+    "h": 900,
+    "alt": "Line drawings titled Register-Record-Train: picking up the headset, putting it on, typing on a keyboard",
+    "name": "Sketch"
+   },
+   {
+    "src": "/work/xr-keyboard/pick-detail-2.webp",
+    "w": 798,
+    "h": 599,
+    "alt": "A dim living room with two hand outlines and the line Look at your hands to get started",
+    "name": "Setup"
+   },
+   {
+    "src": "/work/xr-keyboard/pick-detail-3.webp",
+    "w": 798,
+    "h": 599,
+    "alt": "Hands typing on a real keyboard inside a capture frame, with the sentence being typed shown above",
+    "name": "Training"
+   }
+  ]
+ }
+}

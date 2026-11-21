@@ -1,0 +1,186 @@
+{
+  "slug": "snapjoy",
+  "title": "SnapJoy",
+  "subtitle": "A folding phone gimbal with an inflatable lower grip",
+  "year": "2023",
+  "context": "",
+  "role": "Research, concept, grip testing, CMF and model making",
+  "team": "Solo",
+  "tools": [
+    "Hand sketching",
+    "Cardboard mock-ups",
+    "Clay and foam grip models",
+    "Product teardown",
+    "3D rendering"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "SnapJoy is a folding phone gimbal with an inflatable lower grip that collapses into the palm. Watching how people lived in 2023 in the time of social media, I kept asking what they actually needed when filming. With phone cameras getting better every year, I wondered why anyone still carried an action camera or a pocket camera, and whether one simple tool could let the phone be enough.",
+  "sections": [
+    {
+      "heading": "Could the phone be enough",
+      "body": "Shooting, editing and uploading already happen on a single phone. Mapping daily, travel and study vlogs on a wall showed people switching shooting postures constantly, flipping repeatedly between front and rear cameras, and pausing video to take still photographs. Card-based interviews comparing shots already in people's phone albums against the vlogs they imagined making showed a wish to document daily life in a richer form.\n\nMapping existing phone accessories showed why that stays awkward. Selfie sticks are slow to mount, gimbals get in the way of stills, rigs are cumbersome to assemble, and camera-style grips fall short for video and selfies. Each tool only answered part of the job.",
+      "images": [
+        "board-user-journey.webp",
+        "board-interviews.webp",
+        "board-market-analysis.webp"
+      ]
+    },
+    {
+      "heading": "Folding several jobs into one",
+      "body": "Thinking about how the magnetic attachment on the back of a phone lets it turn to another angle led me to ask whether a portable stabiliser could also take different angles, directions and roles. I wanted one object that could be held like a camera for photographs, unfold as a gimbal for video, and turn around for selfies, while staying as simple to use as possible.\n\nFinding that structure took many tries. I analysed gimbal motor layouts, built a cardboard arm to test a secondary folding structure, and shaped clay blocks to find where a camera-style shutter should sit under the finger. Sketching along ergonomics and novelty tracks brought up an inflatable PVC airbag handle that pulls out and inflates for shooting, then folds back to keep the stowed volume small.",
+      "images": [
+        "board-sketches.webp",
+        "process-grip-mockup.webp"
+      ]
+    },
+    {
+      "heading": "Grips, internals and the model",
+      "body": "I built four hand models to test different inflatable grips. A camera-like shutter felt familiar and mixing hard and soft surfaces improved comfort, though one tester did not want the primary holding zone to be soft and people expected shortcut keys. Scoring the two workable directions favoured the more compact, storable option. I refined that grip through nine small grey models, then took apart an existing gimbal to verify that its mainboard, motor drive, operator panel and shutter button fit inside the new shell, with the battery in the lower telescopic section.\n\nThe finished gimbal combines a press-and-hold unlock button for switching modes with a flash, shutter, selfie fill LED and filter switching across four milky-white colourways paired with low-saturation accents. I built a physical model in the green colourway from small parts and translucent green grip pieces to judge it both folded in the palm and extended in the hand.",
+      "images": [
+        "hero.webp",
+        "board-user-testing.webp",
+        "process-grip-models.webp",
+        "board-features.webp",
+        "render-airbag-inflated.webp",
+        "cover.webp",
+        "render-colorways.webp",
+        "process-model-parts.webp",
+        "model-photo-controls.webp",
+        "model-photo-folded.webp"
+      ]
+    }
+  ],
+  "hero": "cover.webp",
+  "cover": "cover.webp",
+  "images": {
+    "hero.webp": {
+      "w": 2400,
+      "h": 1590,
+      "kind": "photo",
+      "alt": "Hand holding the SnapJoy physical model: white folded gimbal head, dark green grip and a translucent green airbag handle",
+      "caption": "Physical model in the green colourway, folded, with the airbag grip extended.",
+      "bg": "light"
+    },
+    "cover.webp": {
+      "w": 1795,
+      "h": 2400,
+      "kind": "render",
+      "alt": "Hand holding a beige SnapJoy gimbal with a phone mounted horizontally on its unfolded arm, recording video",
+      "caption": "Unfolded, with a phone mounted for video.",
+      "bg": "light"
+    },
+    "model-photo-controls.webp": {
+      "w": 2400,
+      "h": 1590,
+      "kind": "photo",
+      "alt": "Top view of the physical model showing the control panel with a joystick and button, green grip and translucent green airbag",
+      "caption": "Control panel with joystick and button on the physical model.",
+      "bg": "light"
+    },
+    "model-photo-folded.webp": {
+      "w": 2400,
+      "h": 1590,
+      "kind": "photo",
+      "alt": "The folded physical model resting in an open palm with the airbag grip retracted",
+      "caption": "Folded, with the grip retracted, it fits in the palm.",
+      "bg": "light"
+    },
+    "render-airbag-inflated.webp": {
+      "w": 1076,
+      "h": 2400,
+      "kind": "render",
+      "alt": "Render of the beige gimbal folded, with the clear airbag grip inflated below the body",
+      "caption": "Render with the airbag grip inflated.",
+      "bg": "light"
+    },
+    "render-colorways.webp": {
+      "w": 2400,
+      "h": 1812,
+      "kind": "render",
+      "alt": "Render of four SnapJoy units side by side in pink, beige, purple and green",
+      "caption": "Four colourways: milky white with one low-saturation colour each.",
+      "bg": "light"
+    },
+    "process-grip-mockup.webp": {
+      "w": 1539,
+      "h": 1709,
+      "kind": "photo",
+      "alt": "Hand gripping a rough white foam and clay grip model with button positions drawn on in marker",
+      "caption": "Foam and clay grip model used to test how the handle is held.",
+      "bg": "light"
+    },
+    "process-grip-models.webp": {
+      "w": 2400,
+      "h": 1590,
+      "kind": "photo",
+      "alt": "Nine small grey grip models laid out on a white table, each with a slightly different shape",
+      "caption": "Grip models from the iteration stage.",
+      "bg": "light"
+    },
+    "process-model-parts.webp": {
+      "w": 2400,
+      "h": 1590,
+      "kind": "photo",
+      "alt": "Four translucent green airbag-grip parts standing on sticks in a block of black foam",
+      "caption": "Translucent green grip parts for the physical model.",
+      "bg": "dark"
+    },
+    "board-user-journey.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Board titled User Journey Analytics with a wall of vlog screenshots and sticky notes, plus line drawings of four shooting postures",
+      "caption": "User journey analysis of vloggers and the postures of each shooting method.",
+      "bg": "light"
+    },
+    "board-interviews.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Board showing blue sketch cards used as interview prompts, photos of the sessions, and a diagram placing interviewees by camera use",
+      "caption": "Card-based interviews and the analysis of results.",
+      "bg": "light"
+    },
+    "board-market-analysis.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Board with sticky-note behaviour analysis and a two-axis map of selfie sticks, gimbals, rigs and camera grips",
+      "caption": "Behaviour analysis and a map of existing phone shooting tools.",
+      "bg": "light"
+    },
+    "board-sketches.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Board of gimbal sketches along two paths labelled Ergonomics and Interesting, with cardboard and clay mock-ups",
+      "caption": "Sketch exploration, structure analysis and early mock-ups.",
+      "bg": "light"
+    },
+    "board-user-testing.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Board with four grip concepts held in hands, user quotes, a scoring of two solutions, grip model iterations and a gimbal teardown",
+      "caption": "Grip testing, scoring, model iteration and teardown.",
+      "bg": "light"
+    },
+    "board-features.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Board of beige SnapJoy renders with callouts for flash, shutter, unlock button and inflatable button, and four shooting positions with a phone",
+      "caption": "Final design: features, airbag steps and shooting modes.",
+      "bg": "light"
+    },
+    "board-cmf.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "CMF board with four colourways and their palettes, and material callouts for rubber, matte plastic, electrophoresis and PVC airbags",
+      "caption": "CMF: colourways and materials.",
+      "bg": "light"
+    }
+  }
+}

@@ -1,0 +1,235 @@
+{
+  "slug": "cooldrip",
+  "title": "CoolDrip",
+  "subtitle": "An hourglass ice-drip coffee maker paired with a caffeine-tracking app",
+  "year": "2024",
+  "context": "Graduation project at SIVA DeTao School of Design, Shanghai, later entered in design competitions",
+  "role": "Industrial designer: research, form, structure, CMF, app UI, packaging, appearance model",
+  "team": "Solo",
+  "tools": [
+    "KeyShot 12",
+    "Adobe Photoshop",
+    "Keynote",
+    "White foam models"
+  ],
+  "awards": [
+    {
+      "name": "Red Dot Award: Design Concept, winner",
+      "year": "2025",
+      "category": ""
+    },
+    {
+      "name": "MUSE Design Awards, Gold",
+      "year": "2025",
+      "category": "Product Design - Home Appliances"
+    },
+    {
+      "name": "MUSE Design Awards, Gold",
+      "year": "2025",
+      "category": "Product Design - Lifestyle"
+    },
+    {
+      "name": "NY Product Design Awards, Silver",
+      "year": "2024",
+      "category": "Home Interior - Household Appliances & Accessories"
+    },
+    {
+      "name": "London Design Awards, Silver",
+      "year": "2024",
+      "category": "Product Design - Bakeware, Tableware, Drinkware & Cookware"
+    },
+    {
+      "name": "International Design Awards (IDA), Honorable Mention",
+      "year": "2024",
+      "category": "Conceptual Products/Personal"
+    },
+    {
+      "name": "International Design Awards (IDA), Honorable Mention",
+      "year": "2024",
+      "category": "Conceptual Products/Food & Beverage"
+    },
+    {
+      "name": "LICC, Official Selection",
+      "year": "2024",
+      "category": "USE (Product) - Professional"
+    }
+  ],
+  "links": [
+    {
+      "label": "USC story on the Red Dot win",
+      "url": "https://iovine-young.usc.edu/the-pulse/ryan-zhang-msidbt-red-dot-award-winner"
+    }
+  ],
+  "summary": "CoolDrip is an hourglass-shaped ice-drip coffee maker paired with a phone app that estimates how much caffeine remains in the body. When I made it in 2024, my thinking was moving into a new stage. Before this, design for me meant finding a clear need and answering it cleanly, with form strictly following function. Here I began asking what lies past function, and whether the feeling an object gives off is part of what it does.",
+  "sections": [
+    {
+      "heading": "Past the need itself",
+      "body": "The practical starting point came from watching people around me drink coffee as a tool to stay awake through heavy work. Mapping their coffee intake, sleepy moments and sleep quality across the day showed the same loop. The body builds tolerance, sleepiness returns, and the person drinks more. Comparing five brewing methods led to ice drip, which is slow and lets strength shift through drip rate, temperature, time and water-to-coffee ratio.\n\nThat functional problem grew out of an earlier upright coffee machine I had built the year before. This time, solving the caffeine problem felt like only part of the work. I was trying to find out what kind of form produces what kind of feeling, and whether that feeling can itself be part of the function, or part of what is worth pursuing.",
+      "images": [
+        "board-journey-map.webp"
+      ]
+    },
+    {
+      "heading": "Waiting built into the shape",
+      "body": "Ice drip falls drop by drop, like sand in an hourglass. I kept the hourglass silhouette because watching water fall slowly gives a hint of waiting, making slowness part of the idea.\n\nSketches narrowed to two stacked cones, a brewing unit on top and a glass carafe below, joined by a collar with a side handle. I cut white foam volumes, compared rows of small cone models in pairs, and tested gripping the upper unit by hand to settle the proportions.",
+      "images": [
+        "board-sketches.webp",
+        "board-model-iteration.webp",
+        "render-front.webp"
+      ]
+    },
+    {
+      "heading": "Holding the machinery quietly",
+      "body": "Keeping that form meant fitting the mechanics inside the upper cone, including the water tank, inlet controller, fan and heatsink, and cold and hot water modules above a stainless steel powder bowl and glass carafe.\n\nBrewing stays simple. Add ground coffee, fill the tank, and pick Light, Mid, Dark or Hot on the lid. Frosted plastic and PC plastic meet a brushed metal collar, stainless steel, glass and an oak handle.",
+      "images": [
+        "board-internals.webp",
+        "board-cmf.webp"
+      ]
+    },
+    {
+      "heading": "The app and the model",
+      "body": "The companion phone app handles timing across four tabs named Drip, Intake, Stock and Shop. Drip shows live extraction progress with a percentage and a pause button. Intake plots estimated caffeine in the body as a daily curve alongside a red Sleepy button for logging fatigue, while Stock lists coffee kept at home.\n\nI carried the hourglass outline onto a white packaging sleeve over a red inner box and trays, and built a physical appearance model measuring 14 x 14 x 18 cm with a wooden handle and a red pull tab on the lid. Across 2024 and 2025, I received eight international design awards for this work, including the Red Dot Award for Design Concept.",
+      "images": [
+        "render-app.webp",
+        "app-hand.webp",
+        "app-screens.webp",
+        "packaging-open.webp",
+        "proto-photo-1.webp",
+        "proto-photo-2.webp",
+        "proto-photo-3.webp"
+      ]
+    }
+  ],
+  "hero": "hero.webp",
+  "cover": "cover.webp",
+  "images": {
+    "hero.webp": {
+      "w": 2400,
+      "h": 1440,
+      "kind": "render",
+      "alt": "White brewing unit and glass carafe with a wooden handle standing side by side on a white base tray, against a dark red backdrop.",
+      "caption": "The set taken apart: brewing unit, carafe and base tray.",
+      "bg": "dark"
+    },
+    "cover.webp": {
+      "w": 2400,
+      "h": 2400,
+      "kind": "render",
+      "alt": "Front view of the assembled coffee maker: a white cone-shaped brewing unit on top of a glass cone carafe, forming an hourglass.",
+      "caption": "CoolDrip assembled, front view.",
+      "bg": "dark"
+    },
+    "render-front.webp": {
+      "w": 2400,
+      "h": 2400,
+      "kind": "render",
+      "alt": "Front view of the assembled coffee maker: a white cone-shaped brewing unit on top of a glass cone carafe, forming an hourglass, with a wooden side handle.",
+      "caption": "Assembled, front view. The two cones form the hourglass.",
+      "bg": "dark"
+    },
+    "render-app.webp": {
+      "w": 2400,
+      "h": 2131,
+      "kind": "render",
+      "alt": "The coffee maker on its base tray with coffee in the carafe, next to a floating phone screen showing 18% and a circular dial.",
+      "caption": "Brewing, with the app's Drip screen at 18%.",
+      "bg": "dark"
+    },
+    "packaging-open.webp": {
+      "w": 2400,
+      "h": 2400,
+      "kind": "packaging",
+      "alt": "Opened packaging: a white sleeve sliding off a red box, a red tray holding the brewing unit and carafe, and a second red tray holding the white base.",
+      "caption": "White sleeve, red inner box and two red trays.",
+      "bg": "dark"
+    },
+    "packaging-linework.webp": {
+      "w": 2200,
+      "h": 1077,
+      "kind": "packaging",
+      "alt": "Line drawings of the brewing unit, carafe, base tray and two cups beside the red CoolDrip script logo and a spec block.",
+      "caption": "Box linework: the set, \"40W / 600ml\", model number CDCF01CM.",
+      "bg": "light"
+    },
+    "app-hand.webp": {
+      "w": 2400,
+      "h": 1891,
+      "kind": "ui",
+      "alt": "A hand holding a phone showing the Intake screen: date Sun Oct 13, a dark curve with 92mg Caffeine Content, a week strip and a red Sleepy button.",
+      "caption": "Intake screen: estimated caffeine for the day and the \"Sleepy\" button.",
+      "bg": "light"
+    },
+    "app-screens.webp": {
+      "w": 2400,
+      "h": 2060,
+      "kind": "ui",
+      "alt": "Grid of tilted phones showing app screens: brew progress at 82%, a dial, caffeine content of 129mg and 92mg, and a list of coffee bags.",
+      "caption": "App screens across the Drip, Intake, Stock and Shop tabs.",
+      "bg": "light"
+    },
+    "proto-photo-1.webp": {
+      "w": 2280,
+      "h": 2400,
+      "kind": "photo",
+      "alt": "Photo of the physical model from above: white lid with a red indicator dot and red pull tab, grey collar, clear carafe and wooden handle.",
+      "caption": "Physical model, three-quarter view.",
+      "bg": "light"
+    },
+    "proto-photo-2.webp": {
+      "w": 2400,
+      "h": 1574,
+      "kind": "photo",
+      "alt": "Photo of the model taken apart: the brewing unit lying on its side showing the mesh outlet, next to the clear carafe with its handle.",
+      "caption": "Brewing unit and carafe separated.",
+      "bg": "light"
+    },
+    "proto-photo-3.webp": {
+      "w": 1404,
+      "h": 1418,
+      "kind": "photo",
+      "alt": "Close-up photo of the lid, the clear ring below it, the slotted white body, grey collar and wooden handle.",
+      "caption": "Lid, vent slots and collar, close up.",
+      "bg": "light"
+    },
+    "board-journey-map.webp": {
+      "w": 1876,
+      "h": 2200,
+      "kind": "board",
+      "alt": "Board titled Caffeine Journey Map: a day timeline from 8 AM to 12 PM marking amount of caffeine, sleepy moments, coffee intake and sleep quality, and a loop of body tolerance, sleepy, more intake.",
+      "caption": "Caffeine journey map and the tolerance loop.",
+      "bg": "light"
+    },
+    "board-sketches.webp": {
+      "w": 2200,
+      "h": 1238,
+      "kind": "sketch",
+      "alt": "Sketch board: rows of small thumbnail sketches with orange marker on the left, and digital sketches of hourglass-shaped coffee makers on the right.",
+      "caption": "Sketches, from thumbnails to the two-cone form.",
+      "bg": "light"
+    },
+    "board-model-iteration.webp": {
+      "w": 2200,
+      "h": 1238,
+      "kind": "board",
+      "alt": "Board titled Model scale iteration: white foam hourglass models, a grid of small white cone models, paired combinations, and a hand gripping the top unit.",
+      "caption": "Foam models, proportion studies and grip tests.",
+      "bg": "light"
+    },
+    "board-cmf.webp": {
+      "w": 2200,
+      "h": 1945,
+      "kind": "board",
+      "alt": "Side view of the coffee maker with material callouts: rubber handle, PC plastic, frosted plastic, brushed metal, stainless steel, stainless steel powder bowl, oak and glass.",
+      "caption": "Material callouts from the CMF board.",
+      "bg": "light"
+    },
+    "board-internals.webp": {
+      "w": 2200,
+      "h": 1238,
+      "kind": "board",
+      "alt": "Board titled Product Details: a cutaway of the brewing unit labelled water inlet controller, water tank, heatsink fin and fan module, cold water module, hot water module, heat blocks and powder bowl.",
+      "caption": "Cutaway of the brewing unit with its modules labelled.",
+      "bg": "light"
+    }
+  }
+}

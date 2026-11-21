@@ -1,0 +1,77 @@
+{
+  "slug": "car",
+  "title": "LF-2050 Concept Car",
+  "subtitle": "A compact one-box urban vehicle concept designed with Lu Jiajun",
+  "year": "2023",
+  "context": "",
+  "role": "Design and model making, as a team of two",
+  "team": "With Lu Jiajun",
+  "tools": [
+    "3D printing",
+    "Foam model making"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "Lu Jiajun and I designed the LF-2050 concept vehicle together in Shanghai. It is an independent concept that borrows the Lexus name, not made for or with Lexus. Starting from urban parking pressure and high housing prices in big cities, we explored a compact vehicle that works alongside architecture to add activity space for small homes.",
+  "sections": [
+    {
+      "heading": "Parking and small homes",
+      "body": "Our starting point was a pair of pressures shared by dense cities. Parking in the city is one. The other is housing so expensive that young people cannot afford to buy a home. We worked on a vehicle conceived alongside architecture to add activity space for small homes and rethink daily living.",
+      "images": [
+        "render-day.webp"
+      ]
+    },
+    {
+      "heading": "A tall, one-box form",
+      "body": "That brief pushed the proportions toward a small footprint with vertical volume. The exterior settles into a short, tall, one-box body wrapped in a large dark glass canopy. On our presentation boards, alongside parking-lot research and early sketches, we drew out an Opening mode with a gull-wing door and a Lifting body.",
+      "images": [
+        "model-boards.webp"
+      ]
+    },
+    {
+      "heading": "Foam base and printed shell",
+      "body": "To judge the tall silhouette at scale, we built a physical model together. The base is handcrafted from high-density red foam, and the exterior shell is 3D printed. It let us read the volume and the glass canopy as a physical object.",
+      "images": [
+        "model.webp"
+      ]
+    }
+  ],
+  "hero": "hero.webp",
+  "cover": "cover.webp",
+  "images": {
+    "hero.webp": {
+      "w": 2400,
+      "h": 1350,
+      "kind": "render",
+      "alt": "A small, tall concept car with a dark glass canopy, parked in a city street at dusk",
+      "caption": "LF-2050 in the street at dusk."
+    },
+    "cover.webp": {
+      "w": 2400,
+      "h": 1350,
+      "kind": "render",
+      "alt": "A small concept car with a dark glass canopy in a city street at dusk"
+    },
+    "render-day.webp": {
+      "w": 2400,
+      "h": 1350,
+      "kind": "render",
+      "alt": "The car from a low front angle in a daylight street",
+      "caption": "From the front, in daylight."
+    },
+    "model.webp": {
+      "w": 1706,
+      "h": 1278,
+      "kind": "photo",
+      "alt": "The physical model from the front three-quarter: silver body, dark canopy, red wheel hubs, with display boards behind",
+      "caption": "The model: a foam base with a 3D-printed body."
+    },
+    "model-boards.webp": {
+      "w": 1706,
+      "h": 1278,
+      "kind": "photo",
+      "alt": "The model on a table in front of boards showing the opening door, the lifting body and research on parking",
+      "caption": "The model in front of its boards."
+    }
+  }
+}

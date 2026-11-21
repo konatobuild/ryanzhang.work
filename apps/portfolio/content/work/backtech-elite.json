@@ -1,0 +1,204 @@
+{
+  "slug": "backtech-elite",
+  "title": "BackTech Elite",
+  "subtitle": "A large-laptop backpack built around a load-bearing TPU frame",
+  "year": "2023",
+  "context": "",
+  "role": "Research, concept, frame testing, pattern making and sample making",
+  "team": "Solo",
+  "tools": [
+    "Hand sketching",
+    "Paper mock-ups",
+    "3D modelling",
+    "Sewing"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "BackTech Elite is a computer backpack I designed in 2023 for carrying a heavy laptop over 16 inches along with its power adapter and accessories. This piece was about staying inside one narrow category and one small, specific need, then looking for an interesting answer. Because a backpack is partly a fashion object, I wanted to handle real back load without accepting a heavy, bulky look.",
+  "sections": [
+    {
+      "heading": "A narrow, heavy problem",
+      "body": "The need showed up plainly around me. People left expensive laptops in open, unattended classrooms, or stayed late to finish heavy work so they would not have to carry the computer home on foot or by bicycle.\n\nAsking 50 people in computer science, industrial design and engineering confirmed how narrow and real the load was. Almost all of them used laptops over 16 inches, carrying an average of 4 kg over commutes longer than 20 minutes. Existing bags large enough for those machines suffered from complicated layering, weak protection and flush back panels with no real carrying system.",
+      "images": [
+        "board-discover.webp",
+        "board-interview-market.webp"
+      ]
+    },
+    {
+      "heading": "Moving load off the shoulders",
+      "body": "I spent serious time studying how the back takes weight and how to route that load to the right place to take pressure off the shoulders and body. After reviewing carrying-system patents and research on shoulder straps, back cushions and hip support, I built frame and strap mock-ups and tested them on 20 people of different heights and weights.\n\nThe first frame was too large, the second pressed into the lower back with too little flexibility, and a triangular support stressed the hip. Magnetic straps and retractable back straps wore poorly too. Resting support on the upper gluteal surface let a streamlined TPU frame transfer load to the waist and hips while keeping air space between the back and the protected laptop compartment.",
+      "images": [
+        "board-technical-research.webp",
+        "board-frame-testing.webp"
+      ]
+    },
+    {
+      "heading": "Lightening a heavy silhouette",
+      "body": "A bag built for a very heavy computer usually looks large and heavy. Because a backpack also sits close to fashion, I used a translucent outer layer so daylight and outside light pass into the shell, letting the whole pack look lighter. Bright orange appears as a single accent, leaving material contrast to do the rest.\n\nInside, the pack separates into three zones, placing the water bottle and umbrella storage at the bottom so liquids stay away from electronics.",
+      "images": [
+        "board-final-design.webp",
+        "render-front.webp",
+        "render-back.webp",
+        "render-frame-detail.webp",
+        "render-base-detail.webp"
+      ]
+    },
+    {
+      "heading": "Sewing my first fabric piece",
+      "body": "From sketches I made a paper mock-up, built the parts in 3D software, printed flat patterns onto cardboard, and sewed the final sample myself. This was my first backpack and my first soft-fabric object. Working through revisions taught me hemming, hardware placement and stitches directly through making mistakes.",
+      "images": [
+        "board-sketch-production.webp",
+        "cover.webp",
+        "photo-worn-side.webp",
+        "photo-worn-shoulder.webp",
+        "photo-laptop-loading.webp"
+      ]
+    }
+  ],
+  "hero": "pick-main.webp",
+  "cover": "cover.webp",
+  "images": {
+    "hero.webp": {
+      "w": 2400,
+      "h": 1205,
+      "kind": "photo",
+      "alt": "Person in a black T-shirt holding a white transparent backpack by its top handle, showing the grey frame and orange tab at the base",
+      "caption": "The finished sample, held by the top handle.",
+      "bg": "light"
+    },
+    "cover.webp": {
+      "w": 1849,
+      "h": 2400,
+      "kind": "photo",
+      "alt": "White transparent backpack carried in one hand by its top handle, with a grey frame around the base and an orange tab",
+      "caption": "Carried by the top handle. The grey frame wraps the bottom compartment.",
+      "bg": "light"
+    },
+    "photo-worn-side.webp": {
+      "w": 2400,
+      "h": 2309,
+      "kind": "photo",
+      "alt": "Side view of the white backpack worn on the back over a black jacket, with the grey frame running from the back panel around the base",
+      "caption": "Worn on the back, side view.",
+      "bg": "light"
+    },
+    "photo-worn-shoulder.webp": {
+      "w": 2090,
+      "h": 2310,
+      "kind": "photo",
+      "alt": "Person in a black T-shirt with the white backpack slung over one shoulder, hip belt hanging loose",
+      "caption": "Slung over one shoulder, with the hip belt hanging free.",
+      "bg": "dark"
+    },
+    "photo-laptop-loading.webp": {
+      "w": 2400,
+      "h": 2054,
+      "kind": "photo",
+      "alt": "Hands sliding a dark laptop into the open top of the white backpack",
+      "caption": "Loading a laptop into the main opening.",
+      "bg": "dark"
+    },
+    "render-front.webp": {
+      "w": 2274,
+      "h": 2400,
+      "kind": "render",
+      "alt": "Render of the backpack from the front three-quarter view, grey body with a dark frame around the base and an orange tab",
+      "caption": "Front three-quarter render.",
+      "bg": "light"
+    },
+    "render-back.webp": {
+      "w": 2075,
+      "h": 2400,
+      "kind": "render",
+      "alt": "Render of the back of the backpack showing the back panel, shoulder straps, hip belt and dark frame",
+      "caption": "Back render: back panel, shoulder straps, hip belt and frame.",
+      "bg": "light"
+    },
+    "render-side.webp": {
+      "w": 2010,
+      "h": 2400,
+      "kind": "render",
+      "alt": "Render of the backpack in side view with shoulder strap, hip belt and the frame around the lower compartment",
+      "caption": "Side render.",
+      "bg": "light"
+    },
+    "render-frame-detail.webp": {
+      "w": 2400,
+      "h": 1697,
+      "kind": "render",
+      "alt": "Close-up render of the upper back panel with black hardware and an orange-lined shoulder strap",
+      "caption": "Detail of the upper back panel and shoulder strap.",
+      "bg": "light"
+    },
+    "render-base-detail.webp": {
+      "w": 2400,
+      "h": 1697,
+      "kind": "render",
+      "alt": "Close-up render of the bottom compartment with a side zip, dark frame, hip belt and orange tab",
+      "caption": "Detail of the bottom storage compartment and hip belt.",
+      "bg": "light"
+    },
+    "board-discover.webp": {
+      "w": 2184,
+      "h": 2200,
+      "kind": "board",
+      "alt": "Research board titled Discover with black-and-white photos of students with laptops and bags and four figures in yellow rings",
+      "caption": "Discover board: observations of students and their computers.",
+      "bg": "light"
+    },
+    "board-interview-market.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Board with interview photos and findings on the left and market research on large laptop backpacks on the right",
+      "caption": "Interview with 50 students and market research.",
+      "bg": "light"
+    },
+    "board-technical-research.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Board with patent drawings of carrying systems, body diagrams of load paths, and a wall of sticky-note sketches",
+      "caption": "Technical research on carrying systems, and brainstorming.",
+      "bg": "light"
+    },
+    "board-frame-testing.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Board showing frame and strap mock-ups, people trying them on, and a row of white frame-part samples",
+      "caption": "Frame and strap mock-ups tested on 20 users.",
+      "bg": "light"
+    },
+    "board-sketch-production.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Board with a wall of backpack sketches on the left and paper mock-ups, digital pattern parts and sewing photos on the right",
+      "caption": "Sketches and the production process.",
+      "bg": "light"
+    },
+    "board-final-design.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Board of final renders with a zone diagram and callouts for the TPU frame, transparent fabric and bottom storage",
+      "caption": "Final design board with zones and feature callouts.",
+      "bg": "light"
+    },
+    "hero-crop.webp": {
+      "w": 1700,
+      "h": 1205,
+      "kind": "photo",
+      "alt": "Person in a black T-shirt holding a white transparent backpack by its top handle, showing the grey frame and orange tab at the base",
+      "caption": "The finished sample, held by the top handle.",
+      "bg": "light"
+    },
+    "pick-main.webp": {
+      "w": 1428,
+      "h": 1013,
+      "kind": "photo",
+      "alt": "Person in a black T-shirt holding a white transparent backpack by its top handle, showing the grey frame and orange tab at the base"
+    }
+  }
+}

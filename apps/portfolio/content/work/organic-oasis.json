@@ -1,0 +1,189 @@
+{
+  "slug": "organic-oasis",
+  "title": "OrganicOasis",
+  "subtitle": "An indoor hydroponic planter stacked over a kitchen-waste composter",
+  "year": "2023",
+  "context": "",
+  "role": "Research, testing, concept, industrial design, 3D modelling and rendering",
+  "team": "Solo",
+  "tools": [
+    "Questionnaire",
+    "Compost and light tests",
+    "Sketching",
+    "Cardboard mock-up",
+    "3D modelling and rendering"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "OrganicOasis is an indoor hydroponic planter stacked directly above a kitchen-waste composter, designed in 2023. At the time I was growing plants myself and trying hydroponics, thinking about home hydroponics at an early stage. I wanted to see whether household composting could help hydroponics directly, and whether both could be joined into a small home farm without the smell and mess that usually stop people.",
+  "sections": [
+    {
+      "heading": "Joining two domestic loops",
+      "body": "Composting at home is a green habit, yet in practice it brings odour and easily turns dirty and messy. Home growing runs into its own friction. In a 50-person survey, people started growing vegetables for organic food, lower pesticide worry and steadier supply, then ran into insects, stunted plants, slow growth and small yields.\n\nMapping two contrasting routines around buying and cooking vegetables showed both ending in the same place, with leftover produce spoiling, food waste building up, and odour and nightly trips downstairs with the garbage following.",
+      "images": [
+        "board-research.webp",
+        "board-cognitive-map.webp"
+      ]
+    },
+    {
+      "heading": "Testing smell, breakdown and light",
+      "body": "Before drawing a housing, I tested the messy parts directly. A first composting trial with kitchen scraps and compost bacteria ran for seven to eight days and proved slow, leaking water and giving off odour from breaking down proteins. A second three-day test with cut scraps showed that cut thickness and temperature strongly affect decomposition speed.\n\nAlongside that, a 31-day light test compared window daylight against artificial daylight using identical seeds, planting dates and watering. Even moving the plant indoors to follow the sun did not give it enough light to grow quickly. Those trials left six concrete requirements covering finely chopped waste, temperature control, liquid handling, gas filtration, a water cycle and full-time lighting.",
+      "images": [
+        "board-tests.webp"
+      ]
+    },
+    {
+      "heading": "Making the structure feasible",
+      "body": "A good deal of the project went into structural thinking to make the combined unit as feasible as I could. I chose deep-water hydroponics because it is easier to clean and gives steadier results, housed in modular planting bins that lift out whole for harvesting and washing. Below them, the base packs four systems together, combining rapid composting, a water tank, drying and odour treatment so processed compost and compost liquid return as nutrition for the plants.\n\nI built a cardboard mock-up with a Z-shaped lifting arm, a perforated tray and a base drawer to check bending, reaching and crouching beside the tower. In the finished layout, wet scraps drop into an upper inlet and move down into the composting chamber, folding Z-shaped arms raise the tiers when someone approaches, and slatted light panels on the underside of each tier supply mixed lighting for steady growth.",
+      "images": [
+        "hero.webp",
+        "board-sketches.webp",
+        "sketch-colour.webp",
+        "mockup-cardboard.webp",
+        "board-features.webp",
+        "render-lift-detail.webp",
+        "scene-night.webp",
+        "board-mechanical.webp",
+        "render-internals.webp"
+      ]
+    }
+  ],
+  "hero": "pick-main.webp",
+  "cover": "cover.webp",
+  "images": {
+    "hero.webp": {
+      "w": 1920,
+      "h": 1441,
+      "kind": "render",
+      "alt": "White two-tier planter-composter with leafy plants under its light panels, standing beside a marble kitchen island.",
+      "caption": "OrganicOasis in a kitchen: two lit planting tiers above the composting base.",
+      "bg": "light"
+    },
+    "cover.webp": {
+      "w": 1736,
+      "h": 1852,
+      "kind": "render",
+      "alt": "Front view of the white OrganicOasis tower on a grey gradient: two raised light panels on Z-shaped arms above a rounded square base.",
+      "caption": "Front view with both planting tiers raised.",
+      "bg": "light"
+    },
+    "scene-night.webp": {
+      "w": 1920,
+      "h": 1440,
+      "kind": "render",
+      "alt": "The same kitchen at night; only the planter's light panels and a strip light above the counter are on, lighting the plants.",
+      "caption": "Night scene with the grow lights on.",
+      "bg": "dark"
+    },
+    "render-front.webp": {
+      "w": 1248,
+      "h": 2400,
+      "kind": "render",
+      "alt": "Full front render of the tower: two light panels on Z-shaped arms, a base with a large rounded panel, a small side hatch and a lower drawer.",
+      "caption": "Full unit, front.",
+      "bg": "light"
+    },
+    "render-lift-detail.webp": {
+      "w": 2400,
+      "h": 1436,
+      "kind": "render",
+      "alt": "Close-up of a white light panel held above a tray by two folding Z-shaped arms.",
+      "caption": "The folding arms that raise each tier.",
+      "bg": "light"
+    },
+    "render-lighting.webp": {
+      "w": 1914,
+      "h": 2400,
+      "kind": "render",
+      "alt": "Close view from below of two stacked tiers showing the slatted light panels on their undersides.",
+      "caption": "Light panels on the underside of each tier.",
+      "bg": "light"
+    },
+    "render-internals.webp": {
+      "w": 1598,
+      "h": 2400,
+      "kind": "render",
+      "alt": "Render with the outer shell removed, showing the planting tray, filter blocks, drawers and tanks packed inside the base.",
+      "caption": "Base with the shell removed.",
+      "bg": "light"
+    },
+    "sketch-colour.webp": {
+      "w": 1074,
+      "h": 2133,
+      "kind": "sketch",
+      "alt": "Colour sketch of a three-tier version with a teal hatch and a dark grey lower body.",
+      "caption": "Colour sketch of a three-tier stack.",
+      "bg": "light"
+    },
+    "mockup-cardboard.webp": {
+      "w": 1747,
+      "h": 2400,
+      "kind": "photo",
+      "alt": "Cardboard mock-up of the unit with a Z-shaped arm holding a top panel, a tray with round holes and an open drawer in the base.",
+      "caption": "Cardboard mock-up with the lifting tier and base drawer.",
+      "bg": "light"
+    },
+    "board-research.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Portfolio page titled Background, Home Growing Trends and Questionnaire, with photos, short paragraphs and four ring charts reading 82, 68, 76 and 58.",
+      "caption": "Background, home-growing trends and the 50-person questionnaire.",
+      "bg": "light"
+    },
+    "board-cognitive-map.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Portfolio page titled Cognitive Change Map: two personas and a branching green line linking quotes about buying vegetables, food waste and taking out the garbage.",
+      "caption": "Cognitive change map for two personas.",
+      "bg": "light"
+    },
+    "board-tests.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Portfolio page with photos of two composting tests in containers and a light test with potted seedlings, above tables titled Solution Analysis and Key Features.",
+      "caption": "Compost test, light test, solution analysis and key features.",
+      "bg": "light"
+    },
+    "board-sketches.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Portfolio page titled Sketch: line sketches of stacked planter forms, photos of a person beside a cardboard mock-up, and three colour sketches with notes.",
+      "caption": "Form sketches, cardboard mock-up and annotated colour sketches.",
+      "bg": "light"
+    },
+    "board-features.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Portfolio page with a front render, annotated views of the waste inlet and composting chamber, the lifting tier and removable planting bin, and the kitchen scene.",
+      "caption": "How the unit is used.",
+      "bg": "light"
+    },
+    "board-lighting.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Portfolio page with the night kitchen scene, a reference graphic and spectrum chart on light colours, and renders of the light panel.",
+      "caption": "Lighting research and the light panel.",
+      "bg": "light"
+    },
+    "board-mechanical.webp": {
+      "w": 2200,
+      "h": 1013,
+      "kind": "board",
+      "alt": "Portfolio page titled Mechanical Details: cutaway renders, dimensioned line drawings and four labelled sub-systems.",
+      "caption": "Mechanical details: composting, water tank, drying and odor treatment systems.",
+      "bg": "light"
+    },
+    "pick-main.webp": {
+      "w": 1880,
+      "h": 1440,
+      "kind": "photo",
+      "alt": "The same kitchen at night; only the planter's light panels and a strip light above the counter are on, lighting the plants."
+    }
+  }
+}

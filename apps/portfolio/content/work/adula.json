@@ -1,0 +1,191 @@
+{
+  "slug": "adula",
+  "title": "ADULA Angle Grinder",
+  "subtitle": "An 18V cordless angle grinder with a double-layer protective guard",
+  "year": "2022-2023",
+  "context": "School project at SIVA DeTao School of Design, Shanghai",
+  "role": "Co-designer",
+  "team": "With Tao Ye",
+  "tools": [
+    "Sketching",
+    "Foam models",
+    "3D modelling and rendering",
+    "Painted appearance model"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "ADULA is an 18V lithium cordless angle grinder with a double-layer protective guard and an adjustable counter-handle, designed with Tao Ye between 2022 and 2023. It is an early, conceptual project from a stage when I was focused squarely on a clear problem and a mechanical answer. We tried to make it as complete as we could, inside and out, though it has not been validated in real use.",
+  "sections": [
+    {
+      "heading": "What I saw in research",
+      "body": "From my research into how angle grinders are handled, I saw a wide range of practices, and in certain settings uses that went against safety rules. Many people without proper training were taking the same tool and using it both to grind and to cut.\n\nThat led me to ask whether one tool could be designed to cover both jobs more safely. On the guard side, we centred the concept on a double-layer protective cover conceived to recognise pressure, temperature and holding position, closing automatically before danger strikes so a blade cannot fly out.",
+      "images": [
+        "board-poster.webp"
+      ]
+    },
+    {
+      "heading": "Changing angle to switch tasks",
+      "body": "To handle cutting, grinding and disc changes cleanly, we built the body around an adjustable counter-handle that rotates into different grip positions and speeds up blade swaps when moving from cutting to sanding. We sketched curved body shapes around motor placement and tested two-handed holds on yellow modelling foam across all three tasks.\n\nLooking back, letting the tool be gripped at different angles to switch between cutting and grinding still feels like a creative direction to me.",
+      "images": [
+        "poster-usage.webp",
+        "poster-concepts.webp",
+        "poster-sketch.webp",
+        "early-handle-rotated.webp",
+        "cover.webp"
+      ]
+    },
+    {
+      "heading": "Pushing the internals and model",
+      "body": "Even as an early concept, we tried to make the structure as complete as we could, inside as well as out. The exploded head lays out the outer and inner protective covers, magnetic stripe, switch, top green screen, motor, pinion and large bevel gear alongside four discs, including grinding wheels and a toothed saw blade. We finished the body in Ferrari red and black under the name ADULA, which carries the meaning of cutting.\n\nAfter iterating proportions in yellow foam, we carved a physical model in red high-density foam, painted the main body and separate side handle red and black with 18V MAX graphics, and assembled them on the bench. Pushing the internals and physical model that far is what I still appreciate about the work, alongside its clear limit. Neither the sensing guard nor the dual-mode layout has been properly validated in actual use, and both would need real testing before going further.",
+      "images": [
+        "hero.webp",
+        "poster-components.webp",
+        "exploded-drive.webp",
+        "render-saw-blade.webp",
+        "render-rear.webp",
+        "model-parts.webp",
+        "model-photo-1.webp",
+        "model-photo-2.webp",
+        "model-photo-3.webp"
+      ]
+    }
+  ],
+  "hero": "pick-main.webp",
+  "cover": "cover.webp",
+  "images": {
+    "hero.webp": {
+      "w": 2400,
+      "h": 1499,
+      "kind": "render",
+      "alt": "Red and black cordless angle grinder seen from the front three-quarter: grinding disc under a smoked transparent guard, a green screen on top, a folded side handle marked PUSH TO UNLOCK and an 18V MAX battery.",
+      "caption": "Final render, front three-quarter view.",
+      "bg": "light"
+    },
+    "cover.webp": {
+      "w": 2400,
+      "h": 2134,
+      "kind": "render",
+      "alt": "The grinder resting on a rock on a wooden surface against a brown wall, side handle pointing down and the 18V MAX battery at the rear.",
+      "caption": "Scene render with the side handle swung down.",
+      "bg": "dark"
+    },
+    "render-saw-blade.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "Side view of the grinder fitted with a toothed circular saw blade under the transparent guard, green screen lit.",
+      "caption": "Fitted with a toothed blade.",
+      "bg": "light"
+    },
+    "render-rear.webp": {
+      "w": 2400,
+      "h": 1316,
+      "kind": "render",
+      "alt": "Rear three-quarter view showing the black battery pack with a red DANGER / CAUTION label, the curved red body and the ribbed side handle.",
+      "caption": "Rear view with the battery warning label.",
+      "bg": "light"
+    },
+    "exploded-drive.webp": {
+      "w": 2400,
+      "h": 1667,
+      "kind": "render",
+      "alt": "Exploded render of the head: disc and two-layer guard with the screen housing, then spindle, large bevel gear, pinion and a block-shaped motor pulled apart.",
+      "caption": "Head and drive train, exploded.",
+      "bg": "light"
+    },
+    "early-exploded.webp": {
+      "w": 1223,
+      "h": 917,
+      "kind": "render",
+      "alt": "Exploded render of an earlier version: red body shells, black top grip, battery, side handle and a clear guard separated.",
+      "caption": "Earlier version, exploded (file dated 16 Dec 2022).",
+      "bg": "light"
+    },
+    "early-handle-rotated.webp": {
+      "w": 1827,
+      "h": 932,
+      "kind": "render",
+      "alt": "Side view of an earlier version with the side handle swung up past the guard and a white ADULA logo near the battery.",
+      "caption": "Earlier version with the side handle rotated (file dated 16 Dec 2022).",
+      "bg": "light"
+    },
+    "model-photo-1.webp": {
+      "w": 1368,
+      "h": 1026,
+      "kind": "photo",
+      "alt": "Painted red and black physical model of the grinder lying on a wooden shelf in front of a pegboard holding calipers and a steel rule.",
+      "caption": "Physical model on a workshop shelf.",
+      "bg": "light"
+    },
+    "model-photo-2.webp": {
+      "w": 1816,
+      "h": 1090,
+      "kind": "photo",
+      "alt": "Low-angle photo of the physical model on a workbench, side handle raised, with a blue polishing machine behind it.",
+      "caption": "Physical model on the bench.",
+      "bg": "light"
+    },
+    "model-photo-3.webp": {
+      "w": 1800,
+      "h": 2400,
+      "kind": "photo",
+      "alt": "Top-down photo of the physical model on a ribbed rubber mat among wooden dowels, a pencil and offcuts.",
+      "caption": "Physical model seen from above, 20 Apr 2023.",
+      "bg": "dark"
+    },
+    "model-parts.webp": {
+      "w": 1800,
+      "h": 2400,
+      "kind": "photo",
+      "alt": "Painted model parts on white paper on a workbench: the main body with battery, and the side handle lying separately.",
+      "caption": "Painted parts before final assembly, 20 Apr 2023.",
+      "bg": "light"
+    },
+    "poster-components.webp": {
+      "w": 2400,
+      "h": 965,
+      "kind": "board",
+      "alt": "Poster panel with the exploded head labelled: outer protective cover, inner protective cover, magnetic stripe, switch, screen, motor, pinion and big gear.",
+      "caption": "Labelled components (poster detail).",
+      "bg": "dark"
+    },
+    "poster-usage.webp": {
+      "w": 2400,
+      "h": 2307,
+      "kind": "board",
+      "alt": "Poster panel headed USAGE: white line sketches of hands holding the grinder for cutting, grinding and changing the blade, above photos of two hands gripping a yellow foam model.",
+      "caption": "Usage sketches and foam grip test (poster detail).",
+      "bg": "dark"
+    },
+    "poster-sketch.webp": {
+      "w": 2400,
+      "h": 1920,
+      "kind": "board",
+      "alt": "Poster panel with a grey marker-style side sketch of the grinder carrying the ADULA logo, faint line drawings, and a photo of a yellow foam model.",
+      "caption": "Side sketch and foam model (poster detail).",
+      "bg": "dark"
+    },
+    "poster-concepts.webp": {
+      "w": 2400,
+      "h": 630,
+      "kind": "sketch",
+      "alt": "Four grey concept sketches of curved grinder bodies, two with the motor position drawn in colour and one with a detached side handle.",
+      "caption": "Concept sketches (poster detail).",
+      "bg": "light"
+    },
+    "board-poster.webp": {
+      "w": 1100,
+      "h": 2200,
+      "kind": "board",
+      "alt": "Full vertical poster titled ANGLE GRINDER with the names Zhang Runsheng and Tao Ye: hero render, components, usage sketches, foam models, CMF and the ADULA brand panel.",
+      "caption": "The full poster, dated 30 Dec 2022 by file.",
+      "bg": "dark"
+    },
+    "pick-main.webp": {
+      "w": 2400,
+      "h": 1799,
+      "kind": "photo",
+      "alt": "The ADULA grinder in use: gloved hands holding it against a steel beam as sparks fly"
+    }
+  }
+}
