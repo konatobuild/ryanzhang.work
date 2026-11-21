@@ -1,14 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Host_Grotesk } from "next/font/google";
 import { Footer } from "@/components/site/Footer";
 import { Nav } from "@/components/site/Nav";
+import "./fonts.css";
 import "./site.css";
-
-const host = Host_Grotesk({
-  variable: "--font-host",
-  subsets: ["latin"],
-  display: "swap",
-});
 
 const DESCRIPTION =
   "Ryan Zhang designs objects to hold and software to use. Industrial design, interfaces and working prototypes, including the Red Dot-winning CoolDrip coffee maker.";
@@ -43,12 +37,15 @@ export default function SiteLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={host.variable}
-      suppressHydrationWarning
-    >
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <link
+          rel="preload"
+          href="/fonts/host-grotesk-latin.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       <body>
