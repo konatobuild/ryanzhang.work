@@ -771,37 +771,91 @@ a:hover > .link,
 
 @media (max-width: 900px) {
   .show {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
   }
 
   .show__main {
     order: -1;
   }
 
+  /* One size of stage for every piece, so nothing below it moves when the
+     picture changes; wide and upright pictures both sit inside it. */
   .show__stage {
+    min-height: 0;
+    height: clamp(300px, 88vw, 520px);
     padding: 14px 12px;
   }
 
-  .show__bar {
-    flex-direction: column;
-    align-items: start;
-    gap: 6px;
+  .show__hang {
+    --h: clamp(260px, 76vw, 460px);
   }
 
+  .show__hang--tall {
+    --h: clamp(268px, 80vw, 480px);
+  }
+
+  /* Title on the left; link, count and arrows on one line under it. */
+  .show__bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .show__ctl > :first-child {
+    margin-right: auto;
+  }
+
+  .show__ctl .icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* The index is one rail under the picture: group names in quiet type,
+     piece names as pills, scrolled sideways. Choosing a name changes the
+     picture just above it, which stays on screen. */
   .index {
-    gap: 10px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 18px;
+    overflow-x: auto;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: 2px var(--gutter);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .index::-webkit-scrollbar {
+    display: none;
+  }
+
+  .index__row {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .index__label {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    white-space: nowrap;
+    color: var(--text-3);
   }
 
   .index__items {
     display: flex;
-    flex-wrap: wrap;
-    gap: 4px 6px;
+    flex-wrap: nowrap;
+    gap: 6px;
   }
 
   .index__items button {
+    flex: none;
     margin: 0;
-    padding: 3px 9px;
+    padding: 6px 12px;
+    white-space: nowrap;
     box-shadow: inset 0 0 0 1px var(--line);
     border-radius: 999px;
   }
@@ -2098,15 +2152,6 @@ a.honor:hover .honor__level span {
   .stage--hero {
     min-height: 0;
     padding: 14px 12px;
-  }
-
-  /* The index of pieces: targets a thumb can hit. */
-  .index__items {
-    gap: 6px;
-  }
-
-  .index__items button {
-    padding: 6px 12px;
   }
 
   .section__head {
