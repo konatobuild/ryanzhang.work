@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import Image from "next/image";
-import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import {
   Hero,
   Context,
@@ -11,17 +10,20 @@ import {
 } from "@/components/case-study";
 import { MetaLabel } from "@/components/ui/MetaLabel";
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-case-saas-landing-display",
-});
+/**
+ * The two typefaces of this case study, loaded with a plain stylesheet.
+ * They used to come through next/font/google; with Turbopack that made the
+ * production build fail about one time in three ("next/font/google queries
+ * have exactly one entry", on Space Grotesk's font files), which took a
+ * deployment down. Nothing else on the site uses these faces.
+ */
+const CASE_FONTS =
+  "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&family=Space+Grotesk:wght@400;500&display=swap";
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-case-saas-landing-mono",
-});
+const caseFontVars = {
+  "--font-case-saas-landing-display": "'Space Grotesk', system-ui, sans-serif",
+  "--font-case-saas-landing-mono": "'JetBrains Mono', ui-monospace, monospace",
+} as CSSProperties;
 
 export const metadata: Metadata = {
   title: "LATTICE — Ryan Zhang",
@@ -280,7 +282,8 @@ const gallery: GalleryItem[] = [
 
 export default function SaasLandingCaseStudy() {
   return (
-    <div className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
+    <div style={caseFontVars}>
+      <link rel="stylesheet" href={CASE_FONTS} precedence="default" />
       <Hero
         title="LATTICE"
         description="A landing page for an imagined runtime control plane for production AI agents."
