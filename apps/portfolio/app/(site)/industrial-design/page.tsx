@@ -66,11 +66,13 @@ export default function IndustrialDesignPage() {
         <div className="section__head">
           <h2 className="t-l duo">
             Nine projects
-            <span>2022 to 2025. Some come with an app; the label says which.</span>
+            <span>2021 to 2026. Some come with an app; the label says which.</span>
           </h2>
         </div>
         <WorkCards items={objects} />
       </section>
+
+
 
       <section className="wrap section">
         <div className="section__head">

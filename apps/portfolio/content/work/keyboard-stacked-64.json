@@ -1,0 +1,125 @@
+{
+  "slug": "keyboard-stacked-64",
+  "title": "Stacked 64",
+  "subtitle": "A 64-key case in alternating green and black sheets",
+  "year": "2022",
+  "context": "Personal project. Built and used.",
+  "role": "Design, drawings for making, and the build",
+  "team": "",
+  "tools": [
+    "Fusion 360",
+    "Laser-cut acrylic"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "A 64-key keyboard in a stack of alternating green and black acrylic sheets, so the layers read from the side as stripes. The Fusion file was saved 35 times between April and June 2022.",
+  "sections": [
+    {
+      "heading": "Stripes from the stack",
+      "body": "Each layer of the case is one sheet, so choosing a colour for each layer draws the side of the keyboard. Here green and black alternate. The top and bottom are black, and the green shows through wherever light gets in.",
+      "images": [
+        "d-section.webp",
+        "bare.webp",
+        "exploded.webp"
+      ]
+    },
+    {
+      "heading": "Built",
+      "body": "This one was cut and built.",
+      "images": [
+        "photo-hand.webp",
+        "photo-desk.webp"
+      ]
+    },
+    {
+      "heading": "Other pairs of colours",
+      "body": "The same files rendered with other sheet. These are studies, not builds.",
+      "images": [
+        "study-mint.webp",
+        "study-mint-side.webp",
+        "study-lit.webp"
+      ]
+    },
+    {
+      "heading": "Saved 35 times",
+      "body": "Fusion kept every save of the file. The strip shows the saves where the most changed between one version and the next.",
+      "images": [
+        "history.webp"
+      ]
+    }
+  ],
+  "hero": "full.webp",
+  "cover": "full.webp",
+  "images": {
+    "full.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "A 64-key keyboard in a case of alternating green and black acrylic layers, with dark teal keycaps",
+      "caption": "The stacked 64 in the green and black it was built in, rendered from the Fusion files. Keycaps, switches and the circuit board are bought parts."
+    },
+    "bare.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The case without keycaps and switches, the switch plate lit green from below",
+      "caption": "Without the bought parts."
+    },
+    "exploded.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The stacked 64 taken apart into its green and black layers",
+      "caption": "Layer by layer."
+    },
+    "study-mint.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The same case in pale mint sheet with dark green lines between, and lilac keycaps",
+      "caption": "The same layers in another pair of colours. A study."
+    },
+    "study-mint-side.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The case from the side, eight sheets standing on a dark foot",
+      "caption": "Eight sheets from the side."
+    },
+    "study-lit.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The case in a dark room with light coming out between the layers",
+      "caption": "Light coming out between the layers. A study."
+    },
+    "photo-hand.webp": {
+      "w": 768,
+      "h": 1024,
+      "kind": "photo",
+      "alt": "The built keyboard held in one hand, green and black",
+      "caption": "The build."
+    },
+    "photo-desk.webp": {
+      "w": 1024,
+      "h": 768,
+      "kind": "photo",
+      "alt": "The build on a desk with most keycaps off, clear switches lit green",
+      "caption": "On the desk, with most of the keycaps off."
+    },
+    "d-section.webp": {
+      "w": 2400,
+      "h": 704,
+      "kind": "drawing",
+      "alt": "Section through the front edge of the Stacked 64, cut from the Fusion file, with each part named",
+      "caption": "Cut through at the front edge, from the Fusion file. The keycap, switch and circuit board are bought parts."
+    },
+    "history.webp": {
+      "w": 1540,
+      "h": 254,
+      "kind": "render",
+      "alt": "Seven saved versions of the stacked 64 file, side by side",
+      "caption": "Seven of its 35 saves."
+    }
+  }
+}

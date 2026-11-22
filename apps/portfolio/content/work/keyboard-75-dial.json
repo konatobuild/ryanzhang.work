@@ -1,0 +1,153 @@
+{
+  "slug": "keyboard-75-dial",
+  "title": "75 with a dial",
+  "subtitle": "A printed 75-key case with a dial and a column of keys beside it",
+  "year": "2022",
+  "context": "Personal project. Built and used.",
+  "role": "Design, drawings for making, and the build",
+  "team": "",
+  "tools": [
+    "Fusion 360",
+    "3D printing"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "A white printed case for 75 keys, with a row of function keys, a separate column on the right and a dial. Its parts are spread over five Fusion files, which fit together because they were drawn at the same coordinates.",
+  "sections": [
+    {
+      "heading": "Five files, one keyboard",
+      "body": "The outer case, base, top frame, plate and side strips were drawn in separate files between January and March 2022. They share one set of coordinates, so the parts drop into place when the files are opened together.",
+      "images": [
+        "by-source.webp",
+        "exploded.webp",
+        "bare.webp"
+      ]
+    },
+    {
+      "heading": "How it goes together",
+      "body": "The outer case is open underneath and the base closes it. The top frame sits in a step at the top of the case. At the front edge the plate sits between the case and the base with 0.5 mm above it and 3 mm below.",
+      "images": [
+        "d-section.webp",
+        "section.webp",
+        "knob.webp",
+        "insert.webp",
+        "back.webp"
+      ]
+    },
+    {
+      "heading": "Built",
+      "body": "The case was printed in white, built and used. The build differs from the files in small ways, from finishing and fitting by hand.",
+      "images": [
+        "photo-desk.webp"
+      ]
+    },
+    {
+      "heading": "In other colours",
+      "body": "The same case rendered in four other finishes. These are studies, not builds.",
+      "images": [
+        "finish-graphite.webp",
+        "finish-sage.webp",
+        "finish-champagne.webp",
+        "finish-oxblood.webp"
+      ]
+    }
+  ],
+  "hero": "full.webp",
+  "cover": "full.webp",
+  "images": {
+    "full.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "A white 75-key keyboard with a dial at the top right, pale keycaps and a yellow space bar",
+      "caption": "The 75 with a dial, rendered from the Fusion files. Keycaps, switches and the circuit board are bought parts."
+    },
+    "bare.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The case without keycaps and switches, showing the top frame, the plate and the round opening for the dial",
+      "caption": "Without the bought parts."
+    },
+    "exploded.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The keyboard taken apart: keycaps, switches, top frame, plate, board, outer case and base",
+      "caption": "Taken apart."
+    },
+    "by-source.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "diagram",
+      "alt": "The case with each part coloured by the Fusion file it comes from",
+      "caption": "Each colour is one Fusion file."
+    },
+    "section.webp": {
+      "w": 1800,
+      "h": 1200,
+      "kind": "render",
+      "alt": "The front edge of the keyboard cut through, the plate held between the outer case and the base",
+      "caption": "Cut through at the front edge."
+    },
+    "knob.webp": {
+      "w": 1800,
+      "h": 1200,
+      "kind": "render",
+      "alt": "Close on the dial at the top right corner",
+      "caption": "The dial."
+    },
+    "insert.webp": {
+      "w": 1800,
+      "h": 1200,
+      "kind": "render",
+      "alt": "Close on the strip let into the side of the case",
+      "caption": "The strip let into the side."
+    },
+    "back.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The underside of the white case",
+      "caption": "Underneath."
+    },
+    "finish-graphite.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The same case in dark grey"
+    },
+    "finish-sage.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The same case in pale green"
+    },
+    "finish-champagne.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The same case in a pale metal finish"
+    },
+    "finish-oxblood.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The same case in dark red"
+    },
+    "photo-desk.webp": {
+      "w": 1024,
+      "h": 768,
+      "kind": "photo",
+      "alt": "The built white 75 on a desk behind the thin 67",
+      "caption": "The build, behind the thin 67."
+    },
+    "d-section.webp": {
+      "w": 2400,
+      "h": 917,
+      "kind": "drawing",
+      "alt": "Section through the front edge of the 75 with a dial, cut from the Fusion file, with each part named",
+      "caption": "Cut through at the front edge, from the Fusion file. The keycap, switch and circuit board are bought parts."
+    }
+  }
+}

@@ -12,7 +12,17 @@ import cooldrip from "@/content/work/cooldrip.json";
 import cooldripV1 from "@/content/work/cooldrip-v1.json";
 import makingCase from "@/content/work/making.json";
 import insole from "@/content/work/insole.json";
-import keyboards from "@/content/work/keyboards.json";
+import kbRGrid from "@/content/work/keyboard-r-grid.json";
+import kbR64 from "@/content/work/keyboard-r-64.json";
+import kbR67 from "@/content/work/keyboard-r-67.json";
+import kbR75 from "@/content/work/keyboard-r-75.json";
+import kbRAlice from "@/content/work/keyboard-r-alice.json";
+import kbThin67 from "@/content/work/keyboard-thin-67.json";
+import kbDial75 from "@/content/work/keyboard-75-dial.json";
+import kbStacked64 from "@/content/work/keyboard-stacked-64.json";
+import kbRounded64 from "@/content/work/keyboard-rounded-64.json";
+import kbStacked75 from "@/content/work/keyboard-stacked-75.json";
+import kbGasket64 from "@/content/work/keyboard-gasket-64.json";
 import ofx from "@/content/work/ofx-rebrand.json";
 import oasis from "@/content/work/organic-oasis.json";
 import snapjoy from "@/content/work/snapjoy.json";
@@ -34,7 +44,7 @@ export interface WorkSection {
   body: string;
   images: string[];
   /** A working demonstration shown with this section, by name. */
-  demo?: "finger-keys";
+  demo?: "finger-keys" | "keyboard-layouts" | "keyboard-takeapart" | "keyboard-finishes";
 }
 
 export interface Award {
@@ -114,7 +124,17 @@ export const CASE_BACKDROP: Record<string, BackdropKey> = {
   making: "coast",
   "ofx-rebrand": "coast",
   car: "waterloo",
-  keyboards: "parliament",
+  "keyboard-r-grid": "nocturne",
+  "keyboard-r-64": "coast",
+  "keyboard-r-67": "trouville",
+  "keyboard-r-75": "waterlooGray",
+  "keyboard-r-alice": "charingCross",
+  "keyboard-thin-67": "parliament",
+  "keyboard-75-dial": "waterlooGray",
+  "keyboard-stacked-64": "coast",
+  "keyboard-rounded-64": "trouville",
+  "keyboard-stacked-75": "nocturne",
+  "keyboard-gasket-64": "charingCross",
   "xr-keyboard": "nocturne",
 };
 
@@ -174,7 +194,17 @@ const raw = {
   making: makingCase,
   "ofx-rebrand": ofx,
   car,
-  keyboards,
+  "keyboard-r-grid": kbRGrid,
+  "keyboard-r-64": kbR64,
+  "keyboard-r-67": kbR67,
+  "keyboard-r-75": kbR75,
+  "keyboard-r-alice": kbRAlice,
+  "keyboard-thin-67": kbThin67,
+  "keyboard-75-dial": kbDial75,
+  "keyboard-stacked-64": kbStacked64,
+  "keyboard-rounded-64": kbRounded64,
+  "keyboard-stacked-75": kbStacked75,
+  "keyboard-gasket-64": kbGasket64,
   "xr-keyboard": xrKeyboard,
 } as unknown as Record<string, CaseStudy>;
 
@@ -247,12 +277,82 @@ const META: Record<
     card: "cover.webp",
     wide: "hero.webp",
   },
-  keyboards: {
-    short: "Keyboards",
+  "keyboard-r-grid": {
+    short: "R GRID",
     group: "object",
-    label: "Object",
-    card: "cover.webp",
+    label: "Keyboard series, a design",
+    card: "series.webp",
+    wide: "series.webp",
+  },
+  "keyboard-r-64": {
+    short: "R 64",
+    group: "object",
+    label: "Keyboard, a design",
+    card: "hero.webp",
     wide: "hero.webp",
+  },
+  "keyboard-r-67": {
+    short: "R 67",
+    group: "object",
+    label: "Keyboard, a design",
+    card: "hero.webp",
+    wide: "hero.webp",
+  },
+  "keyboard-r-75": {
+    short: "R 75",
+    group: "object",
+    label: "Keyboard, a design",
+    card: "hero.webp",
+    wide: "hero.webp",
+  },
+  "keyboard-r-alice": {
+    short: "R Alice",
+    group: "object",
+    label: "Keyboard, a design",
+    card: "hero.webp",
+    wide: "hero.webp",
+  },
+  "keyboard-thin-67": {
+    short: "Thin 67",
+    group: "object",
+    label: "Keyboard",
+    card: "full.webp",
+    wide: "full.webp",
+  },
+  "keyboard-75-dial": {
+    short: "75 with a dial",
+    group: "object",
+    label: "Keyboard",
+    card: "full.webp",
+    wide: "full.webp",
+  },
+  "keyboard-stacked-64": {
+    short: "Stacked 64",
+    group: "object",
+    label: "Keyboard",
+    card: "full.webp",
+    wide: "full.webp",
+  },
+  "keyboard-rounded-64": {
+    short: "Rounded 64",
+    group: "object",
+    label: "Keyboard",
+    card: "full.webp",
+    wide: "full.webp",
+  },
+  "keyboard-stacked-75": {
+    short: "Stacked 75",
+    group: "object",
+    label: "Keyboard, drawn",
+    card: "full.webp",
+    wide: "full.webp",
+  },
+  "keyboard-gasket-64": {
+    short: "Gasket 64",
+    group: "object",
+    label: "Keyboard, drawn",
+    card: "full.webp",
+    wide: "full.webp",
   },
   making: {
     short: "Making",
@@ -349,11 +449,6 @@ const DETAILS: Record<string, Shot[] | undefined> = {
     close("car", "render-day", "Front", 2400, 1350, "The car from a low front angle in a daylight street"),
     close("car", "model", "Model", 1706, 1278, "The physical model: silver body, dark canopy, red wheel hubs"),
   ],
-  keyboards: [
-    close("keyboards", "detail-1", "Boards", 1024, 768, "Two finished boards on a desk mat"),
-    close("keyboards", "detail-2", "Laser", 768, 1024, "An acrylic part beside the sheet it was laser-cut from"),
-    close("keyboards", "detail-3", "Assembly", 1024, 768, "A circuit board with switches partly fitted"),
-  ],
   "ofx-rebrand": [
     close("ofx-rebrand", "detail", "Grid", 800, 600, "The OFX cube mark on its construction grid"),
     close("ofx-rebrand", "detail-card", "Card", 900, 675, "The business card, with the mark cropped across the back"),
@@ -399,18 +494,70 @@ function entryFromCase(slug: string): WorkEntry {
   };
 }
 
+/** The 2026 series: its own page, then one per layout. */
+export const gridPages: WorkEntry[] = [
+  "keyboard-r-grid",
+  "keyboard-r-64",
+  "keyboard-r-67",
+  "keyboard-r-75",
+  "keyboard-r-alice",
+].map(entryFromCase);
+
+/**
+ * The keyboards. Each is a project with its own page; the 2026 series is
+ * one of them, with a page per layout under it.
+ */
+export const keyboards: WorkEntry[] = [
+  "keyboard-thin-67",
+  "keyboard-75-dial",
+  "keyboard-stacked-64",
+  "keyboard-rounded-64",
+  "keyboard-stacked-75",
+  "keyboard-gasket-64",
+  "keyboard-r-grid",
+].map(entryFromCase);
+
+const kbShot = (slug: string, name: string): Shot => ({ ...shot(slug, raw[slug].hero), name });
+
+/**
+ * Everywhere outside their own page the keyboards take one place, like any
+ * other piece. It leads to a page that lays all of them out.
+ */
+export const keyboardsEntry: WorkEntry = {
+  slug: "keyboards",
+  title: "Keyboards",
+  short: "Keyboards",
+  subtitle: "Cases for mechanical keyboards, drawn, cut and printed since 2021",
+  year: "2021–2026",
+  group: "object",
+  label: "Seven projects",
+  href: "/work/keyboards",
+  cta: "See the keyboards →",
+  cover: { ...shot("keyboard-thin-67", "full.webp"), pos: "38% 50%" },
+  wide: shot("keyboard-thin-67", "full.webp"),
+  details: [
+    kbShot("keyboard-75-dial", "75"),
+    kbShot("keyboard-stacked-64", "Stacked 64"),
+    kbShot("keyboard-rounded-64", "Rounded 64"),
+    kbShot("keyboard-r-grid", "R GRID"),
+  ],
+  paint: "parliament",
+};
+
 /** Objects: industrial design, in the order it should be read. */
 export const objects: WorkEntry[] = [
-  "cooldrip",
-  "insole",
-  "backtech-elite",
-  "snapjoy",
-  "organic-oasis",
-  "adula",
-  "cooldrip-v1",
-  "car",
-  "keyboards",
-].map(entryFromCase);
+  ...[
+    "cooldrip",
+    "insole",
+    "backtech-elite",
+    "snapjoy",
+    "organic-oasis",
+    "adula",
+    "cooldrip-v1",
+    "car",
+  ].map(entryFromCase),
+  keyboardsEntry,
+];
 
 /** Models, builds and drawing: not a project, kept as a page behind About. */
 export const making: WorkEntry = entryFromCase("making");

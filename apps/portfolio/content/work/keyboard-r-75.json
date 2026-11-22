@@ -1,0 +1,87 @@
+{
+  "slug": "keyboard-r-75",
+  "title": "R 75",
+  "subtitle": "82 keys and a dial on the R GRID board",
+  "year": "2026",
+  "context": "Personal project. A design, not built.",
+  "role": "Direction and design, with AI tools for the drawings and renders",
+  "team": "",
+  "tools": [
+    "Drawings from code",
+    "Blender"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "R 75 is one of four keyboards in the R GRID series, designed in 2026. A row of function keys set a quarter of a key above the rest, and a blue dial at the top right.",
+  "sections": [
+    {
+      "heading": "The board",
+      "body": "A row of function keys set a quarter of a key above the rest, and a blue dial at the top right. It is built like the rest of the series: a black board printed with the grid, low keycaps, a frosted white base, and blue for the spacers and feet.",
+      "images": [
+        "d-top.webp",
+        "l-detail-1.webp",
+        "l-detail-2.webp"
+      ]
+    },
+    {
+      "heading": "From the side",
+      "body": "From the desk up: a frosted base and frame with brass nuts set into it, a white circuit board, blue spacers and the black board. The feet are clear blue pieces held by cross bolts.",
+      "images": [
+        "d-section.webp",
+        "l-front.webp",
+        "l-foot.webp"
+      ]
+    }
+  ],
+  "hero": "hero.webp",
+  "cover": "hero.webp",
+  "images": {
+    "hero.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "R 75: a black board with pale low keycaps on a white base",
+      "caption": "R 75. A render; the design has not been built."
+    },
+    "l-front.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The front edge of R 75 seen from desk height",
+      "caption": "The front edge from desk height."
+    },
+    "l-detail-1.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "Close on the dial and the function row"
+    },
+    "l-detail-2.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "Close on the bottom-left corner of R 75: the name KEYS 82 + DIAL, a screw and six test points"
+    },
+    "l-foot.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "A foot under the rear edge: clear blue upright pieces held by cross bolts, beside the cable",
+      "caption": "A foot and the cable."
+    },
+    "d-top.webp": {
+      "w": 2400,
+      "h": 1214,
+      "kind": "drawing",
+      "alt": "Drawing of R 75 from above: the board, its keys, its printing and its screws",
+      "caption": "From above, as drawn."
+    },
+    "d-section.webp": {
+      "w": 2400,
+      "h": 750,
+      "kind": "drawing",
+      "alt": "Section through the R GRID stack: base sheet, frame with a nut in its pocket, circuit board, blue spacer, face plate, switch and keycap, each named with its thickness",
+      "caption": "The stack, cut through. Thicknesses in millimetres."
+    }
+  }
+}

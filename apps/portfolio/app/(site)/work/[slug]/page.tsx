@@ -4,19 +4,26 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Figures, type Fig } from "@/components/site/Figures";
 import { FingerKeys } from "@/components/site/FingerKeys";
+import { KeyboardLayouts } from "@/components/site/KeyboardIndex";
+import { Finishes, KeyboardHero, TakeApart } from "@/components/site/KeyboardStudy";
 import { Plate, Stage } from "@/components/site/Stage";
 import {
   CASE_BACKDROP,
   brand,
   caseStudies,
+  gridPages,
   interfaces,
+  keyboards,
   making,
   objects,
 } from "@/lib/work";
 
 /** Pieces with a case page. Making has a page but is not in the running order. */
 const LISTED = [...objects, ...interfaces, ...brand];
-const ORDER = [...LISTED, making];
+/** The four layouts of the 2026 series: pages under that project, not projects themselves. */
+const LAYOUTS = gridPages.slice(1);
+/** Every case page. The keyboards sit behind one entry in the lists, which has a page of its own kind. */
+const ORDER = [...LISTED.filter((w) => caseStudies[w.slug]), ...keyboards, ...LAYOUTS, making];
 
 export function generateStaticParams() {
   return ORDER.map((w) => ({ slug: w.slug }));
@@ -61,12 +68,21 @@ export default async function CasePage({
   if (!c || at < 0) notFound();
 
   const entry = ORDER[at];
-  const from = LISTED.findIndex((w) => w.slug === slug);
-  const more = [1, 2, 3].map((d) => LISTED[(from + d + LISTED.length) % LISTED.length]);
+  // What to read next: a keyboard leads to other keyboards, a layout to the other layouts, anything else to the pieces after it.
+  const family = LAYOUTS.some((w) => w.slug === slug)
+    ? LAYOUTS
+    : keyboards.some((w) => w.slug === slug)
+      ? keyboards
+      : LISTED;
+  const from = family.findIndex((w) => w.slug === slug);
+  const more = [1, 2, 3].map((d) => family[(from + d) % family.length]);
   const base = `/work/${slug}/`;
   const hero = c.images[c.hero];
-  const back =
-    entry.group === "object"
+  const back = LAYOUTS.some((w) => w.slug === slug)
+    ? { href: "/work/keyboard-r-grid", label: "R GRID" }
+    : slug.startsWith("keyboard-")
+      ? { href: "/work/keyboards", label: "Keyboards" }
+    : entry.group === "object"
       ? { href: "/industrial-design", label: "Industrial design" }
       : { href: "/software", label: "Interface and brand" };
 
@@ -151,20 +167,24 @@ export default async function CasePage({
       </header>
 
       <Stage paint={CASE_BACKDROP[slug] ?? "nocturne"} className="post__stage" priority>
-        <Plate
-          label={<p className="muted">{hero.caption ?? hero.alt}</p>}
-          // An upright picture is sized by its height, so it stays on one screen.
-          style={hero.w < hero.h ? { maxWidth: Math.round((700 * hero.w) / hero.h) } : undefined}
-        >
-          <Image
-            src={base + c.hero}
-            alt={hero.alt}
-            width={hero.w}
-            height={hero.h}
-            sizes="(max-width: 860px) 100vw, 1080px"
-            priority
-          />
-        </Plate>
+        {slug === "keyboard-thin-67" ? (
+          <KeyboardHero />
+        ) : (
+          <Plate
+            label={<p className="muted">{hero.caption ?? hero.alt}</p>}
+            // An upright picture is sized by its height, so it stays on one screen.
+            style={hero.w < hero.h ? { maxWidth: Math.round((700 * hero.w) / hero.h) } : undefined}
+          >
+            <Image
+              src={base + c.hero}
+              alt={hero.alt}
+              width={hero.w}
+              height={hero.h}
+              sizes="(max-width: 860px) 100vw, 1080px"
+              priority
+            />
+          </Plate>
+        )}
       </Stage>
 
       {c.sections.map((s) => {
@@ -185,6 +205,21 @@ export default async function CasePage({
             {s.demo === "finger-keys" ? (
               <div className="post__wide post__demo">
                 <FingerKeys />
+              </div>
+            ) : null}
+            {s.demo === "keyboard-takeapart" ? (
+              <div className="post__wide">
+                <TakeApart />
+              </div>
+            ) : null}
+            {s.demo === "keyboard-finishes" ? (
+              <div className="post__wide">
+                <Finishes />
+              </div>
+            ) : null}
+            {s.demo === "keyboard-layouts" ? (
+              <div className="post__wide">
+                <KeyboardLayouts />
               </div>
             ) : null}
             {figs.length ? (

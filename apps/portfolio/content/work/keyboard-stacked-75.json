@@ -1,0 +1,111 @@
+{
+  "slug": "keyboard-stacked-75",
+  "title": "Stacked 75",
+  "subtitle": "A 75-key case of sheets, drawn around its circuit board",
+  "year": "2022",
+  "context": "Personal project. Drawn, not built.",
+  "role": "Design and drawings for making",
+  "team": "",
+  "tools": [
+    "Fusion 360",
+    "Laser-cut acrylic"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "A 75-key case made of acrylic sheet with its edges built from short pieces and corner blocks. The circuit board is part of the Fusion assembly, so the case is drawn around it. The file was saved 40 times.",
+  "sections": [
+    {
+      "heading": "Where the board sits",
+      "body": "Cut through from front to back, the order is keycap, switch, plate, board and base, with a post at the front corner carrying the stack. At the front edge the plate has 2.3 mm above it and 1.2 mm below.",
+      "images": [
+        "d-section.webp",
+        "section.webp",
+        "section-detail.webp",
+        "bare.webp"
+      ]
+    },
+    {
+      "heading": "In other sheet",
+      "body": "Renders of the same files in other materials and light. Studies, not builds.",
+      "images": [
+        "study-blue.webp",
+        "study-lit.webp",
+        "study-legend.webp"
+      ]
+    },
+    {
+      "heading": "Saved 40 times",
+      "body": "Fusion kept every save of the file. The strip shows the saves where the most changed between one version and the next.",
+      "images": [
+        "history.webp"
+      ]
+    }
+  ],
+  "hero": "full.webp",
+  "cover": "full.webp",
+  "images": {
+    "full.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "A 75-key keyboard in a clear acrylic case with white keycaps",
+      "caption": "The stacked 75, rendered from the Fusion files. Keycaps, switches and the circuit board are bought parts."
+    },
+    "bare.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The case without keycaps and switches",
+      "caption": "Without the bought parts."
+    },
+    "section.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The keyboard cut through from front to back, showing keycaps, switches, plate, circuit board and base",
+      "caption": "Cut through from front to back."
+    },
+    "section-detail.webp": {
+      "w": 1800,
+      "h": 1200,
+      "kind": "render",
+      "alt": "Close on the cut: a keycap on its switch, the switch in the plate, the circuit board under it, and a post at the corner",
+      "caption": "Keycap, switch, plate, board, base, and the post that carries the stack."
+    },
+    "study-blue.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The same case in blue sheet with pale keycaps",
+      "caption": "In blue sheet. A study."
+    },
+    "study-lit.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The case in a dark room, points of green light along the front edge",
+      "caption": "Light along the front edge. A study."
+    },
+    "study-legend.webp": {
+      "w": 1800,
+      "h": 1200,
+      "kind": "render",
+      "alt": "Close on the function row, dark blue keycaps over an amber edge",
+      "caption": "The function row over an amber edge. A study."
+    },
+    "d-section.webp": {
+      "w": 2400,
+      "h": 755,
+      "kind": "drawing",
+      "alt": "Section through the front edge of the Stacked 75, cut from the Fusion file, with each part named",
+      "caption": "Cut through at the front edge, from the Fusion file. The keycap, switch and circuit board are bought parts."
+    },
+    "history.webp": {
+      "w": 1540,
+      "h": 254,
+      "kind": "render",
+      "alt": "Seven saved versions of the stacked 75 file, side by side",
+      "caption": "Seven of its 40 saves."
+    }
+  }
+}

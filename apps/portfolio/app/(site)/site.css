@@ -1236,7 +1236,7 @@ a.honor:hover .honor__level span {
 /* The chain from camera to words, as five numbered steps. */
 .keys__steps {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   border-bottom: 1px solid var(--line);
 }
 
@@ -1488,6 +1488,7 @@ a.honor:hover .honor__level span {
   padding: 24px 10px 24px clamp(12px, 2.6vw, 36px);
 }
 
+.panel__text h2,
 .panel__text h3 {
   max-width: 17em;
   text-wrap: pretty;
@@ -1565,6 +1566,26 @@ a.honor:hover .honor__level span {
   height: 100%;
   max-width: 100%;
   border-radius: var(--r-win);
+}
+
+/* A wide picture shown whole: it keeps its own shape and sits in the middle of the painting. */
+.panel__win--whole,
+.panel--flip .panel__win--whole {
+  flex: none;
+  width: 100%;
+  border-radius: var(--r-win);
+  overflow: hidden;
+}
+
+.panel__win--whole .panel__media {
+  flex: none;
+  aspect-ratio: inherit;
+}
+
+.panel__stage > a {
+  display: flex;
+  flex: 1;
+  align-items: center;
 }
 
 /* A website stands whole in a browser frame: a bar with its address, then the page at 16:10. */
@@ -1662,6 +1683,18 @@ a.honor:hover .honor__level span {
 
   .panel--flip .panel__win {
     border-radius: var(--r-win) 0 0 0;
+  }
+
+  /* A whole picture keeps an even margin of painting on a phone too. */
+  .panel__stage--whole,
+  .panel--flip .panel__stage--whole {
+    min-height: 0;
+    padding: 16px;
+  }
+
+  .panel__stage--whole .panel__win,
+  .panel--flip .panel__stage--whole .panel__win {
+    border-radius: var(--r-win);
   }
 }
 
@@ -2167,4 +2200,208 @@ a.honor:hover .honor__level span {
     animation-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ── Keyboards: the layouts of a series, one row each ──────────────────────────────────────────── */
+
+.kbl {
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.kbl li {
+  border-bottom: 1px solid var(--line);
+}
+
+.kbl a {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr) minmax(0, 1.25fr);
+  gap: var(--gap);
+  align-items: center;
+  padding: var(--gap) 0;
+}
+
+.kbl img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--r);
+}
+
+.kbl p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 21px;
+  text-wrap: pretty;
+}
+
+.kbl p:first-child {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.kbl__text {
+  padding-right: 16px;
+}
+
+.kbl a:hover p:first-child {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  .kbl a {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  }
+
+  .kbl__text {
+    grid-column: 1 / -1;
+    padding-right: 0;
+  }
+}
+
+/* ── Keyboards: pictures that change in place ─────────────────────────── */
+
+.swap {
+  position: relative;
+}
+
+.swap img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.swap__over {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease);
+}
+
+.swap__over[data-on="true"] {
+  opacity: 1;
+}
+
+button.link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.apart,
+.finish {
+  margin: 24px 0 0;
+}
+
+.apart__frame {
+  overflow: hidden;
+  border-radius: var(--r);
+  background: var(--card);
+}
+
+.apart__frame img {
+  width: 100%;
+  height: auto;
+}
+
+.apart__bar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 24px;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.apart__bar input {
+  appearance: none;
+  width: 100%;
+  height: 21px;
+  margin: 0;
+  background: transparent;
+  cursor: ew-resize;
+}
+
+.apart__bar input::-webkit-slider-runnable-track {
+  height: 1px;
+  background: var(--text-3);
+}
+
+.apart__bar input::-moz-range-track {
+  height: 1px;
+  background: var(--text-3);
+}
+
+.apart__bar input::-webkit-slider-thumb {
+  appearance: none;
+  width: 11px;
+  height: 11px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: var(--text);
+}
+
+.apart__bar input::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--text);
+}
+
+.apart__bar input:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.sheets {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px var(--gap);
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sheets img {
+  width: 100%;
+  height: auto;
+}
+
+:root[data-theme="ink"] .sheets img {
+  filter: invert(1) brightness(1.5);
+}
+
+.sheets p {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0;
+}
+
+.finish .fig__frame {
+  cursor: default;
+}
+
+.finish figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--text);
+}
+
+@media (max-width: 760px) {
+  .apart__bar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sheets {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
 }
