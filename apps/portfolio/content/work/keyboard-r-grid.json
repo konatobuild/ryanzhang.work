@@ -1,0 +1,177 @@
+{
+  "slug": "keyboard-r-grid",
+  "title": "R GRID",
+  "subtitle": "One grid, four layouts and four modules: a keyboard series designed in 2026",
+  "year": "2026",
+  "context": "Personal project. A design, not built.",
+  "role": "Direction and design, with AI tools for the drawings and renders",
+  "team": "",
+  "tools": [
+    "Drawings from code",
+    "Blender"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "A series of keyboards drawn on one 19.05 mm grid. The top of each is a black board with the grid printed on it; under it are a row of blue spacers, a white circuit board and a base of frosted acrylic. It uses the layouts, the feet and the hidden nuts of the keyboards I built in 2021 to 2023.",
+  "sections": [
+    {
+      "heading": "One grid",
+      "body": "Every key in the series sits on a grid of 19.05 mm. Each board has a margin of 9.025 mm around its keys, and boards are set 1 mm apart, so two margins and a gap come to exactly one key. However the boards are arranged, the keys stay on the same grid.\n\nThe board on top is the face of the keyboard. What is printed on it is the grid itself: a tick and a number over every column, a letter beside every row, and the name of the board.",
+      "images": [
+        "l-series-top.webp",
+        "l-print.webp",
+        "d-series.webp"
+      ]
+    },
+    {
+      "heading": "Four layouts",
+      "body": "The same construction on four of my own layouts: 64, 67 and 75 keys, and the Alice layout with its keys in two angled halves.",
+      "images": [],
+      "demo": "keyboard-layouts"
+    },
+    {
+      "heading": "Boards that fit together",
+      "body": "The 64 takes a strip of fifteen keys above it, a number pad beside it, or a dial with six keys. The base is cut to the arrangement.",
+      "images": [
+        "d-full.webp",
+        "d-left.webp",
+        "l-left.webp",
+        "l-compact.webp"
+      ]
+    },
+    {
+      "heading": "How it is built",
+      "body": "From the desk up: a 3 mm base and a 5 mm frame of frosted acrylic, a white circuit board, a 2.2 mm spacer and the black board. Screws go in from the top; each nut is brass and sits in a six-sided pocket cut in the frame, the way I held the nuts in the stacked 64, so none shows from below or from the side. The feet are the ones from the thin 67: upright pieces held by two cross bolts.\n\nThere are four colours. Blue is used only for parts with a job: the spacers, the dial and the feet.",
+      "images": [
+        "d-section.webp",
+        "l-edge.webp",
+        "l-exploded.webp",
+        "l-foot.webp",
+        "l-knob.webp"
+      ]
+    },
+    {
+      "heading": "The keycap",
+      "body": "The keycap took a round of its own. Five were modelled and put on the same board. The one chosen is low, with a wide shallow dish, and leaves 2 mm of black board between keys.",
+      "images": [
+        "keycaps.webp"
+      ]
+    },
+    {
+      "heading": "Light",
+      "body": "The base is frosted, so light from under the circuit board spreads through it and comes out along the edge.",
+      "images": [
+        "lit-even.webp"
+      ]
+    }
+  ],
+  "hero": "series.webp",
+  "cover": "series.webp",
+  "images": {
+    "series.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "Four keyboards and four smaller boards laid out together: black boards, pale keycaps, blue dials",
+      "caption": "The series: R 64, R 67, R 75 and R Alice, with the smaller boards that attach to them. A render; the design has not been built."
+    },
+    "l-series-top.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The same pieces seen from straight above",
+      "caption": "From above."
+    },
+    "l-left.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The 64-key board with the dial module on its left",
+      "caption": "With the dial on the left."
+    },
+    "l-compact.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The 64-key board alone",
+      "caption": "The 64 alone."
+    },
+    "l-edge.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "Close on the front edge: keycaps, the black board, a blue spacer, the circuit board and the white base",
+      "caption": "The front edge, layer by layer."
+    },
+    "l-exploded.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The full arrangement taken apart into keycaps, switches, boards, spacers, frame, base and feet",
+      "caption": "Taken apart."
+    },
+    "l-foot.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "Under the rear edge: a clear blue foot held by two bolts, and the cable in its socket",
+      "caption": "A foot and the cable."
+    },
+    "l-knob.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "Close on the blue dial with a white line across it, beside the keys",
+      "caption": "The dial."
+    },
+    "l-print.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "Close on a corner of the 64-key board: the name KEYS 64, a screw in its gold ring, six test points and a row letter",
+      "caption": "The printing on the board."
+    },
+    "lit-even.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The four keyboards in a dark room, light coming out of the edges of their bases",
+      "caption": "Light through the base."
+    },
+    "keycaps.webp": {
+      "w": 2772,
+      "h": 1378,
+      "kind": "render",
+      "alt": "Five keycap shapes compared on the same corner of the board",
+      "caption": "Five keycaps tried on the same board. The first was chosen."
+    },
+    "d-series.webp": {
+      "w": 2400,
+      "h": 3885,
+      "kind": "drawing",
+      "alt": "Drawings of the four keyboards from above, at one scale",
+      "caption": "The drawings the models were built from."
+    },
+    "d-full.webp": {
+      "w": 2400,
+      "h": 1037,
+      "kind": "drawing",
+      "alt": "Drawing of the full arrangement from above: a strip of fifteen keys and a strip of four over the 64-key board and a number pad, all on one base",
+      "caption": "The full arrangement, drawn: two strips, the 64 and a number pad on one base."
+    },
+    "d-left.webp": {
+      "w": 2400,
+      "h": 906,
+      "kind": "drawing",
+      "alt": "Drawing of the 64-key board with the dial board on its left",
+      "caption": "With the dial board on the left."
+    },
+    "d-section.webp": {
+      "w": 2400,
+      "h": 750,
+      "kind": "drawing",
+      "alt": "Section through the R GRID stack: base sheet, frame with a nut in its pocket, circuit board, blue spacer, face plate, switch and keycap, each named with its thickness",
+      "caption": "The stack, cut through. Thicknesses in millimetres."
+    }
+  }
+}

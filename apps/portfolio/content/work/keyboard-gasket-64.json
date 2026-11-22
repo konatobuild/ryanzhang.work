@@ -1,0 +1,75 @@
+{
+  "slug": "keyboard-gasket-64",
+  "title": "Gasket 64",
+  "subtitle": "The first design: seven frames around one switch plate",
+  "year": "2021",
+  "context": "Personal project. Drawn, not built.",
+  "role": "Design and drawings for making",
+  "team": "",
+  "tools": [
+    "Fusion 360",
+    "Laser-cut sheet"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "The earliest keyboard files, from May 2021: a 64-key case of seven stacked frames, where the switch plate has ears that sit in a slot between the frames and is not screwed to them.",
+  "sections": [
+    {
+      "heading": "A plate held by its ears",
+      "body": "The switch plate is wider than the opening in the frames. Its ears reach into a slot in the middle frames; the frame below carries them and the frame above leaves 1 mm clear. A later version of the file uses five frames in place of seven.",
+      "images": [
+        "d-section.webp",
+        "exploded.webp",
+        "bare.webp",
+        "top.webp",
+        "side.webp"
+      ]
+    }
+  ],
+  "hero": "full.webp",
+  "cover": "full.webp",
+  "images": {
+    "full.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "A 64-key keyboard in a case of seven stacked frames",
+      "caption": "The gasket 64, rendered from the Fusion files. Keycaps, switches and the circuit board are bought parts."
+    },
+    "bare.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The frames and the switch plate without keycaps and switches",
+      "caption": "Without the bought parts."
+    },
+    "exploded.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The case taken apart into its frames and switch plate",
+      "caption": "Seven frames around one switch plate."
+    },
+    "top.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The keyboard from above",
+      "caption": "From above."
+    },
+    "side.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The keyboard from the side, the frames stacked",
+      "caption": "From the side."
+    },
+    "d-section.webp": {
+      "w": 2400,
+      "h": 750,
+      "kind": "drawing",
+      "alt": "Section through the front edge of the Gasket 64, cut from the Fusion file, with each part named",
+      "caption": "Cut through at the front edge, from the Fusion file. The keycap, switch and circuit board are bought parts."
+    }
+  }
+}

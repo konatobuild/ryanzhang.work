@@ -1,0 +1,113 @@
+{
+  "slug": "keyboard-rounded-64",
+  "title": "Rounded 64",
+  "subtitle": "A printed 64-key case in two shells on a base that lets light through",
+  "year": "2021",
+  "context": "Personal project. Built and used.",
+  "role": "Design, drawings for making, and the build",
+  "team": "",
+  "tools": [
+    "Fusion 360",
+    "3D printing"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "A white printed case for 64 keys, drawn in August and September 2021: two shells with rounded edges around a tilted switch plate, on a translucent base.",
+  "sections": [
+    {
+      "heading": "Two shells and a base",
+      "body": "The top shell carries the rounded edge and the bottom one closes the case. The plate is tilted inside them. At the front edge it sits between a shoulder of the top shell and a step in the base, with 0.7 mm above it and 2.8 mm below.",
+      "images": [
+        "d-section.webp",
+        "exploded.webp",
+        "section.webp",
+        "corner.webp",
+        "bare.webp"
+      ]
+    },
+    {
+      "heading": "Light through the base",
+      "body": "The base is translucent, so light from the board shows under the case. The photograph is the build; the dark picture beside it is a render of the same thing.",
+      "images": [
+        "photo-desk.webp",
+        "lit.webp",
+        "light.webp",
+        "back.webp"
+      ]
+    }
+  ],
+  "hero": "full.webp",
+  "cover": "full.webp",
+  "images": {
+    "full.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "A white 64-key keyboard in a case with rounded edges, white keycaps with gold legends",
+      "caption": "The rounded 64, rendered from the Fusion files. Keycaps, switches and the circuit board are bought parts."
+    },
+    "bare.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The case without keycaps and switches",
+      "caption": "Without the bought parts."
+    },
+    "exploded.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The keyboard taken apart: keycaps, switches, top shell, plate, board and translucent base",
+      "caption": "Taken apart."
+    },
+    "section.webp": {
+      "w": 1800,
+      "h": 1200,
+      "kind": "render",
+      "alt": "The front edge cut through: the rounded top shell, the plate and the base",
+      "caption": "Cut through at the front edge."
+    },
+    "corner.webp": {
+      "w": 1800,
+      "h": 1200,
+      "kind": "render",
+      "alt": "Close on a rounded corner and the line where the two shells meet",
+      "caption": "A corner, and the line where the shells meet."
+    },
+    "light.webp": {
+      "w": 1800,
+      "h": 1200,
+      "kind": "render",
+      "alt": "Close on the translucent base under the white shell",
+      "caption": "The base under the shell."
+    },
+    "back.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The underside: a pale translucent base set into the white shell",
+      "caption": "Underneath."
+    },
+    "lit.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The case in a dark room with blue light coming through the base",
+      "caption": "Blue light through the base, as in the build. A render."
+    },
+    "photo-desk.webp": {
+      "w": 1182,
+      "h": 665,
+      "kind": "photo",
+      "alt": "The built white keyboard on a desk at night, blue light glowing under it",
+      "caption": "The build, lit from below."
+    },
+    "d-section.webp": {
+      "w": 2400,
+      "h": 809,
+      "kind": "drawing",
+      "alt": "Section through the front edge of the Rounded 64, cut from the Fusion file, with each part named",
+      "caption": "Cut through at the front edge, from the Fusion file. The keycap, switch and circuit board are bought parts."
+    }
+  }
+}

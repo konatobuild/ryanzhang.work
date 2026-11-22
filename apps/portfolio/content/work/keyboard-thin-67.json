@@ -1,0 +1,161 @@
+{
+  "slug": "keyboard-thin-67",
+  "title": "Thin 67",
+  "subtitle": "A 67-key case made of six flat sheets, cut on a laser",
+  "year": "2022",
+  "context": "Personal project. Built and used.",
+  "role": "Design, drawings for making, and the build",
+  "team": "",
+  "tools": [
+    "Fusion 360",
+    "Laser-cut acrylic"
+  ],
+  "awards": [],
+  "links": null,
+  "summary": "A 67-key keyboard whose case is a stack of clear acrylic sheets, each drawn as its own part and cut on a laser. It stands on feet made of cut pieces held by a cross bolt, with a lettered panel under the base.",
+  "sections": [
+    {
+      "heading": "A case made of sheets",
+      "body": "The case is built from flat acrylic sheet. Each layer is drawn as its own part and cut on a laser, then the sheets are fastened together around the switch plate. From the top: a 5 mm top sheet, the 1.5 mm switch plate, a 2 mm layer frosted on one side, a 5 mm clear layer, an 8 mm clear frame and a 2 mm clear base.\n\nIt is shown taken apart below. Drag the line back to put it together, or on to the feet. The bought parts lift off first, then the sheets I drew.",
+      "images": [
+        "d-section.webp",
+        "side.webp",
+        "back.webp",
+        "feet.webp",
+        "port.webp"
+      ],
+      "demo": "keyboard-takeapart"
+    },
+    {
+      "heading": "The same drawings in other sheet",
+      "body": "The build is clear acrylic, with one layer frosted on one side. The same drawings can be cut from other sheet. These are renders of the case in three other materials, from the same position and in the same light; they are studies, not builds.",
+      "images": [
+        "study-jade.webp",
+        "study-jade-side.webp",
+        "study-lit.webp",
+        "study-hardware.webp"
+      ],
+      "demo": "keyboard-finishes"
+    },
+    {
+      "heading": "Cut and built",
+      "body": "The sheets were cut and the board was assembled and used.",
+      "images": [
+        "photo-desk.webp",
+        "photo-cut.webp"
+      ]
+    }
+  ],
+  "hero": "full.webp",
+  "cover": "full.webp",
+  "images": {
+    "full.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "A 67-key keyboard in a case of stacked clear acrylic sheets, with dark keycaps and green legends",
+      "caption": "The thin 67, rendered from the Fusion files. Keycaps, switches and the circuit board are bought parts."
+    },
+    "bare.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The same case without keycaps and switches"
+    },
+    "side.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The thin 67 seen square from the side, the sheets stacked on a pair of dark feet",
+      "caption": "From the side: the sheets, the board between them, and the feet that set the angle."
+    },
+    "back.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The underside: a dark mirrored base, a white panel lettered REYN DESIGN, and two feet",
+      "caption": "Underneath: the base, the lettered panel and the two feet."
+    },
+    "feet.webp": {
+      "w": 1800,
+      "h": 1200,
+      "kind": "render",
+      "alt": "A foot made of stacked black acrylic pieces held by a cross bolt",
+      "caption": "Each foot is a stack of cut pieces held by a bolt across them."
+    },
+    "port.webp": {
+      "w": 1800,
+      "h": 1200,
+      "kind": "render",
+      "alt": "The USB opening at the back of the case, framed by small cut pieces",
+      "caption": "The opening for the cable is built up from small cut pieces."
+    },
+    "finish-frosted.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The thin 67 in frosted acrylic"
+    },
+    "finish-smoke.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The thin 67 in smoked acrylic"
+    },
+    "finish-green-black.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The thin 67 in green and black acrylic"
+    },
+    "study-jade.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The case in clear sheet with a single green layer, and pale keycaps",
+      "caption": "One green sheet in a clear stack. A study."
+    },
+    "study-jade-side.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The same arrangement from the side, the green sheet a single line",
+      "caption": "The same arrangement from the side."
+    },
+    "study-lit.webp": {
+      "w": 2400,
+      "h": 1500,
+      "kind": "render",
+      "alt": "The case in a dark room with pale blue light coming through the frosted sheets",
+      "caption": "Light from the board carried out through the sheets. A study."
+    },
+    "study-hardware.webp": {
+      "w": 1800,
+      "h": 1200,
+      "kind": "render",
+      "alt": "Close on a front corner: a brass standoff and screw passing through the clear sheets",
+      "caption": "A standoff and screw passing through the sheets at a front corner."
+    },
+    "photo-desk.webp": {
+      "w": 1024,
+      "h": 768,
+      "kind": "photo",
+      "alt": "The built thin 67 on a desk, in front of the white 75",
+      "caption": "The build, in front of the 75 with a dial."
+    },
+    "photo-cut.webp": {
+      "w": 768,
+      "h": 1024,
+      "kind": "photo",
+      "alt": "A cut acrylic part lying on the board it was cut on",
+      "caption": "A part off the laser."
+    },
+    "d-section.webp": {
+      "w": 2400,
+      "h": 817,
+      "kind": "drawing",
+      "alt": "Section through the front edge of the Thin 67, cut from the Fusion file, with each part named",
+      "caption": "Cut through at the front edge, from the Fusion file. The keycap, switch and circuit board are bought parts."
+    }
+  }
+}

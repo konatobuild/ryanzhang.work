@@ -29,6 +29,8 @@ export default function WorkPage() {
         <WorkCards items={objects} />
       </section>
 
+
+
       <section className="wrap section" id="software">
         <div className="section__head">
           <h2 className="t-l duo">
